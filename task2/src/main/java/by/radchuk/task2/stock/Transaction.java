@@ -73,6 +73,8 @@ class Transaction implements Callable<BigDecimal> {
             return BigDecimal.ZERO;
         }
         seller.changeBalance(new Currency(buyerCurrencyType, toBuy));
+        log.info("Transaction ended with, and user with id={} sold: {}",
+                seller.getId(), toSell);
         return toSell;
     }
 }

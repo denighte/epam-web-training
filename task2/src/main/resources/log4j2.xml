@@ -6,8 +6,8 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="by.radchuk.task2" level="debug" additivity="true">
-            <appender-ref ref="Console" level="debug" />
-        </Logger>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
     </Loggers>
 </Configuration>

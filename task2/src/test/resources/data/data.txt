@@ -3,10 +3,10 @@ USD 1      0.885    2.127
 EUR 1.13   1        2.41
 BYN 0.47   0.42     1
 user_number = 5
-{id:1, US:150, EUR:200, BYN:300}
-{id:1, US:100, EUR:200, BYN:300}
-{id:1, US:100, EUR:200, BYN:400}
-{id:1, US:200, EUR:100, BYN:300}
-{id:1, US:500, EUR:200, BYN:300}
-max_transaction_amount = 20
+{id:1, USD:150, EUR:200, BYN:300}
+{id:2, USD:100, EUR:200, BYN:300}
+{id:3, USD:100, EUR:200, BYN:400}
+{id:4, USD:200, EUR:100, BYN:300}
+{id:5, USD:500, EUR:200, BYN:300}
+max_transaction_amount = 90
 max_transaction_delay = 1000

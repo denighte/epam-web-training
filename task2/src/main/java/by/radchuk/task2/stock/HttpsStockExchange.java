@@ -3,16 +3,22 @@ package by.radchuk.task2.stock;
 import by.radchuk.task2.entity.Currency;
 import by.radchuk.task2.entity.CurrencyType;
 import by.radchuk.task2.entity.User;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.util.Queue;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * stock exchange implementation.
  */
+@Slf4j
 final public class HttpsStockExchange {
     /**
      * threads number.
@@ -20,25 +26,14 @@ final public class HttpsStockExchange {
     private static final int THREAD_NUMBER = 4;
     /**
      * Singleton.
-     * volatile because of JCM memory model feature.
      */
-    private static volatile HttpsStockExchange instance;
+    private static final HttpsStockExchange INSTANCE = new HttpsStockExchange();
     /**
-     * Double Checked Locking & volatile getInstance.
+     * Singleton getInstance.
      * @return Singleton instance.
      */
     public static HttpsStockExchange getInstance() {
-        HttpsStockExchange localInstance = instance;
-        if (localInstance == null) {
-            synchronized (HttpsStockExchange.class) {
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance;
-                    localInstance = new HttpsStockExchange();
-                }
-            }
-        }
-        return localInstance;
+        return INSTANCE;
     }
 
     /**
@@ -56,12 +51,14 @@ final public class HttpsStockExchange {
     /**
      * transactions thread pool.
      */
+    @Getter
     private ExecutorService threadPool;
 
     /**
      * private constructor to prevent direct class creation.
      */
     private HttpsStockExchange() {
+        log.info("\nCreated HttpsStockExchange.\n");
         bidderQueue = new ConcurrentLinkedQueue<>();
         threadPool = Executors.newFixedThreadPool(THREAD_NUMBER);
         Thread collector
@@ -89,11 +86,14 @@ final public class HttpsStockExchange {
                         if (bidder.getTransaction() == null) {
                             startTransaction(futureBidder, bidder);
                             bidderQueue.add(futureBidder);
+                            lock.unlock();
+                            return;
                         }
                     lock.unlock();
                 }
             }
         }
+        bidderQueue.add(futureBidder);
     }
 
     /**

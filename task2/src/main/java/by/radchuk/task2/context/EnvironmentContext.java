@@ -18,11 +18,16 @@ import java.util.List;
  */
 @Slf4j
 public final class EnvironmentContext {
+
     /**
-     * Singleton.
-     * volatile because of JCM memory model feature.
+     * Singleton holder.
      */
-    private static volatile EnvironmentContext instance;
+    static final class SingletonHolder {
+        /**
+         * Singleton.
+         */
+        private static final EnvironmentContext INSTANCE = new EnvironmentContext();
+    }
 
     /**
      * Currencies number.
@@ -30,21 +35,11 @@ public final class EnvironmentContext {
     private static final int CURRENCIES_NUMBER = 3;
 
     /**
-     * Double Checked Locking & volatile getInstance.
+     * Singleton get instance.
      * @return Singleton instance.
      */
     public static EnvironmentContext getInstance() {
-        EnvironmentContext localInstance = instance;
-        if (localInstance == null) {
-            synchronized (EnvironmentContext.class) {
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance;
-                    localInstance = new EnvironmentContext();
-                }
-            }
-        }
-        return localInstance;
+        return SingletonHolder.INSTANCE;
     }
 
     /**

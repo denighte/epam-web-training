@@ -2,6 +2,7 @@ package by.radchuk.task2.context;
 
 import by.radchuk.task2.entity.CurrencyType;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 
@@ -14,6 +15,7 @@ public final class ExchangeRateTable {
     /**
      * order of currencies in the table.
      */
+    @Getter
     private final String[] currencyOrder;
     /**
      * currency adjacency map.

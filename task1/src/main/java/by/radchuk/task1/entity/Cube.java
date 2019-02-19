@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Cube extends GeometryObject {
+public abstract class Cube extends GeometryObject {
     /**
      * Cube constructor.
      * @param name name of the object.

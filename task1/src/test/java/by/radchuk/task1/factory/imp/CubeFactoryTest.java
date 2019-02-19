@@ -1,14 +1,15 @@
 package by.radchuk.task1.factory.imp;
 
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
 import by.radchuk.task1.entity.Cube;
 import by.radchuk.task1.entity.Point;
 import by.radchuk.task1.exception.GeometryException;
 import by.radchuk.task1.factory.FigureFactory;
 import by.radchuk.task1.factory.impl.CubeFactory;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 
 public class CubeFactoryTest {
     private FigureFactory<Cube> factory;

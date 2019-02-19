@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Point extends GeometryObject {
+public abstract class Point extends GeometryObject {
     /**
      * Point constructor.
      * @param name name of the object

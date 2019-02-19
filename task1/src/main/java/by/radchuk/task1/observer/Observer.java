@@ -4,7 +4,7 @@ package by.radchuk.task1.observer;
  * observer interface.
  * gets notified every time when observable changes.
  */
-public interface IObserver {
+public interface Observer {
     /**
      * called every time an object changes.
      * @param id object id.

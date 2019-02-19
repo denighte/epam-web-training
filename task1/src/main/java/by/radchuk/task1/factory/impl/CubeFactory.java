@@ -1,17 +1,15 @@
 package by.radchuk.task1.factory.impl;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import by.radchuk.task1.entity.Cube;
-import by.radchuk.task1.entity.CubeData;
 import by.radchuk.task1.entity.Point;
-import by.radchuk.task1.entity.ext.CheckedCube;
 import by.radchuk.task1.exception.GeometryException;
 import by.radchuk.task1.factory.FigureFactory;
-import by.radchuk.task1.repository.FigureRepository;
 import by.radchuk.task1.validator.FigureValidator;
 import by.radchuk.task1.validator.impl.CubeValidator;
 import lombok.extern.slf4j.Slf4j;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Factory method.
@@ -19,10 +17,6 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public class CubeFactory implements FigureFactory<Cube> {
-    /**
-     * repository reference.
-     */
-    private FigureRepository<Cube, CubeData> repository;
     /**
      * name regex group.
      */

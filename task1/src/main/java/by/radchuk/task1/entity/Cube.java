@@ -1,10 +1,8 @@
 
 package by.radchuk.task1.entity;
 
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 
 /**
  * entity class.
@@ -37,11 +35,12 @@ public class Cube extends GeometryObject {
         centerPoint = cube.centerPoint;
         edgeLength = cube.edgeLength;
     }
+    
     /**
      * the center point of three-dimensional cube.
      */
-    @Setter(AccessLevel.PROTECTED)
     private Point centerPoint;
+    
     /**
      * edge length of the cube.
      */

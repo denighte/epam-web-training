@@ -1,7 +1,6 @@
 package by.radchuk.task1.repository.impl;
 
 import by.radchuk.task1.entity.Cube;
-import by.radchuk.task1.entity.CubeData;
 import by.radchuk.task1.factory.FigureFactory;
 import by.radchuk.task1.factory.imp.CubeFactoryTest;
 import by.radchuk.task1.factory.impl.RepositoryCubeFactory;

@@ -1,8 +1,6 @@
 package by.radchuk.task1.factory.imp;
 
 import by.radchuk.task1.entity.Point;
-import by.radchuk.task1.entity.ext.ObservableCube;
-import by.radchuk.task1.entity.ext.ObservablePoint;
 import by.radchuk.task1.exception.GeometryException;
 import by.radchuk.task1.factory.FigureFactory;
 import by.radchuk.task1.factory.impl.PointFactory;

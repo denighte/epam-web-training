@@ -1,12 +1,9 @@
 package by.radchuk.task1.factory.impl;
 
 import by.radchuk.task1.entity.Cube;
-import by.radchuk.task1.entity.CubeData;
 import by.radchuk.task1.entity.Point;
-import by.radchuk.task1.entity.ext.CheckedCube;
 import by.radchuk.task1.exception.GeometryException;
 import by.radchuk.task1.factory.FigureFactory;
-import by.radchuk.task1.repository.FigureRepository;
 import by.radchuk.task1.validator.FigureValidator;
 import by.radchuk.task1.validator.impl.CubeValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +16,6 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public class CubeFactory implements FigureFactory<Cube> {
-    /**
-     * repository reference.
-     */
-    private FigureRepository<Cube, CubeData> repository;
     /**
      * name regex group.
      */
@@ -61,7 +54,7 @@ public class CubeFactory implements FigureFactory<Cube> {
      * @return cube instance
      */
     @Override
-    public Cube createFigure(final String data) {
+    public Cube createFigure(final String data) throws GeometryException {
         String formatData = data.replaceAll("\\s+", "");
 
         Matcher matcher = CUBE_PATTERN.matcher(formatData);
@@ -82,9 +75,9 @@ public class CubeFactory implements FigureFactory<Cube> {
 
         Cube cube = new Cube(
                 matcher.group(NAME_GROUP),
-                new Point(matcher.group(NAME_GROUP), x, y, z),
+                new Point(matcher.group(NAME_GROUP), x, y, z) { },
                 edgeLength
-        );
+        ) { };
 
         FigureValidator<Cube> validator = new CubeValidator();
         if (!validator.validate(cube)) {

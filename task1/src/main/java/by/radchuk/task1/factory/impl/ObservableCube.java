@@ -1,10 +1,10 @@
-package by.radchuk.task1.entity.ext;
+package by.radchuk.task1.factory.impl;
 
 import by.radchuk.task1.entity.Cube;
 import by.radchuk.task1.entity.Point;
-import by.radchuk.task1.observer.IObservable;
-import by.radchuk.task1.observer.IObserver;
-import lombok.EqualsAndHashCode;
+import by.radchuk.task1.exception.GeometryException;
+import by.radchuk.task1.observer.Observable;
+import by.radchuk.task1.observer.Observer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -17,21 +17,20 @@ import lombok.extern.slf4j.Slf4j;
  * @author Dmitry Radchuk
  */
 @Slf4j
-@EqualsAndHashCode(callSuper = true)
-public class ObservableCube extends CheckedCube
-        implements IObservable, IObserver {
+class ObservableCube extends CheckedCube
+        implements Observable, Observer {
     /**
      * observer reference.
      */
     @Setter
     @Getter
-    private IObserver observer;
+    private Observer observer;
 
     /**
      * ObservableCube decorator constructor.
      * @param cube base class.
      */
-    public ObservableCube(final Cube cube) {
+    ObservableCube(final Cube cube) {
         super(cube);
     }
 
@@ -40,7 +39,7 @@ public class ObservableCube extends CheckedCube
      * @param point
      */
     @Override
-    public void setCenterPoint(final Point point) {
+    public void setCenterPoint(final Point point) throws GeometryException {
         super.setCenterPoint(point);
     }
     /**
@@ -70,7 +69,7 @@ public class ObservableCube extends CheckedCube
      * @param length new edge length of the cube.
      */
     @Override
-    public void setEdgeLength(final double length) {
+    public void setEdgeLength(final double length) throws GeometryException {
         super.setEdgeLength(length);
         log.debug(
                 "Cube with id={} edge length has been changed,"

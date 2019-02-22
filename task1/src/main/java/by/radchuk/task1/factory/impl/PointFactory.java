@@ -45,7 +45,7 @@ public class PointFactory implements FigureFactory<Point> {
      * @return point instance
      */
     @Override
-    public Point createFigure(final String data) {
+    public Point createFigure(final String data) throws GeometryException {
         String formatData = data.replaceAll("\\s+", "");
 
         Matcher matcher = POINT_PATTERN.matcher(formatData);
@@ -63,6 +63,6 @@ public class PointFactory implements FigureFactory<Point> {
         double y = Double.parseDouble(matcher.group(Y_GROUP));
         double z = Double.parseDouble(matcher.group(Z_GROUP));
 
-        return new Point(matcher.group(NAME_GROUP), x, y, z);
+        return new Point(matcher.group(NAME_GROUP), x, y, z) { };
     }
 }

@@ -1,10 +1,9 @@
 
 package by.radchuk.task1.entity;
 
-import lombok.AccessLevel;
+import by.radchuk.task1.exception.GeometryException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 
 /**
  * entity class.
@@ -16,16 +15,16 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = true)
 public class Cube extends GeometryObject {
     /**
-     * Cube constructor.
+     * protected Cube constructor to prevent unchecked instance creation.
      * @param name name of the object.
      * @param center the center point of three-dimensional cube.
      * @param edge edge length of the cube.
      */
-    public Cube(final String name,
+    protected Cube(final String name,
                           final Point center, final double edge) {
         super(name);
-        this.centerPoint = center;
-        this.edgeLength = edge;
+        centerPoint = center;
+        edgeLength = edge;
     }
 
     /**
@@ -40,12 +39,31 @@ public class Cube extends GeometryObject {
     /**
      * the center point of three-dimensional cube.
      */
-    @Setter(AccessLevel.PROTECTED)
     private Point centerPoint;
     /**
      * edge length of the cube.
      */
     private double edgeLength;
+
+    /**
+     * special edge length setter to prevent unchecked changes.
+     * @param length new edge length.
+     * @throws GeometryException throw in case of an incorrect data change.
+     */
+    public void setEdgeLength(final double length)
+            throws GeometryException {
+        edgeLength = length;
+    }
+
+    /**
+     * special center point setter to prevent unchecked changes.
+     * @param point new center point
+     * @throws GeometryException throw in case of an incorrect data change.
+     */
+    protected void setCenterPoint(final Point point)
+            throws GeometryException {
+        centerPoint = point;
+    }
 }
 
 

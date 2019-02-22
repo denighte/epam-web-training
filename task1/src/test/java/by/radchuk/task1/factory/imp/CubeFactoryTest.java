@@ -19,27 +19,27 @@ public class CubeFactoryTest {
                 {
                     "cube1: {(1, 1, 1), 5}",
                     new Cube("cube1",
-                            new Point("cube1",1, 1, 1), 5)
+                            new Point("cube1",1, 1, 1){}, 5){}
                 },
                 {
                     "a:{(3,-2,1.1),   3.3}  ",
                     new Cube("a",
-                            new Point("a", 3, -2, 1.1), 3.3)
+                            new Point("a", 3, -2, 1.1){}, 3.3){}
                 },
                 {
                     "cube3: {(-1.5, -1.6, 1), 8.8}",
                     new Cube("cube3",
-                            new Point("cube3", -1.5, -1.6, 1), 8.8)
+                            new Point("cube3", -1.5, -1.6, 1){}, 8.8){}
                 },
                 {
                         "cube4: {(0.5, -1.5, 1), 4}",
                         new Cube("cube4",
-                                new Point("cube4", 0.5, -1.5, 1), 4)
+                                new Point("cube4", 0.5, -1.5, 1){}, 4){}
                 },
                 {
                         "cube5: {(0.8, 2, -10), 4.5}",
                         new Cube("cube5",
-                                new Point("cube5", 0.8, 2, -10), 4.5)
+                                new Point("cube5", 0.8, 2, -10){}, 4.5){}
                 }
         };
     }
@@ -65,14 +65,16 @@ public class CubeFactoryTest {
     }
 
     @Test(dataProvider = "generalTestProvider")
-    public void generalTest(String data, Cube expected) {
+    public void generalTest(String data, Cube expected) throws GeometryException{
         Cube actual = factory.createFigure(data);
         Assert.assertEquals(actual, expected);
     }
 
     @Test(dataProvider = "exceptionTestProvider", expectedExceptions = {GeometryException.class})
-    public void exceptionTest(String data) {
+    public void exceptionTest(String data) throws GeometryException{
         Cube cube = factory.createFigure(data);
         Assert.fail();
     }
+
+
 }

@@ -1,4 +1,4 @@
-package by.radchuk.task1.entity;
+package by.radchuk.task1.repository.impl;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Data
 @Slf4j
-public class CubeData {
+class CubeData {
     /**
      * surface area of the cube.
      */

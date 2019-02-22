@@ -1,9 +1,7 @@
 package by.radchuk.task1.factory.impl;
 
 import by.radchuk.task1.entity.Cube;
-import by.radchuk.task1.entity.CubeData;
-import by.radchuk.task1.entity.ext.ObservableCube;
-import by.radchuk.task1.entity.ext.ObservablePoint;
+import by.radchuk.task1.exception.GeometryException;
 import by.radchuk.task1.repository.FigureRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +25,7 @@ public class RepositoryCubeFactory extends CubeFactory {
      */
     @Setter
     @Getter
-    private FigureRepository<Cube, CubeData> repository;
+    private FigureRepository<Cube> repository;
 
     /**
      * creates cube instance from a string with data.
@@ -36,9 +34,10 @@ public class RepositoryCubeFactory extends CubeFactory {
      * @return cube instance
      */
     @Override
-    public Cube createFigure(final String data) {
+    public Cube createFigure(final String data) throws GeometryException {
         ObservableCube cube = new ObservableCube(super.createFigure(data));
-        ObservablePoint centerPoint = new ObservablePoint(cube.getCenterPoint());
+        ObservablePoint centerPoint =
+                new ObservablePoint(cube.getCenterPoint());
         cube.setCenterPoint(centerPoint);
         centerPoint.setObserver(cube);
         cube.setObserver(repository);

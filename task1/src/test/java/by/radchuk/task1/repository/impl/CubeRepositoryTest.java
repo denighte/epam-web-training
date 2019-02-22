@@ -1,7 +1,7 @@
 package by.radchuk.task1.repository.impl;
 
 import by.radchuk.task1.entity.Cube;
-import by.radchuk.task1.entity.CubeData;
+import by.radchuk.task1.exception.GeometryException;
 import by.radchuk.task1.factory.FigureFactory;
 import by.radchuk.task1.factory.imp.CubeFactoryTest;
 import by.radchuk.task1.factory.impl.RepositoryCubeFactory;
@@ -12,7 +12,7 @@ import org.testng.annotations.*;
 
 @Slf4j
 public class CubeRepositoryTest {
-    private FigureRepository<Cube, CubeData> repository;
+    private FigureRepository<Cube> repository;
     private FigureFactory<Cube> factory;
     @BeforeClass
     public void init() {
@@ -21,7 +21,7 @@ public class CubeRepositoryTest {
     }
 
     @Test(dataProvider = "generalTestProvider", dataProviderClass = CubeFactoryTest.class)
-    void addTest(String data, Cube ignore) {
+    void addTest(String data, Cube ignore) throws GeometryException {
         Cube actual = factory.createFigure(data);
         Assert.assertEquals(actual, repository.find(actual::equals));
     }

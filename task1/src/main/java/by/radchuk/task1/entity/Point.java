@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class Point extends GeometryObject {
     /**
-     * Point constructor.
+     * protected Point constructor to prevent unchecked instance creation.
      * @param name name of the object
      * @param newX x axis coordinate.
      * @param newY y axis coordinate.
      * @param newZ z axis coordinate.
      */
-    public Point(final String name,
+    protected Point(final String name,
                  final double newX,
                  final double newY,
                  final double newZ) {

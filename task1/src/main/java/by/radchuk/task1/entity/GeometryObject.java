@@ -1,6 +1,7 @@
 package by.radchuk.task1.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode
 public abstract class GeometryObject {
     /**
      * GeometryObject constructor.

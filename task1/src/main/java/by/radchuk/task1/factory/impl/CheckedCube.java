@@ -1,4 +1,4 @@
-package by.radchuk.task1.entity.ext;
+package by.radchuk.task1.factory.impl;
 
 import by.radchuk.task1.entity.Cube;
 import by.radchuk.task1.exception.GeometryException;
@@ -7,11 +7,11 @@ import by.radchuk.task1.validator.impl.CubeValidator;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Cube decorator
+ * Cube decorator.
  * validates every change of the cube for correctness.
  */
 @Slf4j
-public class CheckedCube extends Cube {
+class CheckedCube extends Cube {
     /**
      * Cube validator.
      */
@@ -21,7 +21,7 @@ public class CheckedCube extends Cube {
      * CheckedCube decorator constructor.
      * @param cube base class
      */
-    public CheckedCube(final Cube cube) {
+    CheckedCube(final Cube cube) {
         super(cube);
     }
 
@@ -30,15 +30,19 @@ public class CheckedCube extends Cube {
      * @param edgeLength edge length
      */
     @Override
-    public void setEdgeLength(final double edgeLength) {
+    public void setEdgeLength(final double edgeLength)
+            throws GeometryException {
+
         if (!validator.validate(this)) {
             log.warn(
                     "try to set invalid edge length in cube with id={}",
                     this.getId());
             throw new GeometryException(validator.getStatusMessage());
         }
+
         super.setEdgeLength(edgeLength);
     }
+
 }
 
 

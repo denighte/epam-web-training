@@ -1,6 +1,7 @@
 package by.radchuk.task1.factory;
 
 import by.radchuk.task1.entity.GeometryObject;
+import by.radchuk.task1.exception.GeometryException;
 
 /**
  * factory method class.
@@ -12,6 +13,7 @@ public interface FigureFactory<T extends GeometryObject> {
      * creates cube instance from a string with data.
      * @param data cube data.
      * @return cube instance.
+     * @throws GeometryException in case data is incorrect.
      */
-    T createFigure(String data);
+    T createFigure(String data) throws GeometryException;
 }

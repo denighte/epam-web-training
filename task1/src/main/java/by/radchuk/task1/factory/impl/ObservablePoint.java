@@ -1,9 +1,8 @@
-package by.radchuk.task1.entity.ext;
+package by.radchuk.task1.factory.impl;
 
 import by.radchuk.task1.entity.Point;
-import by.radchuk.task1.observer.IObservable;
-import by.radchuk.task1.observer.IObserver;
-import lombok.EqualsAndHashCode;
+import by.radchuk.task1.observer.Observable;
+import by.radchuk.task1.observer.Observer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,19 +15,18 @@ import lombok.extern.slf4j.Slf4j;
  * @author Dmitry Radchuk
  */
 @Slf4j
-@EqualsAndHashCode(callSuper = true)
-public class ObservablePoint extends Point implements IObservable {
+class ObservablePoint extends Point implements Observable {
     /**
      * observer reference.
      */
     @Setter
     @Getter
-    private IObserver observer;
+    private Observer observer;
     /**
      * ObservablePoint decorator constuctor.
      * @param point base class.
      */
-    public ObservablePoint(final Point point) {
+    ObservablePoint(final Point point) {
         super(point);
     }
     /**

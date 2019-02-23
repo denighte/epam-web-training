@@ -1,10 +1,10 @@
 package by.radchuk.task1.factory.imp;
 
 import by.radchuk.task1.entity.Cube;
-import by.radchuk.task1.entity.Point;
 import by.radchuk.task1.exception.GeometryException;
 import by.radchuk.task1.factory.FigureFactory;
 import by.radchuk.task1.factory.impl.CubeFactory;
+import by.radchuk.task1.util.TestComparator;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -18,29 +18,40 @@ public class CubeFactoryTest {
         return new Object[][]{
                 {
                     "cube1: {(1, 1, 1), 5}",
-                    new Cube("cube1",
-                            new Point("cube1",1, 1, 1){}, 5){}
+                        "cube1", 1, 1, 1, 5
                 },
                 {
                     "a:{(3,-2,1.1),   3.3}  ",
-                    new Cube("a",
-                            new Point("a", 3, -2, 1.1){}, 3.3){}
+                    "a", 3, -2, 1.1, 3.3
                 },
                 {
                     "cube3: {(-1.5, -1.6, 1), 8.8}",
-                    new Cube("cube3",
-                            new Point("cube3", -1.5, -1.6, 1){}, 8.8){}
+                        "cube3", -1.5, -1.6, 1, 8.8
                 },
                 {
                         "cube4: {(0.5, -1.5, 1), 4}",
-                        new Cube("cube4",
-                                new Point("cube4", 0.5, -1.5, 1){}, 4){}
+                        "cube4", 0.5, -1.5, 1, 4
                 },
                 {
                         "cube5: {(0.8, 2, -10), 4.5}",
-                        new Cube("cube5",
-                                new Point("cube5", 0.8, 2, -10){}, 4.5){}
-                }
+                        "cube5", 0.8, 2, -10, 4.5
+                },
+                {
+                        "cube6: {(1.4, 1, -1), 15.5}",
+                        "cube6", 1.4, 1, -1, 15.5
+                },
+                {
+                        "cube7: {(3582.99, -2857, 1.111111111),   3.6}  ",
+                        "cube7", 3582.99, -2857, 1.111111111, 3.6
+                },
+                {
+                        "cube8: {(-1.55, -186, 10.11), 345}",
+                        "cube8", -1.55, -186, 10.11, 345
+                },
+                {
+                        "cube9: {(0.85, 1555, -84.57), 71.1}",
+                        "cube9", 0.85, 1555, -84.57, 71.1
+                },
         };
     }
 
@@ -65,9 +76,14 @@ public class CubeFactoryTest {
     }
 
     @Test(dataProvider = "generalTestProvider")
-    public void generalTest(String data, Cube expected) throws GeometryException{
+    public void generalTest(
+            String data,
+            String name,
+            double x, double y, double z,
+            double edgeLength)
+            throws GeometryException {
         Cube actual = factory.createFigure(data);
-        Assert.assertEquals(actual, expected);
+        Assert.assertTrue(TestComparator.compareCube(actual, name, x, y, z, edgeLength));
     }
 
     @Test(dataProvider = "exceptionTestProvider", expectedExceptions = {GeometryException.class})

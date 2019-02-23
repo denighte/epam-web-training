@@ -1,0 +1,9 @@
+<suite name="Suite">
+    <test name="test">
+        <parameter name="readerTestFile" value="src/test/resources/data/reader_test_data.txt"/>
+        <parameter name="integrationTestFile" value="src/test/resources/data/integration_test_data.txt"/>
+        <classes>
+            <class name="by.radchuk.task1.reader.impl.CubeReaderTest" />
+        </classes>
+    </test>
+</suite>

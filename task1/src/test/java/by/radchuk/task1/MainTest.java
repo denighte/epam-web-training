@@ -4,7 +4,6 @@ import by.radchuk.task1.entity.Cube;
 import by.radchuk.task1.factory.FigureFactory;
 import by.radchuk.task1.factory.impl.CubeFactory;
 import by.radchuk.task1.factory.impl.RepositoryCubeFactory;
-import by.radchuk.task1.repository.impl.CubeRepository;
 import org.testng.annotations.Test;
 
 import java.util.function.Predicate;

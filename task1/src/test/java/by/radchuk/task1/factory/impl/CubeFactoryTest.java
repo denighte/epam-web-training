@@ -1,9 +1,8 @@
-package by.radchuk.task1.factory.imp;
+package by.radchuk.task1.factory.impl;
 
 import by.radchuk.task1.entity.Cube;
 import by.radchuk.task1.exception.GeometryException;
 import by.radchuk.task1.factory.FigureFactory;
-import by.radchuk.task1.factory.impl.CubeFactory;
 import by.radchuk.task1.util.TestComparator;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -89,7 +88,6 @@ public class CubeFactoryTest {
     @Test(dataProvider = "exceptionTestProvider", expectedExceptions = {GeometryException.class})
     public void exceptionTest(String data) throws GeometryException{
         Cube cube = factory.createFigure(data);
-        Assert.fail();
     }
 
 

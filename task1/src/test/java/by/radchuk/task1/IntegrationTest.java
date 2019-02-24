@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 import java.util.function.Predicate;
 
-public class MainTest {
+public class IntegrationTest {
     @Test
     void test() {
 

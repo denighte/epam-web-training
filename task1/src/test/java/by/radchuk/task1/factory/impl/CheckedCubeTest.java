@@ -1,9 +1,8 @@
-package by.radchuk.task1.factory.imp;
+package by.radchuk.task1.factory.impl;
 
 import by.radchuk.task1.entity.Cube;
 import by.radchuk.task1.exception.GeometryException;
 import by.radchuk.task1.factory.FigureFactory;
-import by.radchuk.task1.factory.impl.CubeFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -21,7 +20,7 @@ public class CheckedCubeTest {
         cube.setEdgeLength(0);
     }
 
-    @Test
+    @Test(expectedExceptions = {GeometryException.class})
     public void setEdgeLengthNegativeTest() throws GeometryException {
         Cube cube = factory.createFigure("Cube: {(1, -1, 1.55), 15}");
         cube.setEdgeLength(-5);

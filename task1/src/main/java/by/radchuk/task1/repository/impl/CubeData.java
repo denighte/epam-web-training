@@ -1,14 +1,17 @@
 package by.radchuk.task1.repository.impl;
 
+import by.radchuk.task1.entity.CubeParameters;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * contains cube computable data.
  */
 @Data
-@Slf4j
-class CubeData {
+class CubeData implements CubeParameters {
+    /**
+     * data id.
+     */
+    private int id;
     /**
      * surface area of the cube.
      */
@@ -19,6 +22,9 @@ class CubeData {
     private double volume;
     /**
      * cube axis cut ratio.
+     * contains octant volume ratio.
+     * first element of the array - first octant
+     * ... and so on.
      */
     private double[] axisCutVolumeRatio;
     /**

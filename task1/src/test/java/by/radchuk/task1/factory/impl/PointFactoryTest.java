@@ -1,9 +1,8 @@
-package by.radchuk.task1.factory.imp;
+package by.radchuk.task1.factory.impl;
 
 import by.radchuk.task1.entity.Point;
 import by.radchuk.task1.exception.GeometryException;
 import by.radchuk.task1.factory.FigureFactory;
-import by.radchuk.task1.factory.impl.PointFactory;
 import by.radchuk.task1.util.TestComparator;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -53,7 +52,6 @@ public class PointFactoryTest {
             expectedExceptions = {GeometryException.class})
     public void exceptionTest(String data) throws GeometryException {
         Point point = factory.createFigure(data);
-        Assert.fail();
     }
 
 

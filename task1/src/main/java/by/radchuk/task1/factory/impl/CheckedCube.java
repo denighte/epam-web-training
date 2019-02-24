@@ -33,14 +33,14 @@ class CheckedCube extends Cube {
     public void setEdgeLength(final double edgeLength)
             throws GeometryException {
 
+        super.setEdgeLength(edgeLength);
+
         if (!validator.validate(this)) {
             log.warn(
                     "try to set invalid edge length in cube with id={}",
                     this.getId());
             throw new GeometryException(validator.getStatusMessage());
         }
-
-        super.setEdgeLength(edgeLength);
     }
 
 }

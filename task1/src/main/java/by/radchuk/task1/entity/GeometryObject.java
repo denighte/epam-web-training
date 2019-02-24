@@ -1,5 +1,6 @@
 package by.radchuk.task1.entity;
 
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

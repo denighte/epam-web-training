@@ -1,9 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
 <suite name="Suite">
-    <test name="test">
+    <test name="test" preserve-order="true">
         <parameter name="readerTestFile" value="src/test/resources/data/reader_test_data.txt"/>
         <parameter name="integrationTestFile" value="src/test/resources/data/integration_test_data.txt"/>
         <classes>
+            <class name="by.radchuk.task1.factory.impl.PointFactoryTest" />
+            <class name="by.radchuk.task1.factory.impl.CubeFactoryTest" />
+            <class name="by.radchuk.task1.validator.impl.CubeValidatorTest" />
+            <class name="by.radchuk.task1.factory.impl.CheckedCubeTest" />
+            <class name="by.radchuk.task1.action.CubeMathTest" />
             <class name="by.radchuk.task1.reader.impl.CubeReaderTest" />
+            <class name="by.radchuk.task1.repository.impl.CubeRepositoryTest" />
         </classes>
     </test>
 </suite>

@@ -20,7 +20,7 @@ public interface CubeParameters {
      * check if cube stands on coordinate plane.
      * @return true, if stands, otherwise false.
      */
-    double isOnCoordinatePlane();
+    boolean isOnCoordinatePlane();
 
     /**
      * get cube axis cut ratio.

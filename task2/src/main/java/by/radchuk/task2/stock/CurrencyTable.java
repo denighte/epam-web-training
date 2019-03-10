@@ -32,6 +32,15 @@ final class CurrencyTable {
      */
     private static final Map<Currency, Map<Currency, Double>> MAP
             = new HashMap<>();
+
+    /**
+     * currency adjacency map getter.
+     * @return currency adjacency map.
+     */
+    public Map<Currency, Map<Currency, Double>> getTable() {
+        return MAP;
+    }
+
     /**
      * adjacency map constructor.
      */

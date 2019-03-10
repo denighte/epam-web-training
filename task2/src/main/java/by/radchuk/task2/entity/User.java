@@ -4,6 +4,8 @@ import by.radchuk.task2.exception.ExchangeException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -25,7 +27,7 @@ public class User {
      * value - amount of the currency.
      */
     @Getter
-    private final Map<Currency, Double> currencyMap;
+    private final Map<Currency, BigDecimal> currencyMap;
     /**
      * locker for atomic operations.
      */
@@ -38,10 +40,11 @@ public class User {
      * @param values currency pairs array.
      * @param userId user unique id.
      */
-    public User(final long userId, final Pair<Currency, Double>[] values) {
+    public User(final long userId,
+                final List<Pair<Currency, BigDecimal>> values) {
         id = userId;
         currencyMap = new ConcurrentHashMap<>();
-        for (Pair<Currency, Double> pair : values) {
+        for (Pair<Currency, BigDecimal> pair : values) {
             currencyMap.put(pair.getKey(), pair.getValue());
         }
     }
@@ -51,14 +54,15 @@ public class User {
      * @param value currency pair.
      * @throws ExchangeException throws in case negative balance / wrong op.
      */
-    public void reduceBalance(final Pair<Currency, Double> value)
+    public void reduceBalance(final Pair<Currency, BigDecimal> value)
             throws ExchangeException {
-        if (value.getValue() < 0) {
+        if (value.getValue().compareTo(BigDecimal.ZERO) < 0) {
             throw new ExchangeException("Trying to reduce negative value!");
         }
         lock.lock();
-        double newBalance = currencyMap.get(value.getKey()) - value.getValue();
-        if (newBalance < 0) {
+        BigDecimal newBalance
+                = currencyMap.get(value.getKey()).subtract(value.getValue());
+        if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
             lock.unlock();
             log.debug("User with id={} don't have enough money, tr error", id);
             throw new ExchangeException("Not enough money!");
@@ -73,13 +77,14 @@ public class User {
      * @param value currency pair.
      * @throws ExchangeException throws in case negative balance / wrong op.
      */
-    public void rechargeBalance(final Pair<Currency, Double> value)
+    public void rechargeBalance(final Pair<Currency, BigDecimal> value)
             throws ExchangeException {
-        if (value.getValue() < 0) {
+        if (value.getValue().compareTo(BigDecimal.ZERO) < 0) {
             throw new ExchangeException("Trying to reduce negative value!");
         }
         lock.lock();
-        double newBalance = currencyMap.get(value.getKey()) + value.getValue();
+        BigDecimal newBalance
+                = currencyMap.get(value.getKey()).add(value.getValue());
         currencyMap.put(value.getKey(), newBalance);
         lock.unlock();
     }

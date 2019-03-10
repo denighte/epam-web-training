@@ -6,17 +6,19 @@ import by.radchuk.task1.entity.CubeParameters;
 import by.radchuk.task1.repository.FigureRepository;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Comparator;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Comparator;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
  * contains cube instances in a hash map.
- * reevaluates their data every time they change.
+ * contains pre calculated data of the cubes.
+ * reevaluates cube data every time it changes.
  */
 @Slf4j
 public class CubeRepository implements FigureRepository<Cube> {
@@ -72,12 +74,14 @@ public class CubeRepository implements FigureRepository<Cube> {
      */
     @Override
     public void remove(final Predicate<Cube> condition) {
-        for (Cube cube : idToCubeMap.values()) {
+        for (Iterator<Cube> iterator = idToCubeMap.values().iterator();
+             iterator.hasNext();) {
+            Cube cube = iterator.next();
             if (condition.test(cube)) {
+                iterator.remove();
                 remove(cube.getId());
             }
         }
-
     }
 
     /**
@@ -91,9 +95,25 @@ public class CubeRepository implements FigureRepository<Cube> {
     }
 
     /**
+     * remove cube by cube parameters.
+     * @param condition predicate, return true if cube fits, otherwise false.
+     */
+    public void removeByParameters(
+            final Predicate<CubeParameters> condition) {
+        for (Iterator<CubeData> iterator = idToDataMap.values().iterator();
+             iterator.hasNext();) {
+            CubeData data = iterator.next();
+            if (condition.test(data)) {
+                iterator.remove();
+                remove(data.getId());
+            }
+        }
+    }
+
+    /**
      * find cube by id.
      * @param id id of the object.
-     * @return
+     * @return cube matching condition.
      */
     @Override
     public Cube find(final int id) {

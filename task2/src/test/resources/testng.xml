@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Suite">
+    <test name="test" preserve-order="true">
+        <parameter name="readerTestFile" value="src/test/resources/data/data.txt"/>
+        <classes>
+            <class name="by.radchuk.task2.entity.User" />
+            <class name="by.radchuk.task2.factory.UserFactory" />
+            <class name="by.radchuk.task2.context.EnvironmentContextTest" />
+        </classes>
+    </test>
+</suite>

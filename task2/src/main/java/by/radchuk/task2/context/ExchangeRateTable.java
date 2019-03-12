@@ -1,7 +1,9 @@
 package by.radchuk.task2.context;
 
 import by.radchuk.task2.entity.CurrencyType;
+import lombok.AllArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,43 +11,31 @@ import java.util.Map;
  * CurrencyType table.
  * Contains information about exchange rates.
  */
-final class ExchangeRateTable {
+@AllArgsConstructor
+public final class ExchangeRateTable {
     /**
-     * Singleton holder.
+     * order of currencies in the table.
      */
-    public static class SingletonHolder {
-        /**
-         * Singleton holder.
-         */
-        public static final ExchangeRateTable HOLDER_INSTANCE = new ExchangeRateTable();
-    }
-
-    /**
-     * Singleton.
-     * @return Singleton instance.
-     */
-    public static ExchangeRateTable getInstance() {
-        return SingletonHolder.HOLDER_INSTANCE;
-    }
+    private final String[] currencyOrder;
     /**
      * currency adjacency map.
      */
-    private static final Map<CurrencyType, Map<CurrencyType, Double>> MAP
-            = new HashMap<>();
-
+    private final BigDecimal[][] table;
     /**
      * currency adjacency map getter.
      * @return currency adjacency map.
      */
-    public Map<CurrencyType, Map<CurrencyType, Double>> getTable() {
-        return MAP;
-    }
-
-    /**
-     * adjacency map constructor.
-     */
-    private ExchangeRateTable() {
-        //TODO: init map
+    public BigDecimal getRate(CurrencyType type, CurrencyType toType) {
+        for(int i = 0; i < currencyOrder.length; ++i) {
+            if (currencyOrder[i].equals(type.toString())) {
+                for(int j = 0; j < currencyOrder.length; ++j) {
+                    if (currencyOrder[j].equals(toType.toString())) {
+                        return table[i][j];
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }

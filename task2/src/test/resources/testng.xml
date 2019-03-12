@@ -8,6 +8,7 @@
             <class name="by.radchuk.task2.entity.User" />
             <class name="by.radchuk.task2.factory.UserFactory" />
             <class name="by.radchuk.task2.context.EnvironmentContextTest" />
+            <class name="by.radchuk.task2.stock.TransactionTest" />
         </classes>
     </test>
 </suite>

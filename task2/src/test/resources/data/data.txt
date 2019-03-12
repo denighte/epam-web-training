@@ -1,5 +1,5 @@
-    US     EUR      BYN
-US  1      0.885    2.127
+    USD     EUR      BYN
+USD 1      0.885    2.127
 EUR 1.13   1        2.41
 BYN 0.47   0.42     1
 user_number = 5

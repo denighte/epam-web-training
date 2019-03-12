@@ -26,9 +26,9 @@ public class UserValidator {
         for (CurrencyType type : CurrencyType.values()) {
             if (user.getCurrency(type)
                     .getAmount()
-                    .compareTo(BigDecimal.ZERO) <= 0) {
+                    .compareTo(BigDecimal.ZERO) < 0) {
                 statusMessage = "Currency amount can't be less than zero!";
-                log.debug("User validation failed with status message={}",
+                log.debug("User validation failed with status message='{}'",
                         statusMessage);
                 return false;
             }

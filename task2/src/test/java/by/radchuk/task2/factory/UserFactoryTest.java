@@ -53,7 +53,7 @@ public class UserFactoryTest {
     Object[][] exceptionTestProvider() {
         return new Object[][] {
                 {"{id:1.1, USD:100, EUR:50, BYN:40.5}"},
-                {"{id:2, USD:0, EUR:0, BYN:0}"},
+                {"{id:2, USD:0, EUR:-0.1, BYN:0}"},
                 {"{id:3, EUR:100, EUR:50, BYN:40.5}"},
                 {"{id:4, USD:0123, EUR:0000, BYN:0045}"}
 

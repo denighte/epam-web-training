@@ -41,7 +41,6 @@ public final class EnvironmentContext {
             synchronized (EnvironmentContext.class) {
                 localInstance = instance;
                 if (localInstance == null) {
-                    log.info("Initializing environment context ...");
                     instance = localInstance;
                     localInstance = new EnvironmentContext();
                 }

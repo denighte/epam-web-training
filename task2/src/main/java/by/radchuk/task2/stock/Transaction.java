@@ -51,6 +51,12 @@ class Transaction implements Callable<BigDecimal> {
                 table.getRate(buyerCurrencyType, sellerCurrencyType)
         );
         Thread.sleep((int) (Math.random() * context.getMaxTransactionDelay()));
+
+        Currency oldBuyerBalance
+                = new Currency(buyer.getCurrency(buyerCurrencyType));
+        Currency oldSellerBalance
+                = new Currency(seller.getCurrency(sellerCurrencyType));
+
         try {
             buyer.changeBalance(
                     new Currency(buyerCurrencyType, toBuy.negate())
@@ -62,7 +68,9 @@ class Transaction implements Callable<BigDecimal> {
             log.error("Transaction between Users, with id_1={} "
                             + "and id_2={} failed!",
                     seller.getId(), buyer.getId());
-            toSell = BigDecimal.ZERO;
+            buyer.setCurrency(oldBuyerBalance);
+            seller.setCurrency(oldSellerBalance);
+            return BigDecimal.ZERO;
         }
         seller.changeBalance(new Currency(buyerCurrencyType, toBuy));
         return toSell;

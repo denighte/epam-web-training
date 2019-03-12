@@ -24,7 +24,7 @@ public class TransactionTest {
         buyer = factory.create("{id: 2, USD: 5.511, EUR: 10, BYN: 10}");
     }
 
-    @Test
+    @Test(dependsOnMethods = {"lessThanZeroTest"})
     void sameCurrencyTest() throws Exception {
         FutureTask<BigDecimal> task = new FutureTask<>(
           new Transaction(
@@ -40,7 +40,7 @@ public class TransactionTest {
         Assert.assertEquals(seller.getCurrency(CurrencyType.USD).getAmount(), new BigDecimal("10.499"));
     }
 
-    @Test
+    @Test(dependsOnMethods = {"sameCurrencyTest"})
     void differentCurrencyTest() throws Exception {
         FutureTask<BigDecimal> task = new FutureTask<>(
                 new Transaction(
@@ -54,5 +54,22 @@ public class TransactionTest {
         new Thread(task).start();
         task.get();
         Assert.assertEquals(seller.getCurrency(CurrencyType.USD).getAmount(), new BigDecimal("9.369"));
+    }
+
+    @Test
+    void lessThanZeroTest() throws Exception {
+        FutureTask<BigDecimal> task = new FutureTask<>(
+                new Transaction(
+                        seller,
+                        buyer,
+                        CurrencyType.USD,
+                        CurrencyType.EUR,
+                        new BigDecimal("10")
+                )
+        );
+        new Thread(task).start();
+        task.get();
+        Assert.assertEquals(seller.getCurrency(CurrencyType.USD).getAmount(), new BigDecimal("10.499"));
+        Assert.assertEquals(buyer.getCurrency(CurrencyType.EUR).getAmount(), new BigDecimal("10"));
     }
 }

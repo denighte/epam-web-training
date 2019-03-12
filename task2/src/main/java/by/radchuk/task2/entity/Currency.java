@@ -14,9 +14,17 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 public class Currency {
     /**
+     * copy constructor.
+     */
+    public Currency(Currency currency) {
+        this.type = currency.type;
+        this.amount = currency.amount;
+    }
+    /**
      * currency type.
      */
     private CurrencyType type;
+
     /**
      * currency amount.
      */

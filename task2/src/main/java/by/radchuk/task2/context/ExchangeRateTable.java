@@ -4,8 +4,6 @@ import by.radchuk.task2.entity.CurrencyType;
 import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * CurrencyType table.
@@ -21,14 +19,18 @@ public final class ExchangeRateTable {
      * currency adjacency map.
      */
     private final BigDecimal[][] table;
+
     /**
-     * currency adjacency map getter.
-     * @return currency adjacency map.
+     * get exchange rate value of two currency types.
+     * @param type type to get.
+     * @param toType type to convert.
+     * @return exchange rate.
      */
-    public BigDecimal getRate(CurrencyType type, CurrencyType toType) {
-        for(int i = 0; i < currencyOrder.length; ++i) {
+    public BigDecimal getRate(final CurrencyType type,
+                              final CurrencyType toType) {
+        for (int i = 0; i < currencyOrder.length; ++i) {
             if (currencyOrder[i].equals(type.toString())) {
-                for(int j = 0; j < currencyOrder.length; ++j) {
+                for (int j = 0; j < currencyOrder.length; ++j) {
                     if (currencyOrder[j].equals(toType.toString())) {
                         return table[i][j];
                     }

@@ -1,7 +1,7 @@
 package by.radchuk.task2.stock;
 
 /**
- * stock exchange program implementation.
+ * stock exchange implementation.
  */
 public class HttpsStockExchange {
 }

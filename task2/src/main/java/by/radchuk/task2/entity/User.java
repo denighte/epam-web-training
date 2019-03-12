@@ -32,9 +32,9 @@ public class User {
 
     /**
      * Copy constructor.
-     * @param other
+     * @param other other user.
      */
-    public User(User other) {
+    public User(final User other) {
         id = other.id;
         currencies = new ArrayList<>(other.currencies);
     }
@@ -72,6 +72,11 @@ public class User {
                 .findAny().orElse(null);
     }
 
+    /**
+     * sets currency with new type.
+     * or updates the existing.
+     * @param currency currency to set
+     */
     public void setCurrency(final Currency currency) {
         Currency old = getCurrency(currency.getType());
         if (old != null) {

@@ -17,10 +17,25 @@ import java.util.concurrent.Callable;
 @Slf4j
 @AllArgsConstructor
 class Transaction implements Callable<BigDecimal> {
+    /**
+     * currency seller.
+     */
     private User seller;
+    /**
+     * currency buyer.
+     */
     private User buyer;
+    /**
+     * seller currency type.
+     */
     private CurrencyType sellerCurrencyType;
+    /**
+     * buyer currency type.
+     */
     private CurrencyType buyerCurrencyType;
+    /**
+     * how much to buy.
+     */
     private BigDecimal toBuy;
 
     /**

@@ -11,9 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Context of the environment.
@@ -115,7 +113,8 @@ public final class EnvironmentContext {
                 for (int i = 0; i < CURRENCIES_NUMBER; ++i) {
                     String[] currencyLine = reader.readLine().split("\\s+");
                     for (int j = 1; j < CURRENCIES_NUMBER + 1; ++j) {
-                        currencyTable[i][j - 1] = new BigDecimal(currencyLine[j]);
+                        currencyTable[i][j - 1]
+                                = new BigDecimal(currencyLine[j]);
                     }
                 }
                 exchangeRateTable = new ExchangeRateTable(
@@ -133,8 +132,8 @@ public final class EnvironmentContext {
                     usersData[i] = reader.readLine();
                 }
 
-                maxTransactionAmount = new BigDecimal(reader.readLine().split("=")[1]
-                        .replaceAll("\\s+", "")
+                maxTransactionAmount = new BigDecimal(reader.readLine()
+                        .split("=")[1].replaceAll("\\s+", "")
                 );
                 maxTransactionDelay = Integer.parseInt(
                         reader.readLine().split("=")[1]

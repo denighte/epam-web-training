@@ -1,32 +1,24 @@
 package by.radchuk.task2.entity;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.math.BigDecimal;
 
 /**
- * Currency constants.
+ * contains currency type and currency amount values.
  */
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public enum Currency {
+@Data
+@AllArgsConstructor
+@EqualsAndHashCode
+public class Currency {
     /**
-     * United States Dollar currency.
+     * currency type.
      */
-    USD("USD"),
+    private CurrencyType type;
     /**
-     * Euro currency.
+     * currency amount.
      */
-    EUR("EUR"),
-    /**
-     * Belarusian ruble currency.
-     */
-    BYN("BYN");
-    /**
-     * currency name.
-     */
-    private final String name;
-
-    @Override
-    public String toString() {
-        return this.name;
-    }
+    private BigDecimal amount;
 }

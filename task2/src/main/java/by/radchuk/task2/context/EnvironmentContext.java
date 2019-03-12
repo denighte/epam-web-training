@@ -1,7 +1,6 @@
 package by.radchuk.task2.context;
 
-import by.radchuk.task2.entity.Currency;
-import by.radchuk.task2.entity.Pair;
+import by.radchuk.task2.entity.CurrencyType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -27,8 +26,4 @@ public final class EnvironmentContext {
      */
     private int userNumber;
 
-    /**
-     * List of user start wallet balance.
-     */
-    private List<List<Pair<Currency, BigDecimal>>> userStartWallets;
 }

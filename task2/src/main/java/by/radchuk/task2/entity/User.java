@@ -1,91 +1,83 @@
 package by.radchuk.task2.entity;
 
 import by.radchuk.task2.exception.ExchangeException;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * exchange member.
  */
 @Slf4j
+@AllArgsConstructor
+@EqualsAndHashCode
 public class User {
     /**
      * unique id of the user.
      */
     @Getter
     private final long id;
+
     /**
      * member's currency wallet.
      * key - type of the currency.
      * value - amount of the currency.
      */
-    @Getter
-    private final Map<Currency, BigDecimal> currencyMap;
-    /**
-     * locker for atomic operations.
-     */
-    private final Lock lock = new ReentrantLock();
+    private final List<Currency> currencies;
 
     /**
-     * Constructs user from the array of currency pairs.
-     * key - type of the currency.
-     * value - amount of the currency.
-     * @param values currency pairs array.
-     * @param userId user unique id.
+     * Copy constructor.
+     * @param other
      */
-    public User(final long userId,
-                final List<Pair<Currency, BigDecimal>> values) {
-        id = userId;
-        currencyMap = new ConcurrentHashMap<>();
-        for (Pair<Currency, BigDecimal> pair : values) {
-            currencyMap.put(pair.getKey(), pair.getValue());
-        }
+    public User(User other) {
+        id = other.id;
+        currencies = new ArrayList<>(other.currencies);
     }
-
     /**
      * reduces balance of the user.
      * @param value currency pair.
      * @throws ExchangeException throws in case negative balance / wrong op.
      */
-    public void reduceBalance(final Pair<Currency, BigDecimal> value)
+    public void changeBalance(final Currency value)
             throws ExchangeException {
-        if (value.getValue().compareTo(BigDecimal.ZERO) < 0) {
-            throw new ExchangeException("Trying to reduce negative value!");
+        Currency currency = getCurrency(value.getType());
+        if (currency == null) {
+            log.debug("There is no such currency in User with id={}", id);
+            throw new ExchangeException("There is no such currency!");
         }
-        lock.lock();
-        BigDecimal newBalance
-                = currencyMap.get(value.getKey()).subtract(value.getValue());
+        BigDecimal newBalance = currency.getAmount()
+                                        .add(value.getAmount());
         if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
-            lock.unlock();
-            log.debug("User with id={} don't have enough money, tr error", id);
+            log.debug("User with id={} don't have enough money,"
+                    + "transaction error", id);
             throw new ExchangeException("Not enough money!");
         }
-        currencyMap.put(value.getKey(), newBalance);
-
-        lock.unlock();
+        currency.setAmount(newBalance);
     }
 
     /**
-     * recharges balance of the user.
-     * @param value currency pair.
-     * @throws ExchangeException throws in case negative balance / wrong op.
+     * Get currency by specified type.
+     * @param type type of the currency.
+     * @return currency with specified type.
      */
-    public void rechargeBalance(final Pair<Currency, BigDecimal> value)
-            throws ExchangeException {
-        if (value.getValue().compareTo(BigDecimal.ZERO) < 0) {
-            throw new ExchangeException("Trying to reduce negative value!");
+    public Currency getCurrency(final CurrencyType type) {
+        return currencies
+                .stream()
+                .filter(currency -> currency.getType().equals(type))
+                .findAny().orElse(null);
+    }
+
+    public void setCurrency(final Currency currency) {
+        Currency old = getCurrency(currency.getType());
+        if (old != null) {
+            old.setAmount(currency.getAmount());
+            return;
         }
-        lock.lock();
-        BigDecimal newBalance
-                = currencyMap.get(value.getKey()).add(value.getValue());
-        currencyMap.put(value.getKey(), newBalance);
-        lock.unlock();
+        currencies.add(currency);
     }
 }

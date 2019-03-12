@@ -1,15 +1,15 @@
-package by.radchuk.task2.stock;
+package by.radchuk.task2.context;
 
-import by.radchuk.task2.entity.Currency;
+import by.radchuk.task2.entity.CurrencyType;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Currency table.
+ * CurrencyType table.
  * Contains information about exchange rates.
  */
-final class CurrencyTable {
+final class ExchangeRateTable {
     /**
      * Singleton holder.
      */
@@ -17,34 +17,34 @@ final class CurrencyTable {
         /**
          * Singleton holder.
          */
-        public static final CurrencyTable HOLDER_INSTANCE = new CurrencyTable();
+        public static final ExchangeRateTable HOLDER_INSTANCE = new ExchangeRateTable();
     }
 
     /**
      * Singleton.
      * @return Singleton instance.
      */
-    public static CurrencyTable getInstance() {
+    public static ExchangeRateTable getInstance() {
         return SingletonHolder.HOLDER_INSTANCE;
     }
     /**
      * currency adjacency map.
      */
-    private static final Map<Currency, Map<Currency, Double>> MAP
+    private static final Map<CurrencyType, Map<CurrencyType, Double>> MAP
             = new HashMap<>();
 
     /**
      * currency adjacency map getter.
      * @return currency adjacency map.
      */
-    public Map<Currency, Map<Currency, Double>> getTable() {
+    public Map<CurrencyType, Map<CurrencyType, Double>> getTable() {
         return MAP;
     }
 
     /**
      * adjacency map constructor.
      */
-    private CurrencyTable() {
+    private ExchangeRateTable() {
         //TODO: init map
     }
 

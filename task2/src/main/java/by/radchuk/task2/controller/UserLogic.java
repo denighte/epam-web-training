@@ -7,7 +7,6 @@ import by.radchuk.task2.entity.User;
 import by.radchuk.task2.stock.HttpsStockExchange;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.concurrent.Callable;
 
@@ -52,10 +51,8 @@ public final class UserLogic implements Callable<Void> {
     @Override
     public Void call() throws Exception {
         log.info("Starting user logic class, with user id={}", user.getId());
-        int c = 5;
         try {
-
-            while (c-- > 0) {
+            while (true) {
                 int currencyToSell = (int) (Math.random() * RANDOM_NUMBER_ORDER)
                         % CURRENCY_NUMBER;
                 int currencyToBuy = (int) (Math.random() * RANDOM_NUMBER_ORDER)
@@ -72,15 +69,10 @@ public final class UserLogic implements Callable<Void> {
                         getCurrency(currencyToBuy)
                 );
 
-                log.info("Operations to leave cycle = {}", c);
-
-
                 Thread.sleep(AWAIT_TIME);
-
-
             }
         } catch (Exception e) {
-            log.error("Thread ended with exception.", e);
+            log.error("Thread ended with exception:", e);
         }
         return null;
     }

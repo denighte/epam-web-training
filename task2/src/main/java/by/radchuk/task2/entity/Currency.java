@@ -15,8 +15,9 @@ import java.math.BigDecimal;
 public class Currency {
     /**
      * copy constructor.
+     * @param currency other currency.
      */
-    public Currency(Currency currency) {
+    public Currency(final Currency currency) {
         this.type = currency.type;
         this.amount = currency.amount;
     }

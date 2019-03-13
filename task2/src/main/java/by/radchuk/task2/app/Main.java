@@ -13,16 +13,31 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Main {
-    private static int LIFE_TIME = 5000;
+/**
+ * Application class, starts the environment.
+ */
+public final class Main {
+    /**
+     * private constructor to prevent class creation.
+     */
+    private Main() { }
+    /**
+     * Lifetime of the simulation.
+     */
+    private static final int LIFE_TIME = 50000;
 
-    public static void main(String[] args) throws Exception{
+    /**
+     * Application method.
+     * @param args cmd params.
+     * @throws Exception in case application errors.
+     */
+    public static void main(final String[] args) throws Exception {
         EnvironmentContext context = EnvironmentContext.getInstance();
         UserFactory factory = new ConcurrentUserFactory();
         List<User> users = new ArrayList<>();
-        ExecutorService service = Executors.newFixedThreadPool(5);
+        ExecutorService service = Executors.newCachedThreadPool();
 
-        for(String userData : context.getUsersData()) {
+        for (String userData : context.getUsersData()) {
             User user = factory.create(userData);
             users.add(user);
             service.submit(new UserLogic(user));

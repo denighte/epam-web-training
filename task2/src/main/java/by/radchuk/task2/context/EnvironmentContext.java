@@ -26,7 +26,8 @@ public final class EnvironmentContext {
         /**
          * Singleton.
          */
-        private static final EnvironmentContext INSTANCE = new EnvironmentContext();
+        private static final EnvironmentContext INSTANCE
+                = new EnvironmentContext();
     }
 
     /**

@@ -7,19 +7,19 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.Future;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * stock exchange implementation.
  */
 @Slf4j
-final public class HttpsStockExchange {
+public final class HttpsStockExchange {
     /**
      * threads number.
      */
@@ -37,13 +37,9 @@ final public class HttpsStockExchange {
     }
 
     /**
-     * mutex.
-     */
-    private Lock lock = new ReentrantLock();
-    /**
      * Bidder queue.
      */
-    private Queue<Bidder> bidderQueue;
+    private Map<CurrencyType, Queue<Bidder>> bidderQueues;
     /**
      * Collects ended tasks.
      */
@@ -59,12 +55,11 @@ final public class HttpsStockExchange {
      */
     private HttpsStockExchange() {
         log.info("\nCreated HttpsStockExchange.\n");
-        bidderQueue = new ConcurrentLinkedQueue<>();
+        bidderQueues = new HashMap<>();
+        for (CurrencyType type : CurrencyType.values()) {
+            bidderQueues.put(type, new ConcurrentLinkedQueue<>());
+        }
         threadPool = Executors.newFixedThreadPool(THREAD_NUMBER);
-        Thread collector
-                = new Thread(new TransactionGarbageCollector(bidderQueue));
-        collector.setDaemon(true);
-        collector.start();
     }
 
     /**
@@ -78,22 +73,18 @@ final public class HttpsStockExchange {
                              final CurrencyType currencyTypeToBuy) {
         Bidder futureBidder
                 = new Bidder(user, currencyToSell, currencyTypeToBuy);
-        for (Bidder bidder : bidderQueue) {
+        Queue<Bidder> handler = bidderQueues.get(currencyTypeToBuy);
+        for (Bidder bidder : handler) {
             if (futureBidder.getCurrencyToSell().getType()
                     .equals(bidder.getCurrencyTypeToBuy())) {
                 if (bidder.getTransaction() == null) {
-                    lock.lock();
-                        if (bidder.getTransaction() == null) {
-                            startTransaction(futureBidder, bidder);
-                            bidderQueue.add(futureBidder);
-                            lock.unlock();
-                            return;
-                        }
-                    lock.unlock();
+                    startTransaction(futureBidder, bidder);
+                    handler.add(futureBidder);
+                    return;
                 }
             }
         }
-        bidderQueue.add(futureBidder);
+        handler.add(futureBidder);
     }
 
     /**

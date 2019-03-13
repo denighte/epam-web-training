@@ -40,6 +40,7 @@ public class Bidder {
      * default constructor.
      * @param participant future participant of the stock exchange.
      * @param toSell currencyToSell to sell.
+     * @param toBuy currency type to buy.
      */
     public Bidder(final User participant,
                   final Currency toSell,

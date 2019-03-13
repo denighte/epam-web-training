@@ -4,18 +4,18 @@ import by.radchuk.task2.entity.CurrencyType;
 import by.radchuk.task2.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
+/**
+ * Prints user with a specified await time.
+ */
 @AllArgsConstructor
 @Slf4j
-public class UserPrinter implements Runnable{
+public final class UserPrinter implements Runnable {
     /**
      * thread await time.
      */
-    private static int AWAIT_TIME = 2000;
+    private static final int AWAIT_TIME = 4000;
     /**
      * user list.
      */
@@ -25,7 +25,7 @@ public class UserPrinter implements Runnable{
     @Override
     public void run() {
         while (true) {
-            for(User user : users) {
+            for (User user : users) {
                 log.info(
                         "\nUser with id={} wallet status:\n"
                         + "USD={}\n"

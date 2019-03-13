@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -39,11 +36,7 @@ public final class HttpsStockExchange {
     /**
      * Bidder queue.
      */
-    private Map<CurrencyType, Queue<Bidder>> bidderQueues;
-    /**
-     * Collects ended tasks.
-     */
-    //TransactionGarbageCollector garbageCollector;
+    private StockBidderQueues queues;
     /**
      * transactions thread pool.
      */
@@ -54,12 +47,10 @@ public final class HttpsStockExchange {
      * private constructor to prevent direct class creation.
      */
     private HttpsStockExchange() {
-        log.info("\nCreated HttpsStockExchange.\n");
-        bidderQueues = new HashMap<>();
-        for (CurrencyType type : CurrencyType.values()) {
-            bidderQueues.put(type, new ConcurrentLinkedQueue<>());
-        }
+        log.info("\nCreating HttpsStockExchange.\n");
+        queues = new StockBidderQueues();
         threadPool = Executors.newFixedThreadPool(THREAD_NUMBER);
+        log.info("\nCreated HttpsStockExchange.\n");
     }
 
     /**
@@ -71,20 +62,24 @@ public final class HttpsStockExchange {
     public void sellCurrency(final User user,
                              final Currency currencyToSell,
                              final CurrencyType currencyTypeToBuy) {
-        Bidder futureBidder
+        Bidder seller
                 = new Bidder(user, currencyToSell, currencyTypeToBuy);
-        Queue<Bidder> handler = bidderQueues.get(currencyTypeToBuy);
-        for (Bidder bidder : handler) {
-            if (futureBidder.getCurrencyToSell().getType()
-                    .equals(bidder.getCurrencyTypeToBuy())) {
-                if (bidder.getTransaction() == null) {
-                    startTransaction(futureBidder, bidder);
-                    handler.add(futureBidder);
-                    return;
-                }
+        Queue<Bidder> handler
+                = queues.getQueue(currencyToSell.getType(), currencyTypeToBuy);
+        handler.removeIf(buyer -> {
+            if (
+                buyer == null
+                || (buyer.getTransaction() != null
+                && buyer.getTransaction().isDone())
+            ) {
+                return true;
+            } else if (buyer.getTransaction() == null) {
+                startTransaction(seller, buyer);
+                return false;
             }
-        }
-        handler.add(futureBidder);
+            return false;
+        });
+        handler.add(seller);
     }
 
     /**

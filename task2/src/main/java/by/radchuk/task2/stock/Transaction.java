@@ -45,6 +45,8 @@ class Transaction implements Callable<BigDecimal> {
      */
     @Override
     public BigDecimal call() throws Exception {
+        log.info("Starting transaction between users:"
+        + "seller id={}, buyer id={}", seller.getId(), buyer.getId());
         EnvironmentContext context = EnvironmentContext.getInstance();
         ExchangeRateTable table = context.getExchangeRateTable();
         BigDecimal toSell = toBuy.multiply(
@@ -73,7 +75,7 @@ class Transaction implements Callable<BigDecimal> {
             return BigDecimal.ZERO;
         }
         seller.changeBalance(new Currency(buyerCurrencyType, toBuy));
-        log.info("Transaction ended with, and user with id={} sold: {}",
+        log.info("Transaction ended, and user with id={} sold: {}",
                 seller.getId(), toSell);
         return toSell;
     }

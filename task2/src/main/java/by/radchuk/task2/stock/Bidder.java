@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
  * participant of stock exchange.
  * holds by stock exchange, when selling a currencyToSell.
  */
-public class Bidder {
+class Bidder {
     /**
      * user who sells currencyToSell.
      */
@@ -42,7 +42,7 @@ public class Bidder {
      * @param toSell currencyToSell to sell.
      * @param toBuy currency type to buy.
      */
-    public Bidder(final User participant,
+    Bidder(final User participant,
                   final Currency toSell,
                   final CurrencyType toBuy) {
         user = participant;

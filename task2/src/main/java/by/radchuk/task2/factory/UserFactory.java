@@ -58,6 +58,7 @@ public class UserFactory {
      * @throws ExchangeException in case invalid user data.
      */
     public User create(final String userData) throws ExchangeException {
+        log.info("Creating new user ...");
         String formatData = userData.replaceAll("\\s+", "");
         Matcher matcher = USER_DATA_PATTERN.matcher(formatData);
         if (!matcher.matches()) {
@@ -87,6 +88,7 @@ public class UserFactory {
         if (!validator.validate(user)) {
             throw new ExchangeException(validator.getStatusMessage());
         }
+        log.info("User with id={} has been created!", id);
         return user;
     }
 

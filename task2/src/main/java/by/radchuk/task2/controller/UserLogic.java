@@ -72,6 +72,10 @@ public final class UserLogic implements Callable<Void> {
                 Thread.sleep(AWAIT_TIME);
             }
         } catch (Exception e) {
+            if (e instanceof InterruptedException) {
+                log.info("Lifecycle is ended,"
+                        + "handling InterruptedException ...");
+            }
             log.error("Thread ended with exception:", e);
         }
         return null;

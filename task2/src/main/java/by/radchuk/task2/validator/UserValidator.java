@@ -23,6 +23,7 @@ public class UserValidator {
      * @return true if OK, otherwise false.
      */
     public boolean validate(final User user) {
+        log.info("Validating user data with id={}", user.getId());
         for (CurrencyType type : CurrencyType.values()) {
             if (user.getCurrency(type)
                     .getAmount()
@@ -33,6 +34,7 @@ public class UserValidator {
                 return false;
             }
         }
+        log.info("validation success");
         return true;
     }
 }

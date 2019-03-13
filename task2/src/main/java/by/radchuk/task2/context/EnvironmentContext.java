@@ -22,7 +22,7 @@ public final class EnvironmentContext {
     /**
      * Singleton holder.
      */
-    static final class SingletonHolder {
+    private static final class SingletonHolder {
         /**
          * Singleton.
          */
@@ -90,9 +90,11 @@ public final class EnvironmentContext {
          * read data from file.
          */
         private void read() {
+            log.info("Setting up environment context ...");
             try (BufferedReader reader = Files
                     .newBufferedReader(path, Charset.defaultCharset())) {
 
+                log.info("Reading currency order ...");
                 //reading currency order.
                 List<String> currencyOrder = new ArrayList<>();
                 for (String currency : reader.readLine().split("\\s+")) {
@@ -102,6 +104,7 @@ public final class EnvironmentContext {
                 }
 
 
+                log.info("Reading currency table ...");
                 //reading currency table.
                 BigDecimal[][] currencyTable
                         = new BigDecimal[CURRENCIES_NUMBER][CURRENCIES_NUMBER];
@@ -113,11 +116,14 @@ public final class EnvironmentContext {
                                 = new BigDecimal(currencyLine[j]);
                     }
                 }
+                log.info("Creating exchange rate table ...");
                 exchangeRateTable = new ExchangeRateTable(
                         currencyOrder.stream().toArray(String[]::new),
                         currencyTable
                 );
+                log.info("Exchange rate table created");
 
+                log.info("Reading user data ...");
                 //reading users number.
                 userNumber = Integer.parseInt(
                         reader.readLine().split("=")[1]
@@ -135,7 +141,8 @@ public final class EnvironmentContext {
                         reader.readLine().split("=")[1]
                                 .replaceAll("\\s+", "")
                 );
-
+                log.info("Finished reading property file.");
+                log.info("Environment context created.");
             } catch (IOException exception) {
                 log.error("Can't read data file for EnvironmentContext!");
             }

@@ -3,6 +3,7 @@ package by.radchuk.task2.factory;
 import by.radchuk.task2.entity.Currency;
 import by.radchuk.task2.entity.User;
 import by.radchuk.task2.exception.ExchangeException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -10,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * extends user for concurrent programming environment usage.
  */
+@Slf4j
 public class ConcurrentUserFactory extends UserFactory {
     /**
      * creates User instance from a string.
@@ -21,6 +23,7 @@ public class ConcurrentUserFactory extends UserFactory {
      */
     @Override
     public User create(final String userData) throws ExchangeException {
+        log.info("Creating new concurrent user ...");
         User user = super.create(userData);
         return new User(user) {
             private Lock lock = new ReentrantLock();

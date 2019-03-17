@@ -15,7 +15,7 @@ public final class JsExpressionInterpreter implements ExpressionInterpreter {
 
 
     @Override
-    public long eval(String expression) throws TextException {
+    public Number eval(String expression) throws TextException {
         Object result;
         try {
             result = SCRIPT_ENGINE.eval(expression);
@@ -23,6 +23,6 @@ public final class JsExpressionInterpreter implements ExpressionInterpreter {
             log.error("Expression interpretation error, given expression = {}", expression);
             throw new TextException(exception);
         }
-        return (Long)result;
+        return (Number) result;
     }
 }

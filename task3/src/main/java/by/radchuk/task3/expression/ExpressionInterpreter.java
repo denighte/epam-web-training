@@ -13,5 +13,5 @@ public interface ExpressionInterpreter {
      * @return result of the given expression.
      * @throws TextException in case interpretation error.
      */
-    long eval(String expression) throws TextException;
+    Number eval(String expression) throws TextException;
 }

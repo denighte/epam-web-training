@@ -2,8 +2,10 @@ package by.radchuk.task3.parser;
 
 import by.radchuk.task3.exception.TextException;
 import by.radchuk.task3.expression.ExpressionInterpreter;
+import by.radchuk.task3.expression.impl.JsExpressionInterpreter;
 import by.radchuk.task3.model.Expression;
 import by.radchuk.task3.model.TextElement;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
 /**
  * Expression parser.
  */
+@Slf4j
 public class ExpressionParser implements AbstractParser {
     /**
      * next parser in the chain.
@@ -21,7 +24,7 @@ public class ExpressionParser implements AbstractParser {
      * expression interpreter.
      * evaluates given string representation of arithmetical expression.
      */
-    private ExpressionInterpreter interpreter;
+    private ExpressionInterpreter interpreter = new JsExpressionInterpreter();
     /**
      * parses expression from a string with data.
      * @param data TextElement data.
@@ -31,13 +34,21 @@ public class ExpressionParser implements AbstractParser {
     //private static final Pattern EXPRESSION_PATTERN = Pattern.compile("");
     @Override
     public TextElement parse(final String data) throws TextException {
+        log.info("Parsing expression ...");
         List<TextElement> childrenElements = new ArrayList<>();
         for (int i = 0; i < data.length(); ++i) {
             childrenElements.add(NEXT_PARSER.parse(
                     Character.toString(data.charAt(i)))
             );
         }
-        //TODO: add number parsing.
-        return new Expression(childrenElements, -1);
+        int value = -1;
+        try {
+            value = interpreter.eval(data).intValue();
+        } catch (TextException exception) {
+            log.error("Can't parse the given expression!, expression={}", data);
+            throw new TextException(exception);
+        }
+        log.info("Expression parsed, creating expression instance ...");
+        return new Expression(childrenElements, value);
     }
 }

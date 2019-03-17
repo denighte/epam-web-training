@@ -26,6 +26,10 @@ public enum TextElementType {
      */
     WORD("WORD"),
     /**
+     * char type.
+     */
+    CHAR("CHAR"),
+    /**
      * Expression type.
      */
     EXPRESSION("EXPRESSION"),

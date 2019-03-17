@@ -26,7 +26,7 @@ public class TextElement {
      * child elements list.
      */
     @Getter
-    protected List<String> childElements = Collections.emptyList();
+    protected List<TextElement> childElements = Collections.emptyList();
 
     @Override
     public String toString() {

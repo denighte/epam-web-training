@@ -17,4 +17,12 @@ public class TextException extends Exception{
     public TextException(final String message) {
         super(message);
     }
+
+    /**
+     * Constructs a new exception with the specified cause.
+     * @param exception cause.
+     */
+    public TextException(final Throwable exception) {
+        super(exception);
+    }
 }

@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @AllArgsConstructor
-public class TextMatchValidator {
+public class TextContinuityValidator {
     /**
      * previous regex group end.
      */

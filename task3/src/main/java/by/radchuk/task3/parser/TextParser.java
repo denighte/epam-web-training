@@ -27,9 +27,6 @@ public class TextParser implements AbstractParser{
      * Paragraph pattern.
      */
     //"(?: {4}|\t)(.+?)(?: {4}|\t)"
-    private static final Pattern PARAGRAPH_PATTERN
-            = Pattern.compile("(?<=\t)(.*?)(?=\\.)");
-            //= Pattern.compile("\t([\\w',.;:()><|^&~]+?)\t");
 
     public TextElement parse(String data) throws TextException {
         log.info("Parsing text ...");

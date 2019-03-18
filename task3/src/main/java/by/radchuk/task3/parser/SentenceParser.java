@@ -43,24 +43,18 @@ public class SentenceParser implements AbstractParser {
         log.info("Parsing sentence ...");
         List<TextElement> childrenElements = new ArrayList<>();
 
-        for (String childElement : data.substring(0, data.length() - 1).split("\\s+")) {
+        for (String childElement : data.split("\\s+")) {
             childrenElements.add(NEXT_PARSER.parse(childElement));
         }
-        childrenElements.add(PUNCTUATION_MARK_PARSER
-                .parse(
-                        Character.toString(data.charAt(data.length() - 1)))
-                    );
+
         log.info("Sentence parsed, creating sentence instance ...");
         return new TextElement(TextElementType.SENTENCE, childrenElements) {
             @Override
             public String toString() {
                 return childElements
-                        .subList(0, childElements.size() - 1)
                         .stream()
                         .map(Objects::toString)
-                        .collect(Collectors.joining(" "))
-                        .concat(childElements
-                                .get(childElements.size() - 1).toString());
+                        .collect(Collectors.joining(" "));
             }
         };
     }

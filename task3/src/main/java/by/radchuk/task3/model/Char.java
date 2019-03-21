@@ -1,8 +1,11 @@
 package by.radchuk.task3.model;
 
 import java.util.Collections;
-import java.util.List;
 
+/**
+ * Leaf class of the TextElement composite.
+ * Contains char.
+ */
 public class Char extends TextElement {
     /**
      * Char value.
@@ -13,7 +16,7 @@ public class Char extends TextElement {
      * default constructor from char.
      * @param c char
      */
-    public Char(char c) {
+    public Char(final char c) {
         aChar = c;
         type = TextElementType.CHAR;
         childElements = Collections.emptyList();

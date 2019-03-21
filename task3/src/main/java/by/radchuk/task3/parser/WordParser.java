@@ -14,12 +14,16 @@ import java.util.regex.Pattern;
  * Word parser.
  */
 @Slf4j
-public class WordParser implements AbstractParser {
+class WordParser implements AbstractParser {
     /**
      * next parser in the chain.
      */
     private static final AbstractParser NEXT_PARSER = new CharParser();
-    private static final Pattern WORD_PATTERN = Pattern.compile("\\(?[\\w'-]+\\)?");
+    /**
+     * Word regex pattern.
+     */
+    private static final Pattern WORD_PATTERN
+            = Pattern.compile("\\(?[\\w'-]+\\)?");
     /**
      * parses word from string with data.
      * @param data TextElement data.
@@ -31,13 +35,15 @@ public class WordParser implements AbstractParser {
         List<TextElement> childrenElements = new ArrayList<>();
 
         Matcher matcher = WORD_PATTERN.matcher(data);
-        if(!matcher.matches()) {
+        if (!matcher.matches()) {
             log.warn("word can't be parsed! data={}", data);
             throw new TextException("invalid format of word!");
         }
 
-        for(int i = 0; i < matcher.group(0).length(); ++i) {
-            childrenElements.add(NEXT_PARSER.parse(Character.toString(data.charAt(i))));
+        for (int i = 0; i < matcher.group(0).length(); ++i) {
+            childrenElements.add(
+                    NEXT_PARSER.parse(Character.toString(data.charAt(i)))
+            );
         }
 
         return new TextElement(TextElementType.WORD, childrenElements);

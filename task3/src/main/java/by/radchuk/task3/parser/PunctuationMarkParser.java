@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 /**
  * Punctuation mark parser.
  */
-public class PunctuationMarkParser implements AbstractParser {
+class PunctuationMarkParser implements AbstractParser {
     /**
      * next parser in the chain.
      */

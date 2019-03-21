@@ -15,14 +15,11 @@ import java.util.regex.Pattern;
  * Paragraph parser.
  */
 @Slf4j
-public class ParagraphParser implements AbstractParser {
+class ParagraphParser implements AbstractParser {
     /**
      * next parser in the chain.
      */
     private static final AbstractParser NEXT_PARSER = new SentenceParser();
-
-    //private static final Pattern PARAGRAPH_PATTERN
-    //      = Pattern.compile("((?: {4}|\t)[\\w,:;\\-−])(?: {4}|\t)");
     /**
      * Sentence pattern.
      */

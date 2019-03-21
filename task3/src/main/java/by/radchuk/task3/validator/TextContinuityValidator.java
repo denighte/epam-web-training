@@ -12,7 +12,7 @@ public class TextContinuityValidator {
     /**
      * previous regex group end.
      */
-    int previousEnd;
+    private int previousEnd;
 
     /**
      * Validates text on continuity.
@@ -20,7 +20,8 @@ public class TextContinuityValidator {
      * @param currentEnd current regex group end.
      * @return true, if continuous, otherwise false.
      */
-    public boolean validate(int currentStart, int currentEnd) {
+    public boolean validate(final int currentStart,
+                            final int currentEnd) {
         if (currentStart == previousEnd) {
             previousEnd = currentEnd;
             return true;

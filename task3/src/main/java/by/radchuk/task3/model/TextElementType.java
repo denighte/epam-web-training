@@ -3,6 +3,9 @@ package by.radchuk.task3.model;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
+/**
+ * Enum with all TextElement types.
+ */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum TextElementType {
     /**
@@ -34,7 +37,7 @@ public enum TextElementType {
      */
     EXPRESSION("EXPRESSION"),
     /**
-     * Punctuation mark type
+     * Punctuation mark type.
      */
     PUNCTUATION_MARK("PUNCTUATION MARK"),
     /**
@@ -44,7 +47,7 @@ public enum TextElementType {
     NONE("NONE");
 
     /**
-     * TextElement element type name;
+     * TextElement element type name.
      */
     private final String name;
 

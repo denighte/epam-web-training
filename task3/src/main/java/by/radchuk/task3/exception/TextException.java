@@ -3,7 +3,7 @@ package by.radchuk.task3.exception;
 /**
  * text exception class.
  */
-public class TextException extends Exception{
+public class TextException extends Exception {
     /**
      * Constructs a new exception with null as its detail message.
      */

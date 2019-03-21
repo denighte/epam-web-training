@@ -23,11 +23,15 @@ public class TextElement {
     @Getter
     protected TextElementType type = TextElementType.NONE;
     /**
-     * child elements list.
+     * children elements list.
      */
     @Getter
     protected List<TextElement> childElements = Collections.emptyList();
 
+    /**
+     * Returns string representation of TextElement.
+     * @return
+     */
     @Override
     public String toString() {
         return childElements

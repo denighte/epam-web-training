@@ -3,8 +3,8 @@ package by.radchuk.task3.parser;
 import by.radchuk.task3.exception.TextException;
 import by.radchuk.task3.expression.ExpressionInterpreter;
 import by.radchuk.task3.expression.impl.JsExpressionInterpreter;
-import by.radchuk.task3.model.Expression;
 import by.radchuk.task3.model.TextElement;
+import by.radchuk.task3.model.TextElementType;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.List;
  * Expression parser.
  */
 @Slf4j
-public class ExpressionParser implements AbstractParser {
+class ExpressionParser implements AbstractParser {
     /**
      * next parser in the chain.
      */
@@ -41,7 +41,7 @@ public class ExpressionParser implements AbstractParser {
                     Character.toString(data.charAt(i)))
             );
         }
-        int value = -1;
+        Number value;
         try {
             value = interpreter.eval(data).intValue();
         } catch (TextException exception) {
@@ -49,6 +49,11 @@ public class ExpressionParser implements AbstractParser {
             throw new TextException(exception);
         }
         log.info("Expression parsed, creating expression instance ...");
-        return new Expression(childrenElements, value);
+        return new TextElement(TextElementType.EXPRESSION, childrenElements) {
+            @Override
+            public String toString() {
+                return value.toString();
+            }
+        };
     }
 }

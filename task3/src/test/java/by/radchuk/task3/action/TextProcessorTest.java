@@ -1,6 +1,5 @@
 package by.radchuk.task3.action;
 
-import by.radchuk.task3.action.TextProcessor;
 import by.radchuk.task3.exception.TextException;
 import by.radchuk.task3.model.TextElement;
 import by.radchuk.task3.model.TextElementType;
@@ -10,6 +9,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Comparator;
+import java.util.List;
 
 public class TextProcessorTest {
     private TextProcessor processor;
@@ -43,7 +43,7 @@ public class TextProcessorTest {
     @Test(dataProvider = "generalTestProvider")
     void sortBySentenceNumberTest(String data) throws TextException {
         TextElement text = parser.parse(data);
-        processor.sort(text, TextElementType.PARAGRAPH, (lhs, rhs) -> {
+        processor.containerSort(text, TextElementType.PARAGRAPH, (lhs, rhs) -> {
             int result = lhs.getChildElements().size() - rhs.getChildElements().size();
             if (result == 0) {
                 return lhs.toString().compareTo(rhs.toString());
@@ -56,7 +56,7 @@ public class TextProcessorTest {
     @Test(dataProvider = "generalTestProvider")
     void sortByWordLengthTest(String data) throws TextException {
         TextElement text = parser.parse(data);
-        processor.sort(text,
+        processor.containerSort(text,
                        TextElementType.LEXEME,
                        Comparator.comparingInt(obj -> obj.toString().length()));
         System.out.println(text);
@@ -65,13 +65,13 @@ public class TextProcessorTest {
     @Test(dataProvider = "generalTestProvider")
     void sortLexemeBySymbolNumber(String data) throws TextException {
         TextElement text = parser.parse(data);
-        char charToCount = 'a';
-        TextElement sortedText = processor.deepSort(text,
+        char charToCount = 'e';
+        List<TextElement> sortedText = processor.deepSort(text,
                        TextElementType.LEXEME,
                        (lhs, rhs) -> {
                             return (int)(rhs.toString().chars().filter(ch -> ch == charToCount).count()
                                     - lhs.toString().chars().filter(ch -> ch == charToCount).count());
                        });
-        System.out.println(sortedText);
+        sortedText.forEach(System.out::println);
     }
 }

@@ -3,22 +3,18 @@ package by.radchuk.task3.parser;
 import by.radchuk.task3.exception.TextException;
 import by.radchuk.task3.model.TextElement;
 import by.radchuk.task3.model.TextElementType;
-import by.radchuk.task3.validator.TextContinuityValidator;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * Parse text from a string.
  */
 @Slf4j
-public class TextParser implements AbstractParser{
+public class TextParser implements AbstractParser {
     /**
      * parser in the chain.
      */
@@ -28,7 +24,13 @@ public class TextParser implements AbstractParser{
      */
     //"(?: {4}|\t)(.+?)(?: {4}|\t)"
 
-    public TextElement parse(String data) throws TextException {
+    /**
+     * parse text from string with data.
+     * @param data TextElement data.
+     * @return text instance as TextElement.
+     * @throws TextException in case parse exception.
+     */
+    public TextElement parse(final String data) throws TextException {
         log.info("Parsing text ...");
         List<TextElement> childrenElements = new ArrayList<>();
 

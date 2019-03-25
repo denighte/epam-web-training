@@ -26,7 +26,8 @@ public class ExpressionCompiler {
      * @return Expression tree instance.
      */
     public static Expression compile(final String expression) {
-        ExpressionCompiler builder = new ExpressionCompiler(expression, 0);
+        ExpressionCompiler builder
+                = new ExpressionCompiler(expression, 0);
         builder.skip(" ");
         return builder.compile(0);
     }
@@ -75,11 +76,12 @@ public class ExpressionCompiler {
     /**
      * State machine rules.
      */
-    private static String[][] states = new String[][]{
-            {"|"},
+    private static String[][] states = new String[][] {
             {"^"},
+            {"|"},
             {"&"},
-            {">>>", ">>", "<<"}
+            {">>>", ">>", "<<"},
+            null
     };
 
     /**

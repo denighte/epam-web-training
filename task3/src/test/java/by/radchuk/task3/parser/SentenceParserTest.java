@@ -19,18 +19,25 @@ public class SentenceParserTest {
         return new Object[][] {
                 {"It has survived - not only (five) centuries,"
                  + " but also the leap into 13<<2 electronic typesetting,"
-                 + " remaining 30>>>3 essentially ~6&9|(3&4) unchanged."},
+                 + " remaining 30>>>3 essentially ~6&9|(3&4) unchanged.",
+                 "It has survived - not only (five) centuries,"
+                 + " but also the leap into 52 electronic typesetting,"
+                 + " remaining 3 essentially 9 unchanged."},
                 {"It was popularised in the 5|(1&2&(3|(4&(25^5|6&47)|3)|2)|1)"
-                 + "with the release of Letraset sheets containing Lorem Ipsum passges,"
+                 + " with the release of Letraset sheets containing Lorem Ipsum passages,"
+                 + " and more recently with desktop publishing software "
+                 + "like Aldus PageMaker including versions of Lorem Ipsum.",
+                 "It was popularised in the 5"
+                 + " with the release of Letraset sheets containing Lorem Ipsum passages,"
                  + " and more recently with desktop publishing software "
                  + "like Aldus PageMaker including versions of Lorem Ipsum."}
         };
     }
 
     @Test(dataProvider = "generalTestProvider")
-    void generalTest(String data) throws TextException {
+    void generalTest(String data, String expected) throws TextException {
         TextElement text = sentenceParser.parse(data);
         System.out.println(text);
-        //Assert.assertEquals(text.toString(), data);
+        Assert.assertEquals(text.toString(), expected);
     }
 }

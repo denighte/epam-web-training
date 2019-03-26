@@ -1,0 +1,152 @@
+html {
+    height: 100%;
+}
+
+body {
+    position: relative;
+    margin: 0;
+    padding-top: 4em;
+    padding-bottom: 6rem;
+    min-height: 100%;
+}
+footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(to bottom,  rgba(224,225,229,1) 0%,rgba(69,69,71,1) 2%,rgba(69,69,71,1) 98%,rgba(224,225,229,1) 100%);;
+    text-align: center;
+}
+
+footer p {
+    color: 	#FFFFFF;
+}
+
+.navbar {
+    overflow: hidden;
+    background: linear-gradient(to bottom,  rgba(224,225,229,1) 0%,rgba(69,69,71,1) 2%,rgba(69,69,71,1) 98%,rgba(224,225,229,1) 100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.navbar a {
+    display: block;
+    background: linear-gradient(to bottom,  rgba(201,201,201,1) 0%,rgba(246,246,246,1) 2%,rgba(196,197,199,1) 98%,rgba(117,117,119,1) 100%);
+    font-size: 1em;
+    color: #454547;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 1em;
+}
+
+.navbar a:hover {
+    background: linear-gradient(to bottom,  rgba(224,225,229,1) 0%,rgba(69,69,71,1) 2%,rgba(69,69,71,1) 98%,rgba(224,225,229,1) 100%);
+    color: #ffffff;
+    box-shadow: 1px 5px 10px -5px black;
+    transition: all 0.3s ease;
+}
+
+.navbar #portal-home {
+    float: left;
+}
+
+.navbar #settings {
+    position: inherit;
+    display: inline-block;
+    top: 0;
+}
+
+.dws-menu *{
+    margin: 0;
+    padding: 0;
+}
+.dws-menu ul,
+.dws-menu ol{
+    list-style: none;
+}
+.dws-menu > ul{
+    display: flex;
+    justify-content: left;
+}
+.dws-menu > ul li{
+    position: relative;
+    border-right: 1px solid #c7c8ca;
+}
+.dws-menu > ul li:first-child{
+    border-left: 1px solid #b2b3b5;
+}
+.dws-menu > ul li:last-child{
+    border-right: 1px solid #babbbd;
+}
+
+.dws-menu li ul{
+    position: absolute;
+    min-width: 9em;
+    display: none;
+}
+.dws-menu li > ul li{
+    border: 1px solid #c7c8ca;
+}
+.dws-menu li > ul li a{
+    padding: 10px;
+    text-transform: none;
+    background: #e4e4e5;
+}
+.dws-menu li > ul li ul{
+    position: absolute;
+    right: -9em;
+    top: 0;
+}
+.dws-menu li:hover > ul{
+    display: block;
+}
+
+/*file upload*/
+
+.file-drop {
+    margin: auto;
+    width: 12em;
+    text-align: center;
+}
+
+.file-drop input[type=text] {
+    background-color: inherit;
+    cursor: inherit;
+    font-size: 1em;
+    border: none;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+.file-drop i {
+    width: 100%;
+    height: 100%
+}
+
+.file-drop i:hover {
+    color: #0b7dda;
+    cursor: pointer;
+}
+
+.file-drop input[type=submit] {
+    border:none;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.file-drop input[type=file] {
+    position: absolute;
+    display: block;
+    overflow: hidden;
+    width: 0;
+    height: 0;
+    border: 0;
+    padding: 0;
+}
+
+.file-drop input[type=text]:focus {
+    outline: none;
+}

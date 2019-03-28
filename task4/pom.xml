@@ -20,7 +20,7 @@
       <org.testng>6.14.3</org.testng>
       <servlet-api>3.1.0</servlet-api>
       <jstl.version>1.2</jstl.version>
-
+      <com.google.code.json>2.8.5</com.google.code.json>
   </properties>
 
   <dependencies>
@@ -66,6 +66,12 @@
           <scope>test</scope>
       </dependency>
 
+      <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+      <dependency>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+          <version>${com.google.code.json}</version>
+      </dependency>
   </dependencies>
 
   <build>

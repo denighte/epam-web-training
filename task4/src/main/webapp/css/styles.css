@@ -8,6 +8,7 @@ body {
     padding-top: 4em;
     padding-bottom: 6rem;
     min-height: 100%;
+    font-family: Helvetica, sans-serif;
 }
 footer {
     position: absolute;
@@ -72,13 +73,6 @@ footer p {
 }
 .dws-menu > ul li{
     position: relative;
-    border-right: 1px solid #c7c8ca;
-}
-.dws-menu > ul li:first-child{
-    border-left: 1px solid #b2b3b5;
-}
-.dws-menu > ul li:last-child{
-    border-right: 1px solid #babbbd;
 }
 
 .dws-menu li ul{
@@ -87,7 +81,9 @@ footer p {
     display: none;
 }
 .dws-menu li > ul li{
-    border: 1px solid #c7c8ca;
+    border-bottom: 1px solid #c7c8ca;
+    border-right: 1px solid #c7c8ca;
+    border-left: 1px solid #babbbd;
 }
 .dws-menu li > ul li a{
     padding: 10px;
@@ -106,14 +102,16 @@ footer p {
 /*file upload*/
 
 .file-drop {
-    margin: auto;
-    width: 12em;
+    padding-top: 1.4em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1em;
+    width: 80%;
+    min-width: 5em;
     text-align: center;
 }
 
-.file-drop input[type=text] {
-    background-color: inherit;
-    cursor: inherit;
+.file-drop p {
     font-size: 1em;
     border: none;
     text-align: center;
@@ -121,8 +119,17 @@ footer p {
     height: 100%;
 }
 
+.file-drop div {
+    background: #e4e4e5;
+    display: inline-block;
+    border: 1px dashed grey;
+    border-radius: 1em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .file-drop i {
-    width: 100%;
+
     height: 100%
 }
 
@@ -132,9 +139,14 @@ footer p {
 }
 
 .file-drop input[type=submit] {
+    background: #2196F3;
     border:none;
     -webkit-border-radius: 5px;
-    border-radius: 5px;
+    border-radius: 10px;
+}
+
+.file-drop input[type=submit]:hover {
+    background: #0b7dda;
 }
 
 .file-drop input[type=file] {
@@ -147,6 +159,27 @@ footer p {
     padding: 0;
 }
 
-.file-drop input[type=text]:focus {
-    outline: none;
+table.css-table {
+    font-size: 1em;
+    background: white;
+    max-width: 70%;
+    width: 70%;
+    border-collapse: collapse;
+    text-align: left;
+}
+table.css-table th {
+    font-weight: normal;
+    color: #039;
+    border-bottom: 2px solid #6678b1;
+    padding: 10px 8px;
+}
+table.css-table td {
+    color: #669;
+    border-bottom: 1px solid #ccc;
+    padding: 9px 8px;
+    transition: .3s linear;
+}
+table.css-table tr:hover td {
+    color: #6699ff;
+    background: #e8edff;
 }

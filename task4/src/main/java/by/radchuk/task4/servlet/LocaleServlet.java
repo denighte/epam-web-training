@@ -15,6 +15,7 @@ public class LocaleServlet extends HttpServlet {
         if (newLocale != null) {
             request.getSession().setAttribute("sessionLocale", newLocale);
         } else {
+            newLocale = "en";
             request.getSession().setAttribute("sessionLocale", "en");
         }
         response.setStatus(HttpServletResponse.SC_OK);

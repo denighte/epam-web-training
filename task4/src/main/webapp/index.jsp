@@ -11,11 +11,10 @@
     <title>example</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <link rel="stylesheet" type="text/css" href="css/font-awesome-4.7.0/css/font-awesome.css">
+    <%--favicon.ico error fix--%>
+    <link rel="shortcut icon" href="">
 </head>
 <body>
-
-
-
 <div class="navbar">
     <a id="portal-home" href="#top"><i class="fa fa-home fa-lg"></i></a>
     <nav id="settings" class="dws-menu">
@@ -28,9 +27,9 @@
                     <li>
                         <a><fmt:message key="parser" bundle="${lang}"/></a>
                         <ul>
-                            <li><a id="1" onclick="selectParser(this)">1 </a></li>
-                            <li><a id="2" onclick="selectParser(this)">2 </a></li>
-                            <li><a id="3" onclick="selectParser(this)">3 </a></li>
+                            <li><a id="DOM" onclick="selectParser(this)">DOM </a></li>
+                            <li><a id="SAX" onclick="selectParser(this)">SAX </a></li>
+                            <li><a id="StAX" onclick="selectParser(this)">StAX </a></li>
                         </ul>
                     </li>
                     <li>
@@ -46,18 +45,34 @@
     </nav>
 </div>
 <div class="file-drop" align="right">
-    <form id="upload-file" action="hello" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" id="upload_hidden"
-               onchange="document.getElementById('upload_visible').value = this.value;" />
-        <i class="fa fa-4x fa-dropbox" aria-hidden="true" onclick="document.getElementById('upload_hidden').click();"></i>
+    <form id="upload-files" action="process" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="upload_hidden" multiple />
+        <input id="parser_type" name="parser_type" type="hidden" value="1">
+        <div>
+            <i id="file-select" class="fa fa-4x fa-dropbox" aria-hidden="true"></i>
+        </div><br/>
         <input type="submit" value="<fmt:message key="file_upload" bundle="${lang}"/>" />
     </form>
-    <input type="text" readonly id="upload_visible" />
+    <p id="upload_visible"></p>
 </div>
+<table class="css-table" align="center">
+    <tr><th>Column 1</th><th>Column 2</th><th>Column 3</th><th>Column 4</th></tr>
+    <tr><td>tag aa</td><td>tag ba</td><td>tag ca</td><td>tag da</td></tr>
+    <tr><td>tag ab</td><td>tag bb</td><td>-</td><td>tag db</td></tr>
+    <tr><td>tag ac</td><td>tag bc</td><td>tag cc</td><td>tag dc</td></tr>
+    <tr><td>tag ad</td><td>tag bd</td><td>tag cd</td><td>tag dd</td></tr>
+</table>
 <footer>
     <div><p><fmt:message key="portal_info" bundle="${lang}"/></p></div>
 </footer>
+</body>
+<input id="upload_success" type="hidden" value="<fmt:message key="upload_success" bundle="${lang}"/>">
+<input id="upload_empty_error" type="hidden" value="<fmt:message key="upload_empty_error" bundle="${lang}"/>">
+<input id="upload_full_error" type="hidden" value="<fmt:message key="upload_full_error" bundle="${lang}"/>">
+<input id="upload_few_error" type="hidden" value="<fmt:message key="upload_few_error" bundle="${lang}"/>">
+<input id="upload_error" type="hidden" value="<fmt:message key="upload_error" bundle="${lang}"/>">
+<input id="validation_ok" type="hidden" value="<fmt:message key="validation_ok" bundle="${lang}"/>">
 <script src="js/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
 <script src="js/jquery-ui-1.12.1/jquery-ui.js"></script>
 <script src="js/script.js"></script>
-</body>
+</html>

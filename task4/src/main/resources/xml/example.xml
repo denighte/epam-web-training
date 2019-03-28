@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<devices xmlns="http://www.w3.org/2001/XMLSchema/dv">
+    <device id="1" type="audio">
+        <name>Razer surround</name>
+        <description>None</description>
+        <input>
+            <connector>jack</connector>
+            <energy-usage>50w</energy-usage>
+        </input>
+        <rating>5</rating>
+        <price currency="usd">200</price>
+        <manufacture>
+            <company>Razer</company>
+            <origin>Unknown</origin>
+            <date>2016-02-20</date>
+        </manufacture>
+    </device>
+    <device id="2" type="video" critical="true">
+        <name>GTX 980</name>
+        <description>Some description</description>
+        <input>
+            <connector>PCI</connector> <!--enum-->
+            <energy-usage>100w</energy-usage>
+        </input>
+        <rating>4</rating>
+        <price currency="byn">400</price>
+        <manufacture>
+            <company>NVIDIA</company>
+            <origin>Unknown</origin>
+            <date>2014-11-27</date>
+        </manufacture>
+    </device>
+</devices>

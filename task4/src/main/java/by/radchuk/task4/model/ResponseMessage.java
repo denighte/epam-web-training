@@ -12,11 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ResponseMessage {
     /**
-     * Response status type.
-     * (error, ok, ect.)
-     */
-    ResponseStatus status;
-    /**
      * key to message to be displayed.
      * message will load from locale files.
      * leave null, if don't won't to display anything.

@@ -17,7 +17,12 @@ public enum ResponseStatus {
     /**
      * ERROR status.
      */
-    ERROR("ERROR");
+    ERROR("ERROR"),
+    /**
+     * TABLE status.
+     * Used when information should be displayed in table.
+     */
+    TABLE("TABLE");
 
     /**
      * status string representation.

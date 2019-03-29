@@ -2,7 +2,6 @@ package by.radchuk.task4.validator;
 
 import lombok.Getter;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;

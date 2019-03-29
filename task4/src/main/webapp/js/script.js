@@ -33,6 +33,23 @@ class SelectMenu {
     }
 }
 
+function selectParser(element) {
+    parserMenu.select(element);
+    document.getElementById("parser_type").value = element.id;
+}
+function selectLocale(element) {
+    localeMenu.select(element);
+    $.ajax({
+        url: "locale",
+        data: "locale=" + element.id ,
+        method: 'POST',
+        type: 'POST',
+        success: function (data) {
+            document.location.reload(true);
+        }
+    });
+}
+
 class Display {
     constructor(displayObject) {
         this.display = displayObject;
@@ -65,60 +82,99 @@ class Display {
             case "INFO":
                 this.display.style.color = "";
         }
-        if (message.messageKey && message.data) {
-            this.display.innerHTML = message.messageKey + ", " + message.data;
+        if (message.object.messageKey && message.object.data) {
+            this.display.innerHTML = message.object.messageKey + ", " + message.object.data;
         } else if (message.messageKey) {
-            this.display.innerHTML = getLocalized(message.messageKey);
+            this.display.innerHTML = getLocalized(message.object.messageKey);
         } else if (message.data) {
-            this.display.innerHTML = message.data;
+            this.display.innerHTML = message.object.data;
         }
+    }
+}
+
+class Spinner {
+    constructor() {
+        this.pattern = document.createElement("div");
+        this.pattern.id = "load_spinner";
+        this.pattern.setAttribute("align", "center");
+        this.pattern.innerHTML = '<i class="fa fa-3x fa-cog fa-spin"></i>';
+    }
+
+    display() {
+        document.body.insertBefore(this.pattern, document.getElementById("table_holder"));
+    }
+
+    remove() {
+        document.getElementById("load_spinner").remove();
     }
 }
 
 function getLocalized(key) {
     return document.getElementById(key).value;
 }
-//on start init
-let parserMenu = new SelectMenu([document.getElementById("DOM"), document.getElementById("SAX"), document.getElementById("StAX")]);
-let localeMenu = new SelectMenu([document.getElementById("en"), document.getElementById("ru")]);
-let display = new Display(document.getElementById("upload_visible"));
 
-document.getElementById("parser_type").value = parserMenu.getSelected().id;
-$.ajax({
-    url: "locale",
-    method: 'GET',
-    type: 'GET', // For jQuery < 1.9
-    success: function(data){
-        localeMenu.select(document.getElementById(data))
+function flatten(ob) {
+    let flat = {};
+
+    for (let i in ob) {
+        if (!ob.hasOwnProperty(i)) continue;
+        if ((typeof ob[i]) === 'object') {
+            let flatObject = flatten(ob[i]);
+            for (var x in flatObject) {
+                if (!flatObject.hasOwnProperty(x)) continue;
+
+                flat[i + '.' + x] = flatObject[x];
+            }
+        } else {
+            flat[i] = ob[i];
+        }
     }
-});
+    return flat;
+};
+
+class TableDisplay {
+    constructor(holderDiv) {
+        this.holder = holderDiv;
+        this.data = [];
+    }
+
+    //objects array must have at least one element.
+    display(objects) {
+        this.holder.innerHTML = "";
+        let keys = Object.keys(flatten(objects[0]));
+        this.data.push('<table class="css-table" align="center">');
+        this._displayHeader(keys);
+        for(let i = 0; i < objects.length; ++i) {
+            this.data.push("<tr>");
+            let flat_object = flatten(objects[i]);
+            for(let j = 0; j < keys.length; ++j) {
+                this.data.push("<td>", flat_object[keys[j]], "</td>")
+            }
+            this.data.push("</tr>");
+        }
+        this.data.push('</table>');
+        this.holder.innerHTML = this.data.join("");
+    }
+
+    _displayHeader(header) {
+        this.data.push("<tr>");
+        for(let i = 0; i < header.length; ++i) {
+            this.data.push("<th>", header[i], "</th>");
+        }
+        this.data.push("</tr>")
+    }
+}
 
 $("#upload-files").submit(function(e) {
     e.preventDefault(); // avoid to execute the actual submit of the form.
     let fileArray = $("#upload_hidden")[0].files;
-    switch (fileArray.length) {
-        case 0:
-            display.displayMessage(getLocalized("upload_empty_error"), "ERROR");
-            return;
-        case 1:
-            display.displayMessage(getLocalized("upload_few_error"), "ERROR");
-            return;
-        case 2:
-            if(fileArray[0].name.endsWith(".xml") && fileArray[1].name.endsWith(".xsd")) {
-                break;
-            }
-            if(fileArray[0].name.endsWith(".xsd") && fileArray[1].name.endsWith(".xsd")) {
-                break;
-            }
-            display.displayMessage(getLocalized("upload_error"), "ERROR");
-            return;
-        default:
-            display.displayMessage(getLocalized("upload_full_error"), "ERROR");
-            return;
+    if (!checkFilesNumber(fileArray)) {
+        return;
     }
     let form = $(this)[0];
     let data = new FormData(form);
     let url = $(this).attr('action');
+    spinner.display();
     $.ajax({
         url: url,
         data: data, // serializes the form's elements.
@@ -128,10 +184,45 @@ $("#upload-files").submit(function(e) {
         method: 'POST',
         type: 'POST', // For jQuery < 1.9
         success: function(resp){
-            display.displayResponseMessage(resp);
+            handleResponse(resp);
         }
     });
 });
+
+function checkFilesNumber(fileArray) {
+    switch (fileArray.length) {
+        case 0:
+            display.displayMessage(getLocalized("upload_empty_error"), "ERROR");
+            return false;
+        case 1:
+            display.displayMessage(getLocalized("upload_few_error"), "ERROR");
+            return false;
+        case 2:
+            if(fileArray[0].name.endsWith(".xml") && fileArray[1].name.endsWith(".xsd")) {
+                return true;
+            }
+            if(fileArray[0].name.endsWith(".xsd") && fileArray[1].name.endsWith(".xsd")) {
+                return true;
+            }
+            display.displayMessage(getLocalized("upload_error"), "ERROR");
+            return false;
+        default:
+            display.displayMessage(getLocalized("upload_full_error"), "ERROR");
+            return false;
+    }
+}
+
+function handleResponse(resp) {
+    spinner.remove();
+    switch (resp.status) {
+        case "TABLE":
+            tableDisplay.display(resp.object);
+            break;
+        default:
+            display.displayResponseMessage(resp);
+            break;
+    }
+}
 
 $("#upload_hidden").change(function(e){
     let files = "";
@@ -144,19 +235,22 @@ $("#upload_hidden").change(function(e){
 $("#file-select").click(function () {
     document.getElementById('upload_hidden').click();
 });
-function selectParser(element) {
-    parserMenu.select(element);
-    document.getElementById("parser_type").value = element.id;
-}
-function selectLocale(element) {
-    localeMenu.select(element);
-    $.ajax({
-        url: "locale",
-        data: "locale=" + element.id ,
-        method: 'POST',
-        type: 'POST',
-        success: function (data) {
-            document.location.reload(true);
-        }
-    });
-}
+
+
+
+//on start init
+let parserMenu = new SelectMenu([document.getElementById("DOM"), document.getElementById("SAX"), document.getElementById("StAX")]);
+let localeMenu = new SelectMenu([document.getElementById("en"), document.getElementById("ru")]);
+let display = new Display(document.getElementById("upload_visible"));
+let tableDisplay = new TableDisplay(document.getElementById("table_holder"));
+let spinner = new Spinner();
+
+document.getElementById("parser_type").value = parserMenu.getSelected().id;
+$.ajax({
+    url: "locale",
+    method: 'GET',
+    type: 'GET', // For jQuery < 1.9
+    success: function(data){
+        localeMenu.select(document.getElementById(data))
+    }
+});

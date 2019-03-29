@@ -55,13 +55,8 @@
     </form>
     <p id="upload_visible"></p>
 </div>
-<table class="css-table" align="center">
-    <tr><th>Column 1</th><th>Column 2</th><th>Column 3</th><th>Column 4</th></tr>
-    <tr><td>tag aa</td><td>tag ba</td><td>tag ca</td><td>tag da</td></tr>
-    <tr><td>tag ab</td><td>tag bb</td><td>-</td><td>tag db</td></tr>
-    <tr><td>tag ac</td><td>tag bc</td><td>tag cc</td><td>tag dc</td></tr>
-    <tr><td>tag ad</td><td>tag bd</td><td>tag cd</td><td>tag dd</td></tr>
-</table>
+<div id="table_holder" class="table-holder" align="center">
+</div>
 <footer>
     <div><p><fmt:message key="portal_info" bundle="${lang}"/></p></div>
 </footer>

@@ -1,11 +1,12 @@
 package by.radchuk.task4.servlet;
 
+import by.radchuk.task4.exception.ParseException;
 import by.radchuk.task4.model.ResponseMessage;
 import by.radchuk.task4.model.ResponseStatus;
-import by.radchuk.task4.validator.XMLValidator;
+import by.radchuk.task4.parser.AbstractParser;
+import by.radchuk.task4.parser.sax.SAXDeviceParser;
 import by.radchuk.task4.writer.ResponseWriter;
-import com.google.gson.Gson;
-
+import lombok.extern.slf4j.Slf4j;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -17,10 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+@Slf4j
 @MultipartConfig
 @WebServlet(urlPatterns = {"/process"})
 public class FileProcessingServlet extends HttpServlet {
@@ -28,6 +28,7 @@ public class FileProcessingServlet extends HttpServlet {
     protected void doPost(final HttpServletRequest request,
                           final HttpServletResponse response)
                             throws ServletException, IOException {
+        log.info("processing POST request, session id = {}", request.getSession().getId());
         ResponseMessage message = new ResponseMessage();
         ResponseWriter writer = new ResponseWriter(response);
         //request handle
@@ -36,7 +37,8 @@ public class FileProcessingServlet extends HttpServlet {
         List<String> filenames = fileParts.stream().map(part -> new String(part.getSubmittedFileName().getBytes(), StandardCharsets.UTF_8)).collect(Collectors.toList());
         //InputStream xmlStream = fileParts.get(IntStream.range(0, filenames.size()).filter(i -> filenames.get(i).endsWith(".xml")).findFirst().getAsInt()).getInputStream();
         //InputStream xsdStream = fileParts.get(IntStream.range(0, filenames.size()).filter(i -> filenames.get(i).endsWith(".xsd")).findFirst().getAsInt()).getInputStream();
-        //checking correctness of the input files
+
+        log.info("checking correctness of the input files ...");
         InputStream xmlStream = null;
         InputStream xsdStream = null;
         if (filenames.get(0).endsWith(".xml")) {
@@ -49,33 +51,29 @@ public class FileProcessingServlet extends HttpServlet {
         } else if (filenames.get(1).endsWith(".xsd")) {
             xsdStream = fileParts.get(1).getInputStream();
         }
-
-        if(xmlStream == null || xsdStream == null) {
-            message.setStatus(ResponseStatus.ERROR);
+        if(xmlStream == null || xsdStream == null || filenames.size() != 2) {
             message.setMessageKey("upload_error");
             writer.write(ResponseStatus.ERROR, message);
             return;
         }
         if(xmlStream.available() == 0 || xsdStream.available() == 0) {
-            message.setStatus(ResponseStatus.ERROR);
             message.setMessageKey("upload_empty_error");
             writer.write(ResponseStatus.ERROR, message);
             return;
         }
+        log.info("input files are correct, starting xml parsing ...");
 
-        //xml validation
-        XMLValidator validator = new XMLValidator();
-        if(!validator.validateAgainstXSD(xmlStream, xsdStream)) {
-            message.setStatus(ResponseStatus.ERROR);
-            message.setData(validator.getMessage());
-            writer.write(message.getStatus(), message);
-            return;
+
+        AbstractParser parser = new SAXDeviceParser();
+        try {
+            List<Object> result = parser.parse(xmlStream, xsdStream);
+            writer.write(ResponseStatus.TABLE, result);
+            log.info("xml was successfully parsed!");
+        } catch (ParseException exception) {
+            log.info("got the exception during xml parsing.");
+            message.setData(exception.getMessage());
+            writer.write(ResponseStatus.ERROR, message);
         }
-
-        message.setMessageKey("validation_ok");
-        message.setStatus(ResponseStatus.OK);
-        writer.write(message.getStatus(), message);
     }
-
 
 }

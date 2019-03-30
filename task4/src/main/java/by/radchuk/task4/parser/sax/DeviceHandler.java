@@ -53,17 +53,11 @@ public class DeviceHandler extends DefaultHandler {
             Tag current = Tag.forName(qName);
             switch (current) {
                 case DEVICE:
-                    if (attributes.getLength() != 3) {
-                        throw new IllegalArgumentException("Invalid number of attributes!");
-                    }
                     device.setId(Long.parseLong(attributes.getValue("id")));
                     device.setCritical(DeviceCritical.fromValue(attributes.getValue("critical")));
                     device.setType(DeviceType.fromValue(attributes.getValue("type")));
                     break;
                 case PRICE:
-                    if (attributes.getLength() != 1) {
-                        throw new IllegalArgumentException("Invalid number of attributes!");
-                    }
                     device.getPrice().setCurrency(attributes.getValue("currency"));
                     break;
             }

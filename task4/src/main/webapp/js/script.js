@@ -154,6 +154,7 @@ class TableDisplay {
         }
         this.data.push('</table>');
         this.holder.innerHTML = this.data.join("");
+        this.data.length = 0;
     }
 
     _displayHeader(header) {

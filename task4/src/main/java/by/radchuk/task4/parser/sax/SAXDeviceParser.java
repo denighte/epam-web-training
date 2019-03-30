@@ -44,7 +44,7 @@ public class SAXDeviceParser implements AbstractParser {
             log.debug("document parsed successfully!");
             return result;
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            log.debug("xml/xsd parsing failed! ", e);
+            log.debug("exception during parsing! ", e);
             throw new ParseException(e);
         }
     }

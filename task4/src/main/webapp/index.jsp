@@ -7,12 +7,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <title>example</title>
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <link rel="stylesheet" type="text/css" href="css/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+    <link rel="stylesheet" type="text/css" href="css/font-awesome-4.7.0/css/font-awesome.css"/>
     <%--favicon.ico error fix--%>
-    <link rel="shortcut icon" href="">
+    <link rel="shortcut icon" href="#" />
 </head>
 <body>
 <div class="navbar">

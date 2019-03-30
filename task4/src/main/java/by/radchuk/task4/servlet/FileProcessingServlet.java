@@ -4,7 +4,7 @@ import by.radchuk.task4.exception.ParseException;
 import by.radchuk.task4.model.ResponseMessage;
 import by.radchuk.task4.model.ResponseStatus;
 import by.radchuk.task4.parser.AbstractParser;
-import by.radchuk.task4.parser.sax.SAXDeviceParser;
+import by.radchuk.task4.parser.DeviceParserFactory;
 import by.radchuk.task4.writer.ResponseWriter;
 import lombok.extern.slf4j.Slf4j;
 import javax.servlet.ServletException;
@@ -51,12 +51,12 @@ public class FileProcessingServlet extends HttpServlet {
         } else if (filenames.get(1).endsWith(".xsd")) {
             xsdStream = fileParts.get(1).getInputStream();
         }
-        if(xmlStream == null || xsdStream == null || filenames.size() != 2) {
+        if (xmlStream == null || xsdStream == null || filenames.size() != 2) {
             message.setMessageKey("upload_error");
             writer.write(ResponseStatus.ERROR, message);
             return;
         }
-        if(xmlStream.available() == 0 || xsdStream.available() == 0) {
+        if (xmlStream.available() == 0 || xsdStream.available() == 0) {
             message.setMessageKey("upload_empty_error");
             writer.write(ResponseStatus.ERROR, message);
             return;
@@ -64,7 +64,7 @@ public class FileProcessingServlet extends HttpServlet {
         log.info("input files are correct, starting xml parsing ...");
 
 
-        AbstractParser parser = new SAXDeviceParser();
+        AbstractParser parser = DeviceParserFactory.getInstance().createParser(parserType);
         try {
             List<Object> result = parser.parse(xmlStream, xsdStream);
             writer.write(ResponseStatus.TABLE, result);

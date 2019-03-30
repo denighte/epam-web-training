@@ -84,9 +84,9 @@ class Display {
         }
         if (message.object.messageKey && message.object.data) {
             this.display.innerHTML = message.object.messageKey + ", " + message.object.data;
-        } else if (message.messageKey) {
+        } else if (message.object.messageKey) {
             this.display.innerHTML = getLocalized(message.object.messageKey);
-        } else if (message.data) {
+        } else if (message.object.data) {
             this.display.innerHTML = message.object.data;
         }
     }
@@ -130,7 +130,7 @@ function flatten(ob) {
         }
     }
     return flat;
-};
+}
 
 class TableDisplay {
     constructor(holderDiv) {

@@ -13,6 +13,7 @@ public interface AbstractParser {
      * Parses xml to list of the entity objects.
      * @param xml xml stream.
      * @param xsd xsd scheme stream to validate the xml.
+     * @throws ParseException in case parse errors.
      * @return List of entity objects, parsed from given xml.
      */
     List<Object> parse(InputStream xml, InputStream xsd) throws ParseException;

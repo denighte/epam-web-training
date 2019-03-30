@@ -29,7 +29,6 @@ public class FileProcessingServlet extends HttpServlet {
                           final HttpServletResponse response)
                             throws ServletException, IOException {
         log.info("processing POST request, session id = {}", request.getSession().getId());
-        ResponseMessage message = new ResponseMessage();
         ResponseWriter writer = new ResponseWriter(response);
         //request handle
         String parserType = request.getParameter("parser_type");
@@ -52,13 +51,11 @@ public class FileProcessingServlet extends HttpServlet {
             xsdStream = fileParts.get(1).getInputStream();
         }
         if (xmlStream == null || xsdStream == null || filenames.size() != 2) {
-            message.setMessageKey("upload_error");
-            writer.write(ResponseStatus.ERROR, message);
+            writer.write(ResponseStatus.ERROR, ResponseMessage.builder().messageKey("upload_error").build());
             return;
         }
         if (xmlStream.available() == 0 || xsdStream.available() == 0) {
-            message.setMessageKey("upload_empty_error");
-            writer.write(ResponseStatus.ERROR, message);
+            writer.write(ResponseStatus.ERROR, ResponseMessage.builder().messageKey("upload_empty_error").build());
             return;
         }
         log.info("input files are correct, starting xml parsing ...");
@@ -67,12 +64,15 @@ public class FileProcessingServlet extends HttpServlet {
         AbstractParser parser = DeviceParserFactory.getInstance().createParser(parserType);
         try {
             List<Object> result = parser.parse(xmlStream, xsdStream);
-            writer.write(ResponseStatus.TABLE, result);
             log.info("xml was successfully parsed!");
+            writer.write(ResponseStatus.TABLE, result);
+            return;
         } catch (ParseException exception) {
             log.info("got the exception during xml parsing.");
-            message.setData(exception.getMessage());
-            writer.write(ResponseStatus.ERROR, message);
+            writer.write(ResponseStatus.ERROR, ResponseMessage.builder().data(exception.getMessage()).build());
+            return;
+        } catch (Throwable throwable) {
+            writer.write(ResponseStatus.ERROR, ResponseMessage.builder().messageKey("unknown_error").build());
         }
     }
 

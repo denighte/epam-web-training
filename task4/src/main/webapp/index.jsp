@@ -61,12 +61,13 @@
     <div><p><fmt:message key="portal_info" bundle="${lang}"/></p></div>
 </footer>
 </body>
-<input id="upload_success" type="hidden" value="<fmt:message key="upload_success" bundle="${lang}"/>">
-<input id="upload_empty_error" type="hidden" value="<fmt:message key="upload_empty_error" bundle="${lang}"/>">
-<input id="upload_full_error" type="hidden" value="<fmt:message key="upload_full_error" bundle="${lang}"/>">
-<input id="upload_few_error" type="hidden" value="<fmt:message key="upload_few_error" bundle="${lang}"/>">
-<input id="upload_error" type="hidden" value="<fmt:message key="upload_error" bundle="${lang}"/>">
-<input id="validation_ok" type="hidden" value="<fmt:message key="validation_ok" bundle="${lang}"/>">
+<input id="upload_success" type="hidden" value="<fmt:message key="upload_success" bundle="${lang}"/>"/>
+<input id="upload_empty_error" type="hidden" value="<fmt:message key="upload_empty_error" bundle="${lang}"/>"/>
+<input id="upload_full_error" type="hidden" value="<fmt:message key="upload_full_error" bundle="${lang}"/>"/>
+<input id="upload_few_error" type="hidden" value="<fmt:message key="upload_few_error" bundle="${lang}"/>"/>
+<input id="upload_error" type="hidden" value="<fmt:message key="upload_error" bundle="${lang}"/>"/>
+<input id="validation_ok" type="hidden" value="<fmt:message key="validation_ok" bundle="${lang}"/>"/>
+<input id="unknown_error" type="hidden" value="<fmt:message key="unknown_error" bundle="${lang}"/>"/>
 <script src="js/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
 <script src="js/jquery-ui-1.12.1/jquery-ui.js"></script>
 <script src="js/script.js"></script>

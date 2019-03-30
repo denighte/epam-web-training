@@ -16,7 +16,7 @@ public class XMLValidator {
     private String message = "OK";
     private SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
     public boolean validateAgainstXSD(final InputStream xml,
-                                      InputStream xsd) {
+                                      final InputStream xsd) {
         try {
             Schema schema = factory.newSchema(new StreamSource(xsd));
             Validator validator = schema.newValidator();

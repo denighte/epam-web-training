@@ -32,23 +32,6 @@ footer p {
     width: 100%;
 }
 
-.navbar a {
-    display: block;
-    background: linear-gradient(to bottom,  rgba(201,201,201,1) 0%,rgba(246,246,246,1) 2%,rgba(196,197,199,1) 98%,rgba(117,117,119,1) 100%);
-    font-size: 1em;
-    color: #454547;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    padding: 1em;
-}
-
-.navbar a:hover {
-    background: linear-gradient(to bottom,  rgba(224,225,229,1) 0%,rgba(69,69,71,1) 2%,rgba(69,69,71,1) 98%,rgba(224,225,229,1) 100%);
-    color: #ffffff;
-    box-shadow: 1px 5px 10px -5px black;
-    transition: all 0.3s ease;
-}
-
 .navbar #portal-home {
     float: left;
 }
@@ -85,6 +68,21 @@ footer p {
     border-right: 1px solid #c7c8ca;
     border-left: 1px solid #babbbd;
 }
+.dws-menu > ul li a, #portal-home{
+     display: block;
+     background: linear-gradient(to bottom,  rgba(201,201,201,1) 0%,rgba(246,246,246,1) 2%,rgba(196,197,199,1) 98%,rgba(117,117,119,1) 100%);
+     font-size: 1em;
+     color: #454547;
+     text-decoration: none;
+     transition: all 0.3s ease;
+ }
+.dws-menu li a:hover, #portal-home:hover{
+    background: linear-gradient(to bottom,  rgba(224,225,229,1) 0%,rgba(69,69,71,1) 2%,rgba(69,69,71,1) 98%,rgba(224,225,229,1) 100%);
+    color: #ffffff;
+    box-shadow: 1px 5px 10px -5px black;
+    transition: all 0.3s ease;
+}
+
 .dws-menu li > ul li a{
     padding: 10px;
     text-transform: none;

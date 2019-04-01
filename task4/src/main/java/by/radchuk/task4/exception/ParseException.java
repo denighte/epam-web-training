@@ -22,7 +22,7 @@ public class ParseException extends Exception {
      * @param   message   the detail message. The detail message is saved for
      *          later retrieval by the {@link #getMessage()} method.
      */
-    public ParseException(String message) {
+    public ParseException(final String message) {
         super(message);
     }
 
@@ -39,7 +39,8 @@ public class ParseException extends Exception {
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
      */
-    public ParseException(String message, Throwable cause) {
+    public ParseException(final String message,
+                          final Throwable cause) {
         super(message, cause);
     }
 
@@ -56,7 +57,7 @@ public class ParseException extends Exception {
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
      */
-    public ParseException(Throwable cause) {
+    public ParseException(final Throwable cause) {
         super(cause);
     }
 }

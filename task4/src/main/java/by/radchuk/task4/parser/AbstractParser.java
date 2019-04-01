@@ -1,9 +1,7 @@
 package by.radchuk.task4.parser;
 
 import by.radchuk.task4.exception.ParseException;
-
 import java.io.InputStream;
-import java.util.List;
 
 /**
  * Base interface for parser classes.
@@ -16,5 +14,5 @@ public interface AbstractParser {
      * @throws ParseException in case parse errors.
      * @return List of entity objects, parsed from given xml.
      */
-    List<Object> parse(InputStream xml, InputStream xsd) throws ParseException;
+    Object parse(InputStream xml, InputStream xsd) throws ParseException;
 }

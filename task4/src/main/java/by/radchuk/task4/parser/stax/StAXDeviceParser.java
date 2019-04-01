@@ -2,6 +2,7 @@ package by.radchuk.task4.parser.stax;
 
 import by.radchuk.task4.exception.ParseException;
 import by.radchuk.task4.parser.AbstractParser;
+import by.radchuk.task4.parser.AbstractTagHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.SAXException;
 
@@ -16,28 +17,28 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 @Slf4j
 public class StAXDeviceParser implements AbstractParser {
     private XMLInputFactory inputFactory;
     private SchemaFactory schemaFactory;
-    public StAXDeviceParser() {
+    private AbstractTagHandler tagHandler;
+    public StAXDeviceParser(AbstractTagHandler handler) {
         inputFactory = XMLInputFactory.newInstance();
         inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
         schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        tagHandler = handler;
     }
     @Override
-    public List<Object> parse(final InputStream xml,
+    public Object parse(final InputStream xml,
                               final InputStream xsd) throws ParseException {
         try {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(xml);
-            DeviceStreamReader deviceReader = new DeviceStreamReader(reader);
+            TagStreamReader deviceReader = new TagStreamReader(reader, tagHandler);
             Schema schema = schemaFactory.newSchema(new StreamSource(xsd));
             Validator validator = schema.newValidator();
             validator.validate(new StAXSource(deviceReader));
-            @SuppressWarnings("unchecked")
-            List<Object> result = (List) deviceReader.getDevices();
+            Object result = deviceReader.getData();
             return result;
         } catch (IOException | XMLStreamException | SAXException exception) {
             log.debug("Exception during parsing!, ", exception);

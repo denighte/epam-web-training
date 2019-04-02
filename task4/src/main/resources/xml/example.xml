@@ -14,7 +14,6 @@
             <company>Razer</company>
             <origin>Неизвестно</origin>
             <date>2016-02-20</date>
-            <unknown/>
         </manufacture>
     </device>
     <device id="2" type="video" critical="true">

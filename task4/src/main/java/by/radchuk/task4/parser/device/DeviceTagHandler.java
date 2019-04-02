@@ -70,7 +70,7 @@ public class DeviceTagHandler implements AbstractTagHandler {
         Tag tagType;
         try {
             tagType = Tag.forName(tag);
-        } catch (IllegalStateException exception) {
+        } catch (IllegalArgumentException exception) {
             throw new ParseException("unknown opening tag!"
                     + " tag name = " + tag, exception);
         }

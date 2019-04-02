@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
-public class TagHandlerAdapter implements Storage {
+class TagHandlerAdapter implements Storage {
     private AbstractTagHandler tagHandler;
     public TagHandlerAdapter(final AbstractTagHandler handler) {
         tagHandler = handler;

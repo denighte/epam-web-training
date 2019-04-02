@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dv:schema
+        xmlns:dv="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.w3.org/2001/XMLSchema/dv"
+        xmlns:w="http://www.w3.org/2001/XMLSchema/dv"
+        elementFormDefault="qualified">
+    <dv:element name="devices">
+        <dv:complexType>
+            <dv:sequence minOccurs="1" maxOccurs="unbounded">
+                <dv:element name="device">
+                    <dv:complexType>
+                        <dv:all>
+                            <dv:element name="name" type="w:name" />
+                            <dv:element name="description" type="w:description"/>
+                            <dv:element name="input" type="w:input"/>
+                            <dv:element name="rating" type="w:rating"/>
+                            <dv:element name="price" type="w:price"/>
+                            <dv:element name="manufacture" type="w:manufacture" />
+                        </dv:all>
+                        <dv:attribute name="type" type="w:device-type" use="required"/>
+                        <dv:attribute name="critical" type="w:device-critical" default="false"/>
+                        <dv:attribute name="id" type="w:device-id" use="required"/>
+                    </dv:complexType>
+                </dv:element>
+            </dv:sequence>
+        </dv:complexType>
+    </dv:element>
+
+    <dv:complexType name="manufacture">
+        <dv:all>
+            <dv:element name="company" type="w:company" />
+            <dv:element name="origin" type="w:origin" />
+            <dv:element name="date" type="w:date" />
+        </dv:all>
+    </dv:complexType>
+
+    <dv:simpleType name="date">
+        <dv:restriction base="dv:date">
+            <dv:minInclusive value="2000-12-31"/>
+        </dv:restriction>
+    </dv:simpleType>
+
+    <dv:simpleType name="origin">
+        <dv:restriction base="dv:string">
+            <dv:maxLength value="60"/>
+        </dv:restriction>
+    </dv:simpleType>
+
+    <dv:simpleType name="company">
+        <dv:restriction base="dv:string">
+            <dv:maxLength value="50"/>
+        </dv:restriction>
+    </dv:simpleType>
+
+    <dv:complexType name="price">
+        <dv:simpleContent>
+            <dv:extension base="w:priceValue">
+                <dv:attribute name="currency">
+                    <dv:simpleType>
+                        <dv:restriction base="dv:string">
+                            <dv:enumeration value="usd" />
+                            <dv:enumeration value="eur" />
+                            <dv:enumeration value="byn" />
+                        </dv:restriction>
+                    </dv:simpleType>
+                </dv:attribute>
+            </dv:extension>
+        </dv:simpleContent>
+    </dv:complexType>
+
+    <dv:simpleType name="priceValue">
+        <dv:restriction base="dv:decimal">
+            <dv:maxInclusive value="100000"/>
+        </dv:restriction>
+    </dv:simpleType>
+
+    <dv:simpleType name="rating">
+        <dv:restriction base="dv:decimal">
+            <dv:minInclusive value="0"/>
+            <dv:maxInclusive value="5"/>
+        </dv:restriction>
+    </dv:simpleType>
+
+    <dv:complexType name="input">
+        <dv:all>
+            <dv:element name="connector" type="w:connector"/>
+            <dv:element name="energy-usage" type="w:energy-usage"/>
+        </dv:all>
+    </dv:complexType>
+
+    <dv:simpleType name="energy-usage">
+        <dv:restriction base="dv:string">
+            <dv:pattern value="[\d]{1,4}[wW]"/>
+        </dv:restriction>
+    </dv:simpleType>
+
+    <dv:simpleType name="connector">
+        <dv:restriction base="dv:string">
+            <dv:enumeration value="jack"/>
+            <dv:enumeration value="PCI"/>
+            <dv:enumeration value="PCI Express"/>
+            <dv:enumeration value="socket"/>
+            <dv:enumeration value="HDMI"/>
+            <dv:enumeration value="USB"/>
+        </dv:restriction>
+    </dv:simpleType>
+
+    <dv:simpleType name="description">
+        <dv:restriction base="dv:string">
+            <dv:maxLength value="200"/>
+        </dv:restriction>
+    </dv:simpleType>
+
+    <dv:simpleType name="name">
+        <dv:restriction base="dv:string">
+            <dv:pattern value="[\w ]+"/>
+        </dv:restriction>
+    </dv:simpleType>
+
+    <dv:simpleType name="device-type">
+        <dv:restriction base="dv:string">
+            <dv:enumeration value="audio" />
+            <dv:enumeration value="video" />
+            <dv:enumeration value="input" />
+            <dv:enumeration value="cpu" />
+            <dv:enumeration value="motherboard" />
+        </dv:restriction>
+    </dv:simpleType>
+    <dv:simpleType name="device-critical">
+        <dv:restriction base="dv:string">
+            <dv:enumeration value="true" />
+            <dv:enumeration value="false" />
+        </dv:restriction>
+    </dv:simpleType>
+    <dv:simpleType name="device-id">
+        <dv:restriction base="dv:unsignedInt">
+        </dv:restriction>
+    </dv:simpleType>
+</dv:schema>

@@ -14,11 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Slf4j
-public class SAXDeviceParser implements AbstractParser {
+public class SAXAbstractParser implements AbstractParser {
     private SAXParserFactory factory;
     private TagHandlerAdapter adapter;
 
-    SAXDeviceParser(AbstractTagHandler handler) {
+    public SAXAbstractParser(AbstractTagHandler handler) {
         log.debug("Creating SAX device parser ...");
         adapter = new TagHandlerAdapter(handler);
         factory = SAXParserFactory.newInstance();

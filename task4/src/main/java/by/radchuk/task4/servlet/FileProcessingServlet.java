@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @MultipartConfig
-@WebServlet(urlPatterns = {"/process"})
+@WebServlet(urlPatterns = {"/process", "/locale"})
 public class FileProcessingServlet extends HttpServlet {
     /**
      * Provides xml parsing and validation for index.jsp post requests.
@@ -52,8 +52,6 @@ public class FileProcessingServlet extends HttpServlet {
                 part -> new String(part.getSubmittedFileName().getBytes(),
                         StandardCharsets.UTF_8)).collect(Collectors.toList()
         );
-        //InputStream xmlStream = fileParts.get(IntStream.range(0, filenames.size()).filter(i -> filenames.get(i).endsWith(".xml")).findFirst().getAsInt()).getInputStream();
-        //InputStream xsdStream = fileParts.get(IntStream.range(0, filenames.size()).filter(i -> filenames.get(i).endsWith(".xsd")).findFirst().getAsInt()).getInputStream();
 
         log.info("checking correctness of the input files ...");
         InputStream xmlStream = null;
@@ -101,4 +99,24 @@ public class FileProcessingServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Sets new locale for user.
+     * @param request Http request object.
+     * @param response Http response object.
+     * @throws IOException in case IO exceptions.
+     */
+    @Override
+    protected void doGet(final HttpServletRequest request,
+                          final HttpServletResponse response)
+            throws IOException {
+        String newLocale = request.getParameter("locale");
+        if (newLocale != null) {
+            request.getSession().setAttribute("sessionLocale", newLocale);
+        } else {
+            newLocale = "en";
+            request.getSession().setAttribute("sessionLocale", "en");
+        }
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write(newLocale);
+    }
 }

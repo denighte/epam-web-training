@@ -1,0 +1,2 @@
+Device(name=Razer surround, description=None, input=Input(connector=JACK, energyUsage=50w), rating=5.0, price=Price(value=200.0, currency=usd), manufacture=Manufacture(company=Razer, origin=Unknown, date=2016-02-20), type=AUDIO, critical=FALSE, id=1)
+Device(name=GTX 980, description=Some description, input=Input(connector=PCI, energyUsage=100w), rating=4.0, price=Price(value=400.0, currency=byn), manufacture=Manufacture(company=NVIDIA, origin=Unknown, date=2014-11-27), type=VIDEO, critical=TRUE, id=2)

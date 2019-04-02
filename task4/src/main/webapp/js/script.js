@@ -42,8 +42,8 @@ function selectLocale(element) {
     $.ajax({
         url: "locale",
         data: "locale=" + element.id ,
-        method: 'POST',
-        type: 'POST',
+        method: 'GET',
+        type: 'GET',
         success: function (data) {
             document.location.reload(true);
         }
@@ -217,6 +217,7 @@ function handleResponse(resp) {
     spinner.remove();
     switch (resp.status) {
         case "TABLE":
+            display.displayMessage("", "INFO");
             tableDisplay.display(resp.object);
             break;
         default:
@@ -246,12 +247,15 @@ let display = new Display(document.getElementById("upload_visible"));
 let tableDisplay = new TableDisplay(document.getElementById("table_holder"));
 let spinner = new Spinner();
 
+//alert(document.getElementById("session_locale").value);
+localeMenu.select(document.getElementById(document.getElementById("session_locale").value))
+
 document.getElementById("parser_type").value = parserMenu.getSelected().id;
-$.ajax({
-    url: "locale",
-    method: 'GET',
-    type: 'GET', // For jQuery < 1.9
-    success: function(data){
-        localeMenu.select(document.getElementById(data))
-    }
-});
+// $.ajax({
+//     url: "locale",
+//     method: 'GET',
+//     type: 'GET', // For jQuery < 1.9
+//     success: function(data){
+//         localeMenu.select(document.getElementById(data))
+//     }
+// });

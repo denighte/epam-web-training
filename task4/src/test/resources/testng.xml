@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Suite">
+    <test name="test" preserve-order="true">
+        <parameter name="xmlTestFilePath" value="src/test/resources/xml/test.xml"/>
+        <parameter name="xsdTestFilePath" value="src/test/resources/xml/test.xsd"/>
+        <parameter name="xmlParseResultPath" value="src/test/resources/data/result.bin"/>
+        <classes>
+            <class name="by.radchuk.task4.parser.sax.SAXAbstractParserTest"/>
+            <class name="by.radchuk.task4.parser.stax.StAXAbstractParserTest"/>
+            <class name="by.radchuk.task4.parser.dom.DOMAbstractParserTest"/>
+        </classes>
+    </test>
+</suite>

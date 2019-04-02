@@ -3,7 +3,7 @@
 <devices xmlns="http://www.w3.org/2001/XMLSchema/dv">
     <device id="1" type="audio">
         <name>Razer surround</name>
-        <description>Без описания</description>
+        <description>None</description>
         <input>
             <connector>jack</connector>
             <energy-usage>50w</energy-usage>
@@ -12,9 +12,8 @@
         <price currency="usd">200</price>
         <manufacture>
             <company>Razer</company>
-            <origin>Неизвестно</origin>
+            <origin>Unknown</origin>
             <date>2016-02-20</date>
-            <unknown/>
         </manufacture>
     </device>
     <device id="2" type="video" critical="true">

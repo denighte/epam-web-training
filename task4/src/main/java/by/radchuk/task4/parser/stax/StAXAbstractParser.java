@@ -19,11 +19,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Slf4j
-public class StAXDeviceParser implements AbstractParser {
+public class StAXAbstractParser implements AbstractParser {
     private XMLInputFactory inputFactory;
     private SchemaFactory schemaFactory;
     private AbstractTagHandler tagHandler;
-    public StAXDeviceParser(AbstractTagHandler handler) {
+    public StAXAbstractParser(AbstractTagHandler handler) {
         inputFactory = XMLInputFactory.newInstance();
         inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
         schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

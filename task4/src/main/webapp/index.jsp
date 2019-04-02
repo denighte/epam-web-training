@@ -2,6 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:requestEncoding value="UTF-8" />
+<c:if test="${sessionScope.sessionLocale == null}">
+    <c:set var="sessionLocale" value="en" scope="session"/>
+</c:if>
 <fmt:setLocale value="${sessionScope.sessionLocale}"/>
 <fmt:setBundle basename="locale.lc" var="lang"/>
 <!DOCTYPE html>
@@ -68,6 +71,7 @@
 <input id="upload_error" type="hidden" value="<fmt:message key="upload_error" bundle="${lang}"/>"/>
 <input id="validation_ok" type="hidden" value="<fmt:message key="validation_ok" bundle="${lang}"/>"/>
 <input id="unknown_error" type="hidden" value="<fmt:message key="unknown_error" bundle="${lang}"/>"/>
+<input id="session_locale" type="hidden" value="<c:out value="${sessionScope.sessionLocale}"/>"/>
 <script src="js/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
 <script src="js/jquery-ui-1.12.1/jquery-ui.js"></script>
 <script src="js/script.js"></script>

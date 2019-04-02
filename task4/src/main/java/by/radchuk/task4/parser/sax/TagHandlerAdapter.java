@@ -6,6 +6,7 @@ import by.radchuk.task4.parser.Storage;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.stream.Collectors;
@@ -65,7 +66,15 @@ public class TagHandlerAdapter extends DefaultHandler implements Storage {
     }
 
     @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
+    public void characters(final char[] ch,
+                           final int start,
+                           final int length) throws SAXException {
         builder.append(new String(ch, start, length));
+    }
+
+    @Override
+    public void error(final SAXParseException e) throws SAXException {
+        log.debug("got SAX validation exception", e);
+        throw new SAXException(e);
     }
 }

@@ -23,12 +23,12 @@ import java.io.InputStream;
 public class DOMAbstractParser implements AbstractParser {
     private DocumentBuilderFactory factory;
     private TagHandlerAdapter adapter;
-    public DOMAbstractParser(AbstractTagHandler handler) {
+    public DOMAbstractParser(final AbstractTagHandler handler) {
         log.debug("Creating DOM device parser ...");
         factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        factory.setAttribute(JAXPConstants.JAXP_SCHEMA_LANGUAGE, JAXPConstants.W3C_XML_SCHEMA);
         factory.setValidating(true);
+        factory.setAttribute(JAXPConstants.JAXP_SCHEMA_LANGUAGE, JAXPConstants.W3C_XML_SCHEMA);
         adapter = new TagHandlerAdapter(handler);
         log.debug("DOM device parser created.");
     }
@@ -38,9 +38,9 @@ public class DOMAbstractParser implements AbstractParser {
                         final InputStream xsd) throws ParseException {
         try {
             log.debug("initializing DOM builder ...");
-            Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new StreamSource(xsd));
-            factory.setSchema(schema);
+            factory.setAttribute(JAXPConstants.JAXP_SCHEMA_SOURCE, xsd);
             DocumentBuilder builder = factory.newDocumentBuilder();
+            builder.setErrorHandler(new StrictErrorHandler());
             log.debug("DOM builder initialized, parsing xml into document ...");
             Document document = builder.parse(xml);
             log.debug("document parsed, collecting information ...");

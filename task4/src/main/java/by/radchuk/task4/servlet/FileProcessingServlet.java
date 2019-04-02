@@ -2,7 +2,7 @@ package by.radchuk.task4.servlet;
 
 import by.radchuk.task4.exception.ParseException;
 import by.radchuk.task4.model.ResponseMessage;
-import by.radchuk.task4.model.ResponseStatus;
+import by.radchuk.task4.writer.ResponseStatus;
 import by.radchuk.task4.parser.AbstractParser;
 import by.radchuk.task4.parser.device.DeviceParserFactory;
 import by.radchuk.task4.writer.ResponseWriter;

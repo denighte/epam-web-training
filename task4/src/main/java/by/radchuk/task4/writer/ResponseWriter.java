@@ -1,6 +1,5 @@
 package by.radchuk.task4.writer;
 
-import by.radchuk.task4.model.ResponseStatus;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.Value;

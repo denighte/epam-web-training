@@ -1,4 +1,4 @@
-package by.radchuk.task4.model;
+package by.radchuk.task4.writer;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -251,11 +251,3 @@ let spinner = new Spinner();
 localeMenu.select(document.getElementById(document.getElementById("session_locale").value))
 
 document.getElementById("parser_type").value = parserMenu.getSelected().id;
-// $.ajax({
-//     url: "locale",
-//     method: 'GET',
-//     type: 'GET', // For jQuery < 1.9
-//     success: function(data){
-//         localeMenu.select(document.getElementById(data))
-//     }
-// });

@@ -14,18 +14,77 @@
             <company>Razer</company>
             <origin>Неизвестно</origin>
             <date>2016-02-20</date>
-            <unknown></unknown>
         </manufacture>
     </device>
-    <device id="2" type="video" critical="true">
+    <device id="2" type="video" critical="false">
         <name>GTX 980</name>
         <description>Some description</description>
         <input>
             <connector>PCI</connector> <!--enum-->
             <energy-usage>100w</energy-usage>
         </input>
-        <rating>4</rating>
+        <rating>4.2</rating>
         <price currency="byn">400</price>
+        <manufacture>
+            <company>NVIDIA</company>
+            <origin>Unknown</origin>
+            <date>2014-11-27</date>
+        </manufacture>
+    </device>
+    <device id="3" type="motherboard" critical="true">
+        <name>Fury DDR4</name>
+        <description>описание</description>
+        <input>
+            <connector>PCI</connector> <!--enum-->
+            <energy-usage>20w</energy-usage>
+        </input>
+        <rating>4.5</rating>
+        <price currency="usd">160.50</price>
+        <manufacture>
+            <company>HyperX</company>
+            <origin>Taiwan</origin>
+            <date>2015-01-14</date>
+        </manufacture>
+    </device>
+    <device id="4" type="cpu" critical="true">
+        <name>i5 5560k</name>
+        <description>процессор</description>
+        <input>
+            <connector>socket</connector> <!--enum-->
+            <energy-usage>150w</energy-usage>
+        </input>
+        <rating>4.6</rating>
+        <price currency="eur">250</price>
+        <manufacture>
+            <company>Intel</company>
+            <origin>USA</origin>
+            <date>2013-09-13</date>
+        </manufacture>
+    </device>
+    <device id="5" type="cpu" critical="true">
+        <name>i7 7560</name>
+        <description>cpu</description>
+        <input>
+            <connector>socket</connector> <!--enum-->
+            <energy-usage>150w</energy-usage>
+        </input>
+        <rating>4.8</rating>
+        <price currency="eur">430</price>
+        <manufacture>
+            <company>Intel</company>
+            <origin>USA</origin>
+            <date>2015-07-19</date>
+        </manufacture>
+    </device>
+    <device id="6" type="video" critical="false">
+        <name>GTX 2080ti</name>
+        <description>описание видеокарты</description>
+        <input>
+            <connector>PCI</connector> <!--enum-->
+            <energy-usage>350w</energy-usage>
+        </input>
+        <rating>4.2</rating>
+        <price currency="usd">1000</price>
         <manufacture>
             <company>NVIDIA</company>
             <origin>Unknown</origin>

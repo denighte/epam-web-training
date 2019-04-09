@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlType;
  * </pre>
  * 
  */
-@XmlType(name = "connector", namespace = "http://www.w3.org/2001/XMLSchema/dv")
+@XmlType(name = "connector",
+        namespace = "http://www.w3.org/2001/XMLSchema/dv")
 @XmlEnum
 public enum Connector {
 
@@ -40,7 +41,7 @@ public enum Connector {
     USB("USB");
     private final String value;
 
-    Connector(String v) {
+    Connector(final String v) {
         value = v;
     }
 
@@ -48,7 +49,7 @@ public enum Connector {
         return value;
     }
 
-    public static Connector fromValue(String v) {
+    public static Connector fromValue(final String v) {
         for (Connector c: Connector.values()) {
             if (c.value.equals(v)) {
                 return c;

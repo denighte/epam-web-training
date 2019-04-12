@@ -20,6 +20,8 @@
     <servlet-api>3.1.0</servlet-api>
     <jstl.version>1.2</jstl.version>
     <com.google.code.json>2.8.5</com.google.code.json>
+    <com.h2database.h2.version>1.4.187</com.h2database.h2.version>
+    <appache.commons.dbutils>1.6</appache.commons.dbutils>
   </properties>
 
   <dependencies>
@@ -74,9 +76,15 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>1.4.197</version>
-      <scope>test</scope>
+      <version>${com.h2database.h2.version}</version>
     </dependency>
+      <!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
+      <dependency>
+          <groupId>commons-dbutils</groupId>
+          <artifactId>commons-dbutils</artifactId>
+          <version>${appache.commons.dbutils}</version>
+      </dependency>
+
   </dependencies>
 
   <build>

@@ -1,0 +1,27 @@
+04-13 01:06:22 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Invalid value "0" for parameter "parameterIndex" [90008-187]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.getInvalidValueException(DbException.java:228)
+	at org.h2.jdbc.JdbcPreparedStatement.setParameter(JdbcPreparedStatement.java:1382)
+	at org.h2.jdbc.JdbcPreparedStatement.setString(JdbcPreparedStatement.java:352)
+	at by.radchuk.task.dao.framework.Executor.execQuery(Executor.java:29)
+	at by.radchuk.task.app.Main.main(Main.java:31)
+04-13 01:07:14 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Invalid value "0" for parameter "parameterIndex" [90008-187]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.getInvalidValueException(DbException.java:228)
+	at org.h2.jdbc.JdbcPreparedStatement.setParameter(JdbcPreparedStatement.java:1382)
+	at org.h2.jdbc.JdbcPreparedStatement.setString(JdbcPreparedStatement.java:352)
+	at by.radchuk.task.dao.framework.Executor.execQuery(Executor.java:29)
+	at by.radchuk.task.app.Main.main(Main.java:31)
+04-13 01:07:39 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Invalid value "0" for parameter "parameterIndex" [90008-187]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.getInvalidValueException(DbException.java:228)
+	at org.h2.jdbc.JdbcPreparedStatement.setParameter(JdbcPreparedStatement.java:1382)
+	at org.h2.jdbc.JdbcPreparedStatement.setString(JdbcPreparedStatement.java:352)
+	at by.radchuk.task.dao.framework.Executor.execQuery(Executor.java:29)
+	at by.radchuk.task.app.Main.main(Main.java:31)

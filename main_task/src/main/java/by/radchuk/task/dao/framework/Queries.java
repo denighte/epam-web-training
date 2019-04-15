@@ -2,18 +2,13 @@ package by.radchuk.task.dao.framework;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class Queries {
@@ -27,7 +22,7 @@ public class Queries {
     private Map<String, String> queries;
 
     private Queries(Path dir){
-        queries = new ConcurrentHashMap<>();
+        queries = new HashMap<>();
         try {
             Files.list(dir).forEach(file -> {
                 Properties properties = new Properties();

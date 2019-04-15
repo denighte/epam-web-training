@@ -1,12 +1,20 @@
 package by.radchuk.task.dao.framework;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.h2.jdbcx.JdbcDataSource;
+import org.h2.tools.RunScript;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+@Slf4j
 public final class H2Manger implements ConnectionManager {
+    private static final String SQL_INIT_SCRIPT = "src/main/resources/sql/script/script.sql";
+    private static final String SQL_TEST_DATA_SCRIPT = "src/main/resources/sql/script/test.sql";
     private static final String URL = "jdbc:h2:./h2db";
     private static final String LOGIN = "tully";
     private static final String PASSWORD = "tully";
@@ -16,11 +24,10 @@ public final class H2Manger implements ConnectionManager {
         return INSTANCE;
     }
 
-    private JdbcDataSource dataSource;
     private JdbcConnectionPool connectionPool;
 
     private H2Manger() {
-        dataSource = new JdbcDataSource();
+        JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setURL(URL);
         dataSource.setUser(LOGIN);
         dataSource.setPassword(PASSWORD);
@@ -32,25 +39,23 @@ public final class H2Manger implements ConnectionManager {
         return connectionPool.getConnection();
     }
 
-    //    public long addUser(String name) throws DBException {
-//        try {
-//            connection.setAutoCommit(false);
-//            UsersDAO dao = new UsersDAO(connection);
-//            dao.createTable();
-//            dao.insertUser(name);
-//            connection.commit();
-//            return dao.getUserId(name);
-//        } catch (SQLException e) {
-//            try {
-//                connection.rollback();
-//            } catch (SQLException ignore) {
-//            }
-//            throw new DBException(e);
-//        } finally {
-//            try {
-//                connection.setAutoCommit(true);
-//            } catch (SQLException ignore) {
-//            }
-//        }
-//    }
+    private void initDatabase() throws SQLException {
+        try {
+            RunScript.execute(getConnection(),
+                              new FileReader(SQL_INIT_SCRIPT));
+            RunScript.execute(getConnection(),
+                              new FileReader(SQL_TEST_DATA_SCRIPT));
+        } catch (FileNotFoundException exception) {
+            log.error("Failed to read SQL script file: File not found!", exception);
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            getInstance().initDatabase();
+        } catch (SQLException exception) {
+            log.error("Failed to init Database: SQL exception!", exception);
+        }
+
+    }
 }

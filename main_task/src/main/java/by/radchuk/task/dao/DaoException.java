@@ -38,7 +38,6 @@ public class DaoException extends Exception {
      *         {@link #getCause()} method).  (A <tt>null</tt> value is
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
-     * @since  1.4
      */
     public DaoException(String message, Throwable cause) {
         super(message, cause);
@@ -56,7 +55,6 @@ public class DaoException extends Exception {
      *         {@link #getCause()} method).  (A <tt>null</tt> value is
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
-     * @since  1.4
      */
     public DaoException(Throwable cause) {
         super(cause);
@@ -74,7 +72,6 @@ public class DaoException extends Exception {
      *                          or disabled
      * @param writableStackTrace whether or not the stack trace should
      *                           be writable
-     * @since 1.7
      */
     protected DaoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);

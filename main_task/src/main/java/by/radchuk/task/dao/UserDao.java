@@ -62,15 +62,16 @@ public class UserDao implements AutoCloseable {
     }
 
     /**
-     * query executor.
+     * query executor objects.
+     * @see by.radchuk.task.dao.framework.Executor
      */
     private Executor executor = new Executor();
 
     /**
-     * find user in db by given id.
+     * find user in the database by the given id.
      * @param id id of the user.
-     * @return user instance if found, otherwise null.
-     * @throws DaoException dao operation error.
+     * @return new <code>User</code> object if found, otherwise null.
+     * @throws DaoException if dao operation error occurred.
      */
     public User find(final int id) throws DaoException {
         try {
@@ -92,10 +93,10 @@ public class UserDao implements AutoCloseable {
     }
 
     /**
-     * find user in db by given login.
+     * find user in the database by given login.
      * @param login login of the user.
-     * @return user instance if found, otherwise null.
-     * @throws DaoException dao operation error.
+     * @return new <code>User</code> object if found, otherwise null.
+     * @throws DaoException if dao operation error occurred.
      */
     public User find(@NonNull final String login)
                                     throws DaoException {
@@ -118,9 +119,9 @@ public class UserDao implements AutoCloseable {
     }
 
     /**
-     * save user in db.
-     * @param user user instance.
-     * @throws DaoException dao operation error.
+     * saves user in the database.
+     * @param user <code>User</code> object.
+     * @throws DaoException if dao operation error occurred.
      */
     public void insert(@NonNull final User user) throws DaoException {
         try {
@@ -136,9 +137,9 @@ public class UserDao implements AutoCloseable {
     }
 
     /**
-     * updates user in db.
-     * @param user user instance.
-     * @throws DaoException dao operation error.
+     * updates user in the database.
+     * @param user <code>User</code> object.
+     * @throws DaoException if dao operation error occurred.
      */
     public void update(@NonNull final User user) throws DaoException {
         try {
@@ -155,8 +156,8 @@ public class UserDao implements AutoCloseable {
     }
 
     /**
-     * close resources of dao.
-     * @throws DaoException dao operation error.
+     * closes resources of the dao.
+     * @throws DaoException if dao operation error occurred.
      */
     @Override
     public void close() throws DaoException {

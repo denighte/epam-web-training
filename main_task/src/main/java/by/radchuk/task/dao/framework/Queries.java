@@ -10,18 +10,44 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * A map for sql application sql queries.
+ * It loads queries from the specified folder.
+ * Singleton.
+ *
+ * @author Dimtry Radchuk
+ */
 @Slf4j
-public class Queries {
-    private static final Path dir = Paths.get("src/main/resources/sql/query");
-    private static final Queries INSTANCE = new Queries(dir);
+public final class Queries {
+    /**
+     * Path to the folder with queries.
+     */
+    private static final Path QUERIES_DIRECTORY
+            = Paths.get("src/main/resources/sql/query");
+    /**
+     * Singleton instance.
+     */
+    private static final Queries INSTANCE = new Queries(QUERIES_DIRECTORY);
+
+    /**
+     * Singleton get instance method.
+     * @return <code>Queries</code> instance.
+     */
     public static Queries getInstance() {
         return INSTANCE;
     }
 
-    //"src/main/resources/sql/query/";
+    /**
+     * hash map with queries.
+     */
     private Map<String, String> queries;
 
-    private Queries(Path dir){
+    /**
+     * scans the specified folder for .property files.
+     * Loads them into memory as <code>HashMap</code> object.
+     * @param dir directory to scan.
+     */
+    private Queries(final Path dir) {
         queries = new HashMap<>();
         try {
             Files.list(dir).forEach(file -> {
@@ -34,8 +60,9 @@ public class Queries {
                     log.error("Failed to load the queries file!", exception);
                     return;
                 }
-                for(Map.Entry<Object, Object> entry : properties.entrySet()) {
-                    queries.put(filename + ':' + entry.getKey(), entry.getValue().toString());
+                for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+                    queries.put(filename + ':' + entry.getKey(),
+                                entry.getValue().toString());
                 }
             });
         } catch (IOException exception) {
@@ -43,12 +70,13 @@ public class Queries {
         }
     }
 
-    public Map<String, String> getConfiguration() {
-        return queries;
-    }
-
-
-    public String getQuery(String key) {
+    /**
+     * Get query object.
+     * @param key query filename + ':' + query name in the property file.
+     *            for example: 'users:getAll'
+     * @return query string
+     */
+    public String getQuery(final String key) {
         return queries.get(key);
     }
 }

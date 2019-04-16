@@ -11,6 +11,8 @@ import java.sql.*;
  * Forwards queries to sql database.
  * Wraps up work with jdbc Connection and Statement classes.
  * Provides basic last query caching.
+ *
+ * @author Dmitry Radchuk
  */
 @Slf4j
 public class Executor implements AutoCloseable {
@@ -35,9 +37,9 @@ public class Executor implements AutoCloseable {
     private String cachedQuery;
 
     /**
-     * Default constructor.
-     * Initializes ConnectionManager.
-     * Creates JDBC Connection instance.
+     * Executor default constructor.
+     * Initializes ConnectionManager (in this case it is a H2Manager).
+     * Gets JDBC connection instance.
      */
     public Executor() {
         manager = H2Manger.getInstance();
@@ -50,8 +52,8 @@ public class Executor implements AutoCloseable {
     }
 
     /**
-     * disable autocommit of connection.
-     * @throws SQLException db operation error.
+     * disable autocommit of <code>Connection</code> object.
+     * @throws SQLException if <code>Connection</code> object could not be used.
      */
     public void beginTransaction() throws SQLException {
         connection.setAutoCommit(false);
@@ -60,7 +62,7 @@ public class Executor implements AutoCloseable {
     /**
      * commit made changes.
      * enable autocommit of connection.
-     * @throws SQLException
+     * @throws SQLException if <code>Connection</code> object could not be used.
      */
     public void commitTransaction() throws SQLException {
         connection.commit();
@@ -71,10 +73,11 @@ public class Executor implements AutoCloseable {
      * Execute update query (no result set handling).
      * @param query sql query.
      * @param params parameters for statement
-     * @throws SQLException db operation error.
+     * @throws SQLException if <code>Connection</code> or
+     * <code>PreparedStatement</code> objects could not be used.
      */
-    public void execUpdate(@NonNull String query,
-                           String ... params) throws SQLException {
+    public void execUpdate(@NonNull final String query,
+                           final String... params) throws SQLException {
         initStatement(query);
         setStatementParameters(params);
         statement.execute();
@@ -87,11 +90,12 @@ public class Executor implements AutoCloseable {
      * @param params parameters for statement.
      * @param <R> handler return type.
      * @return Object
-     * @throws SQLException db operation error.
+     * @throws SQLException if <code>Connection</code> or
+     * <code>PreparedStatement</code> objects could not be used.
      */
-    public <R> R execQuery(@NonNull String query,
-                           ResultHandler<R> handler,
-                           String ... params)
+    public <R> R execQuery(@NonNull final String query,
+                           final ResultHandler<R> handler,
+                           final String... params)
                                     throws SQLException {
         initStatement(query);
         setStatementParameters(params);
@@ -119,11 +123,12 @@ public class Executor implements AutoCloseable {
     /**
      * set Statement parameters.
      * @param params parameters for statement.
-     * @throws SQLException db operation errors.
+     * @throws SQLException if <code>Statement</code> object could not be used.
      */
-    private void setStatementParameters(final String ... params)
+    private void setStatementParameters(final String... params)
                                             throws SQLException {
-        var paramsNumber = (int)cachedQuery.chars().filter(ch -> ch == '?').count();
+        var paramsNumber = (int) cachedQuery.chars()
+                                           .filter(ch -> ch == '?').count();
         if (params.length != paramsNumber) {
             throw new SQLException("Invalid number of parameters!");
         }
@@ -133,8 +138,9 @@ public class Executor implements AutoCloseable {
     }
 
     /**
-     * Close resources 
-     * @throws SQLException
+     * Closes resources.
+     * @throws SQLException if can't close <code>Connection</code>
+     * or(and) <code>PreparedStatement</code> objects.
      */
     @Override
     public void close() throws SQLException {

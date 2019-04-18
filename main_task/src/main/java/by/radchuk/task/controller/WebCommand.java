@@ -1,5 +1,6 @@
 package by.radchuk.task.controller;
 
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,6 +16,7 @@ public abstract class WebCommand implements Runnable {
     protected AsyncContext context;
     protected ServiceTask task;
     protected AsyncListener errorListener;
+    @Getter @Setter protected CommandType type;
 
     protected WebCommand(AsyncContext asyncContext,
                          ServiceTask serviceTask) {

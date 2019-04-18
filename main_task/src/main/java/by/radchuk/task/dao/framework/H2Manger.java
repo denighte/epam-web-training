@@ -1,12 +1,15 @@
 package by.radchuk.task.dao.framework;
 
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.jdbcx.JdbcDataSource;
 import org.h2.tools.RunScript;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -31,13 +34,13 @@ public final class H2Manger implements ConnectionManager {
      * database initialization queries.
      */
     private static final String SQL_INIT_SCRIPT
-            = "src/main/resources/sql/script/script.sql";
+            = "sql/script/script.sql";
     /**
      * Database test sql script file.
      * This file stores test data queries.
      */
     private static final String SQL_TEST_DATA_SCRIPT
-            = "src/main/resources/sql/script/test.sql";
+            = "sql/script/test.sql";
     /**
      * URL to database.
      */
@@ -98,13 +101,18 @@ public final class H2Manger implements ConnectionManager {
      * Runs database init script file.
      * @throws SQLException if script file can't be read.
      */
-    private void initDatabase() throws SQLException {
+    @SneakyThrows(UnsupportedEncodingException.class)
+    private void initDatabase() {
+        String encodedPath = this.getClass().getClassLoader().getResource("").getPath();
+        String fullPath = URLDecoder.decode(encodedPath, "UTF-8");
         try {
             RunScript.execute(getConnection(),
-                              new FileReader(SQL_INIT_SCRIPT));
+                    new FileReader(fullPath + SQL_INIT_SCRIPT));
         } catch (FileNotFoundException exception) {
-            log.error("Failed to read SQL script file:"
-                      + " File not found!", exception);
+            log.error("Fatal: failed to read SQL script file:"
+                    + " File not found!", exception);
+        } catch (SQLException exception) {
+            log.error("Fatal: failed to execute SQL script.", exception);
         }
     }
 
@@ -112,15 +120,20 @@ public final class H2Manger implements ConnectionManager {
      * Runs database test script file.
      * @throws SQLException if script file can't be read.
      */
+    @SneakyThrows(UnsupportedEncodingException.class)
     private void initTestDatabase() throws SQLException {
+        String encodedPath = this.getClass().getClassLoader().getResource("").getPath();
+        String fullPath = URLDecoder.decode(encodedPath, "UTF-8");
         try {
             RunScript.execute(getConnection(),
-                    new FileReader(SQL_INIT_SCRIPT));
+                    new FileReader(fullPath + SQL_INIT_SCRIPT));
             RunScript.execute(getConnection(),
-                    new FileReader(SQL_TEST_DATA_SCRIPT));
+                    new FileReader(fullPath + SQL_TEST_DATA_SCRIPT));
         } catch (FileNotFoundException exception) {
             log.error("Failed to read SQL script file:"
                       + " File not found!", exception);
+        } catch (SQLException exception) {
+            log.error("Fatal: failed to execute SQL script.", exception);
         }
     }
 

@@ -1,8 +1,11 @@
 package by.radchuk.task.dao.framework;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,8 +25,7 @@ public final class Queries {
     /**
      * Path to the folder with queries.
      */
-    private static final Path QUERIES_DIRECTORY
-            = Paths.get("src/main/resources/sql/query");
+    private static final String QUERIES_DIRECTORY = "sql/query";
     /**
      * Singleton instance.
      */
@@ -47,10 +49,13 @@ public final class Queries {
      * Loads them into memory as <code>HashMap</code> object.
      * @param dir directory to scan.
      */
-    private Queries(final Path dir) {
+    @SneakyThrows(UnsupportedEncodingException.class)
+    private Queries(final String dir) {
         queries = new HashMap<>();
+        String encodedPath = this.getClass().getClassLoader().getResource("").getPath();
+        String fullPath = URLDecoder.decode(encodedPath, "UTF-8");
         try {
-            Files.list(dir).forEach(file -> {
+            Files.list(Paths.get(fullPath + dir)).forEach(file -> {
                 Properties properties = new Properties();
                 String filename = file.getFileName().toString();
                 filename = filename.substring(0, filename.indexOf('.'));

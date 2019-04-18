@@ -122,10 +122,11 @@ public class UserDao implements AutoCloseable {
      * saves user in the database.
      * @param user <code>User</code> object.
      * @throws DaoException if dao operation error occurred.
+     * @return id of the inserted user.
      */
-    public void insert(@NonNull final User user) throws DaoException {
+    public int insert(@NonNull final User user) throws DaoException {
         try {
-            executor.execUpdate(INSERT_USER,
+            return executor.execSave(INSERT_USER,
                     user.getLogin(),
                     user.getPasswordHash(),
                     user.getName(),
@@ -140,10 +141,11 @@ public class UserDao implements AutoCloseable {
      * updates user in the database.
      * @param user <code>User</code> object.
      * @throws DaoException if dao operation error occurred.
+     * @return 1 - if the user was updated, 0 otherwise.
      */
-    public void update(@NonNull final User user) throws DaoException {
+    public int update(@NonNull final User user) throws DaoException {
         try {
-            executor.execUpdate(UPDATE_USER,
+            return executor.execUpdate(UPDATE_USER,
                     user.getLogin(),
                     user.getPasswordHash(),
                     user.getName(),

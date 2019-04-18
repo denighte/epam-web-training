@@ -3,7 +3,6 @@ import lombok.Cleanup;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
-
 import java.sql.*;
 
 /**
@@ -11,7 +10,24 @@ import java.sql.*;
  * Forwards queries to sql database.
  * Wraps up work with jdbc Connection and Statement classes.
  * Provides basic last query caching.
- *
+ * It is used as follows:
+ * <pre>
+ * import java.sql.*;
+ * import by.radchuk.task.dao.framework.Executor;
+ * public class Test {
+ *     public static void main(String ... args) throws Exception {
+ *         Executor executor = new Executor();
+ *         String login = "login";
+ *         String password = "password";
+ *         int id = executor.execSave(
+ *             "INSERT INTO users (login, password) VALUES (?, ?)",
+ *             login,
+ *             password
+ *         );
+ *         System.out.println(id);
+ *     }
+ * }
+ * </pre>
  * @author Dmitry Radchuk
  */
 @Slf4j
@@ -70,17 +86,41 @@ public class Executor implements AutoCloseable {
     }
 
     /**
-     * Execute update query (no result set handling).
+     * Executes save query and returns id of the saved object
      * @param query sql query.
      * @param params parameters for statement
+     * @return saved object id
      * @throws SQLException if <code>Connection</code> or
      * <code>PreparedStatement</code> objects could not be used.
      */
-    public void execUpdate(@NonNull final String query,
+    public int execSave(@NonNull final String query,
+                                  final String... params) throws SQLException {
+        initStatement(query);
+        setStatementParameters(params);
+        var affectedRows = statement.executeUpdate();
+        if (affectedRows == 0) {
+            throw new SQLException("Saving failed, no rows affected.");
+        }
+        @Cleanup ResultSet resultSet = statement.getGeneratedKeys();
+        if (resultSet.next()) {
+            return resultSet.getInt(1);
+        }
+        throw new SQLException("Saving failed, no ID obtained.");
+    }
+
+    /**
+     * Execute update query (no result set handling).
+     * @param query sql query.
+     * @param params parameters for statement
+     * @return number of rows affected.
+     * @throws SQLException if <code>Connection</code> or
+     * <code>PreparedStatement</code> objects could not be used.
+     */
+    public int execUpdate(@NonNull final String query,
                            final String... params) throws SQLException {
         initStatement(query);
         setStatementParameters(params);
-        statement.execute();
+        return statement.executeUpdate();
     }
 
     /**

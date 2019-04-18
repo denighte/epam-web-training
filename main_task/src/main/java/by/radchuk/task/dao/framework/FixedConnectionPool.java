@@ -4,19 +4,21 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.PooledConnection;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * A simple JDBC fixed size connection pool.
@@ -67,7 +69,14 @@ public class FixedConnectionPool implements DataSource,
      * Unused <code>PooledConnection</code> objects holder.
      * Every time pooled connection closes, it added to a queue.
      */
-    private final ConcurrentLinkedQueue<PooledConnection> connectionsQueue
+    private final Queue<PooledConnection> freeConnectionQueue
+                                          = new ConcurrentLinkedQueue<>();
+    /**
+     * <code>PooledConnection</code> objects holder.
+     * Every time a new pooled connection created,
+     * it added to a queue.
+     */
+    private final Queue<PooledConnection> pooledConnectionQueue
                                           = new ConcurrentLinkedQueue<>();
     /**
      * <code>Semaphore</code> object.
@@ -75,7 +84,7 @@ public class FixedConnectionPool implements DataSource,
      */
     private Semaphore semaphore;
     /**
-     * <p>Log writer for the <code>DataSource</code> object.
+     * <p>Log writer for the <code>DataSource</code> object atomic reference.
      *
      * <p>The log writer is a character output stream to which all logging
      * and tracing messages for this data source will be
@@ -88,9 +97,7 @@ public class FixedConnectionPool implements DataSource,
      * initially null; in other words, the default is for logging to be
      * disabled.
      */
-    @Getter(onMethod = @__({@Override}))
-    @Setter(onMethod = @__({@Override}))
-    private PrintWriter logWriter;
+    private AtomicReference<PrintWriter> logWriter = new AtomicReference<>();;
     /**
      * Maximum number of connections to use.
      */
@@ -98,7 +105,7 @@ public class FixedConnectionPool implements DataSource,
     /**
      * The maximum time in seconds to wait for a free connection.
      */
-    private int loginTimeout = DEFAULT_TIMEOUT;
+    private AtomicInteger loginTimeout = new AtomicInteger(DEFAULT_TIMEOUT);
     /**
      * number of active (open) connections of this pool. This is the
      * number of <code>Connection</code> objects that have been issued by
@@ -107,11 +114,16 @@ public class FixedConnectionPool implements DataSource,
      */
     private AtomicInteger activeConnections = new AtomicInteger();
     /**
-     * holds the status of the connection pool:
-     * true - connection pool is disposed.
-     * false - connection pool is not disposed.
+     * mutex for {@link #dispose()} and {@link #disposeNow()} methods.
      */
-    private boolean isDisposed;
+    private Lock disposeLock = new ReentrantLock();
+    /**
+     * holds the status of the connection pool:
+     * 2 - connection pool was hard disposed (All connections were closed).
+     * 1 - connection pool was disposed (All inactive connections were closed).
+     * 0 - connection pool is active
+     */
+    private AtomicInteger disposeStatus = new AtomicInteger(0);
 
     /**
      * Constructs a new connection pool.
@@ -125,7 +137,7 @@ public class FixedConnectionPool implements DataSource,
         semaphore = new Semaphore(size);
         if (dataSource != null) {
             try {
-                logWriter = dataSource.getLogWriter();
+                logWriter.set(dataSource.getLogWriter());
             } catch (SQLException e) {
                 // ignore
             }
@@ -160,8 +172,33 @@ public class FixedConnectionPool implements DataSource,
      * @return the timeout in seconds
      */
     @Override
-    public synchronized int getLoginTimeout() {
-        return loginTimeout;
+    public int getLoginTimeout() {
+        return loginTimeout.get();
+    }
+
+    /**
+     * <p>Retrieves the log writer for this <code>DataSource</code>
+     * object.
+     *
+     * @return the log writer for this data source or null if
+     *        logging is disabled
+     * @see #setLogWriter
+     */
+    @Override
+    public PrintWriter getLogWriter() {
+        return logWriter.get();
+    }
+
+    /**
+     * <p>Sets the log writer for this <code>DataSource</code>
+     * object to the given <code>java.io.PrintWriter</code> object.
+     *
+     * @param out the new log writer; to disable logging, set to null
+     * @see #getLogWriter
+     */
+    @Override
+    public void setLogWriter(final PrintWriter out) {
+        logWriter.set(out);
     }
 
     /**
@@ -172,14 +209,14 @@ public class FixedConnectionPool implements DataSource,
      * @param seconds the timeout, 0 meaning the default
      */
     @Override
-    public synchronized void setLoginTimeout(final int seconds) {
+    public void setLoginTimeout(final int seconds) {
         if (seconds < 0) {
             throw new IllegalArgumentException("invalid login timeout!");
         }
         if (seconds == 0) {
-            this.loginTimeout = DEFAULT_TIMEOUT;
+            this.loginTimeout.set(DEFAULT_TIMEOUT);
         } else {
-            this.loginTimeout = seconds;
+            this.loginTimeout.set(seconds);
         }
     }
 
@@ -194,14 +231,43 @@ public class FixedConnectionPool implements DataSource,
     /**
      * Closes all unused pooled connections.
      * Exceptions while closing are written to
-     * the <code>logWriter</code> stream (if set).
+     * the {@link #logWriter} stream (if set).
+     *
+     * @return true - if connection pool was successfully disposed,
+     *         false - otherwise.
      */
-    public synchronized void dispose() {
-        if (isDisposed) {
-            return;
+    public boolean dispose() {
+        if (disposeStatus.compareAndSet(0, 1)) {
+            disposeLock.lock();
+            try {
+                freeConnectionQueue.forEach(this::closeConnection);
+                return true;
+            } finally {
+                disposeLock.unlock();
+            }
         }
-        isDisposed = true;
-        connectionsQueue.forEach(this::closeConnection);
+        return false;
+    }
+
+    /**
+     * Closes ALL pooled connections.
+     * Exceptions while closing are written to
+     * the {@link #logWriter} stream (if set).
+     *
+     * @return true - if connection pool was successfully disposed,
+     *         false - otherwise.
+     */
+    public boolean disposeNow() {
+        if (disposeStatus.compareAndSet(0, 2) || disposeStatus.compareAndSet(1, 2)) {
+            disposeLock.lock();
+            try {
+                pooledConnectionQueue.forEach(this::closeConnection);
+                return true;
+            } finally {
+                disposeLock.unlock();
+            }
+        }
+        return false;
     }
 
     /**
@@ -222,7 +288,8 @@ public class FixedConnectionPool implements DataSource,
     public Connection getConnection() throws SQLException {
         boolean loginSuccess = true;
         try {
-            loginSuccess = semaphore.tryAcquire(loginTimeout, TimeUnit.SECONDS);
+            loginSuccess = semaphore.tryAcquire(loginTimeout.get(),
+                                                TimeUnit.SECONDS);
         } catch (InterruptedException exception) {
             //ignore ???
         }
@@ -248,12 +315,13 @@ public class FixedConnectionPool implements DataSource,
      * @throws SQLException if a new connection could not be established.
      */
     private Connection getConnectionNow() throws SQLException {
-        if (isDisposed) {
+        if (!disposeStatus.compareAndSet(0, 0)) {
             throw new IllegalStateException("Connection pool was disposed.");
         }
-        PooledConnection pc = connectionsQueue.poll();
+        PooledConnection pc = freeConnectionQueue.poll();
         if (pc == null) {
             pc = dataSource.getPooledConnection();
+            pooledConnectionQueue.add(pc);
         }
         Connection connection = pc.getConnection();
         activeConnections.incrementAndGet();
@@ -269,9 +337,10 @@ public class FixedConnectionPool implements DataSource,
      * @param pc the pooled connection
      */
     private void recycleConnection(final PooledConnection pc) {
-        if (!isDisposed && activeConnections.decrementAndGet() < poolSize) {
-            connectionsQueue.add(pc);
-        } else {
+        if (disposeStatus.compareAndSet(0, 0)
+            && activeConnections.decrementAndGet() < poolSize) {
+            freeConnectionQueue.add(pc);
+        } else if (!disposeStatus.compareAndSet(2, 2)) {
             closeConnection(pc);
         }
         semaphore.release();
@@ -281,6 +350,7 @@ public class FixedConnectionPool implements DataSource,
      * Closes <code>PooledConnection</code> object.
      * If <code>SQLException</code> occurred, it is printed
      * to <code>logWriter</code>
+     *
      * @param pc <code>PooledConnection</code> object.
      */
     private void closeConnection(final PooledConnection pc) {
@@ -288,7 +358,7 @@ public class FixedConnectionPool implements DataSource,
             pc.close();
         } catch (SQLException e) {
             if (logWriter != null) {
-                e.printStackTrace(logWriter);
+                e.printStackTrace(logWriter.get());
             }
         }
     }
@@ -335,7 +405,7 @@ public class FixedConnectionPool implements DataSource,
      *
      * @return the number of active connections.
      */
-    public synchronized int getActiveConnections() {
+    public int getActiveConnections() {
         return activeConnections.get();
     }
 

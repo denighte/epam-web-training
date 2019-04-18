@@ -1,5 +1,6 @@
 package by.radchuk.task.app;
 
+import by.radchuk.task.dao.framework.Executor;
 import by.radchuk.task.dao.framework.FixedConnectionPool;
 import org.h2.jdbcx.JdbcDataSource;
 
@@ -11,15 +12,12 @@ public class Main {
     private static final String PASSWORD = "tully";
 
     public static void main(String[] args) throws Exception {
-        JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setURL(URL);
-        dataSource.setUser(LOGIN);
-        dataSource.setPassword(PASSWORD);
-        FixedConnectionPool cp = FixedConnectionPool.create(dataSource, 10);
-        Connection[] connections = new Connection[10];
-        for (int i = 0; i < 11; ++i) {
-            connections[i] = cp.getConnection();
-            //conn.close();
-        }
+        Executor executor = new Executor();
+        String login = "login";
+        String password = "password";
+        int id = executor.execSave("INSERT INTO users (login, password) VALUES (?, ?)",
+                          login,
+                          password);
+        System.out.println(id);
     }
 }

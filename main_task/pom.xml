@@ -78,12 +78,6 @@
       <artifactId>h2</artifactId>
       <version>${com.h2database.h2.version}</version>
     </dependency>
-      <!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
-      <dependency>
-          <groupId>commons-dbutils</groupId>
-          <artifactId>commons-dbutils</artifactId>
-          <version>${appache.commons.dbutils}</version>
-      </dependency>
 
   </dependencies>
 

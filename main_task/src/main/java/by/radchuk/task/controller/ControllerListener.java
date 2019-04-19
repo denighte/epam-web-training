@@ -10,21 +10,26 @@ import java.io.IOException;
 public class ControllerListener implements AsyncListener {
     @Override
     public void onComplete(AsyncEvent event) throws IOException {
+        log.debug("Completed asynchronous request processing.");
     }
 
     @Override
     public void onTimeout(AsyncEvent event) throws IOException {
+        log.debug("Connection timeout.");
+        //event.getAsyncContext().dispatch("/error");
+        //TODO: dispatch to error page
 
     }
 
     @Override
     public void onError(AsyncEvent event) throws IOException {
+        log.debug("Error during request processing.", event.getThrowable());
         //TODO: dispatch to error page
-        event.getAsyncContext().dispatch();
+        //event.getAsyncContext().dispatch();
     }
 
     @Override
     public void onStartAsync(AsyncEvent event) throws IOException {
-
+        log.debug("Started asynchronous request processing.");
     }
 }

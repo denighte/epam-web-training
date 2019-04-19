@@ -1,7 +1,6 @@
 package by.radchuk.task.controller;
 
 public enum CommandType {
-    FAST,
-    HEAVY,
+    REST,
     AJAX_EVENT
 }

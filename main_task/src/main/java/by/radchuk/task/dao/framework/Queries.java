@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.prefs.Preferences;
 
 /**
  * A map for sql application sql queries.
@@ -23,13 +23,23 @@ import java.util.Properties;
 @Slf4j
 public final class Queries {
     /**
-     * Path to the folder with queries.
+     * Queries <code>Preferences</code> object.
+     * contains directory path, where sql queries are stored.
      */
-    private static final String QUERIES_DIRECTORY = "sql/query";
+    private static final Preferences QUERIES_PREFERENCES
+            = Preferences.userNodeForPackage(Queries.class);
+    /**
+     * Path to the folder with queries preferences key.
+     */
+    private static final String QUERIES_DIRECTORY = "db_queries_dir";
+    /**
+     * Default path to the folder with queries.
+     */
+    private static final String QUERIES_DEFAULT_DIRECTORY = "sql/query";
     /**
      * Singleton instance.
      */
-    private static final Queries INSTANCE = new Queries(QUERIES_DIRECTORY);
+    private static final Queries INSTANCE = new Queries();
 
     /**
      * Singleton get instance method.
@@ -45,17 +55,21 @@ public final class Queries {
     private Map<String, String> queries;
 
     /**
-     * scans the specified folder for .property files.
+     * Default constructor.
+     * scans the specified in <code>Preferences</code> object
+     * folder for .property files.
      * Loads them into memory as <code>HashMap</code> object.
-     * @param dir directory to scan.
      */
     @SneakyThrows(UnsupportedEncodingException.class)
-    private Queries(final String dir) {
+    private Queries() {
         queries = new HashMap<>();
-        String encodedPath = this.getClass().getClassLoader().getResource("").getPath();
-        String fullPath = URLDecoder.decode(encodedPath, "UTF-8");
+        String encodedPath = this.getClass().getClassLoader()
+                                 .getResource("").getPath();
+        String fullPath = URLDecoder.decode(encodedPath, "UTF-8")
+                          + QUERIES_PREFERENCES.get(QUERIES_DIRECTORY,
+                                                    QUERIES_DEFAULT_DIRECTORY);
         try {
-            Files.list(Paths.get(fullPath + dir)).forEach(file -> {
+            Files.list(Paths.get(fullPath)).forEach(file -> {
                 Properties properties = new Properties();
                 String filename = file.getFileName().toString();
                 filename = filename.substring(0, filename.indexOf('.'));

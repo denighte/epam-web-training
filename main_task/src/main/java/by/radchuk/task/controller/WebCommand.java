@@ -41,9 +41,10 @@ public abstract class WebCommand implements Runnable {
             try {
                 errorListener.onError(new AsyncEvent(context, throwable));
             } catch (IOException exception) {
-                log.error("AsyncListener failed.", exception);
+                log.warn("AsyncListener failed.", exception);
             }
         } finally {
+            log.debug("Compleing async request processing.");
             context.complete();
         }
     }

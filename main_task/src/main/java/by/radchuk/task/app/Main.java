@@ -1,10 +1,10 @@
 package by.radchuk.task.app;
 
-import by.radchuk.task.dao.framework.Executor;
-import by.radchuk.task.dao.framework.FixedConnectionPool;
-import org.h2.jdbcx.JdbcDataSource;
+import by.radchuk.task.model.User;
+import lombok.var;
 
-import java.sql.Connection;
+import java.util.Arrays;
+
 
 public class Main {
     private static final String URL = "jdbc:h2:./h2db";
@@ -12,12 +12,11 @@ public class Main {
     private static final String PASSWORD = "tully";
 
     public static void main(String[] args) throws Exception {
-        Executor executor = new Executor();
-        String login = "login";
-        String password = "password";
-        int id = executor.execSave("INSERT INTO users (login, password) VALUES (?, ?)",
-                          login,
-                          password);
-        System.out.println(id);
+        User user = User.builder().name("name").id(5).build();
+        for(var field : User.class.getDeclaredFields()) {
+            field.setAccessible(true);
+            System.out.println(field.get(user));
+        }
     }
+
 }

@@ -13,7 +13,7 @@ import java.sql.*;
  * It is used as follows:
  * <pre>
  * import java.sql.*;
- * import by.radchuk.task.dao.framework.Executor;
+ * import by.radchuk.handler.dao.framework.Executor;
  * public class Test {
  *     public static void main(String ... args) throws Exception {
  *         Executor executor = new Executor();

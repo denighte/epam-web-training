@@ -147,7 +147,6 @@ public final class H2Manger implements ConnectionManager {
      * @param paths paths to script files.
      * @throws SQLException if script file can't be read.
      */
-    @SneakyThrows(UnsupportedEncodingException.class)
     private void runScripts(final String... paths) throws SQLException {
         try {
             for (String path : paths) {
@@ -170,10 +169,9 @@ public final class H2Manger implements ConnectionManager {
     }
 
     /**
-     * Runs database test script file.
+     * Set up database.
      * @throws SQLException if script file can't be read.
      */
-    @SneakyThrows(UnsupportedEncodingException.class)
     private void setUpDatabase() throws SQLException {
         String runOption = DB_PREFERENCES.get(SQL_RUN_OPTION,
                                              SQL_DEFAULT_RUN_OPTION);

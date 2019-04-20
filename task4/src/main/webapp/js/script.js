@@ -226,10 +226,10 @@ function handleResponse(resp) {
     }
 }
 
-$("#upload_hidden").change(function(e){
+$("#upload_hidden").change(function(event){
     let files = "";
-    for(let i = 0; i < e.target.files.length; ++i) {
-        files = files + "; " + e.target.files.item(i).name;
+    for(let i = 0; i < event.target.files.length; ++i) {
+        files = files + "; " + event.target.files.item(i).name;
     }
     display.displayMessage(files.slice(2), "INFO")
 });

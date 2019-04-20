@@ -1,7 +1,6 @@
 package by.radchuk.task.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @Builder
@@ -13,3 +12,4 @@ public class User {
     String surname;
     String imageLink;
 }
+

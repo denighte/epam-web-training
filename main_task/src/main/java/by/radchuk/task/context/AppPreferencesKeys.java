@@ -9,7 +9,8 @@ public enum AppPreferencesKeys {
     DB_RUN_OPTION("db_run_option"),
     DB_INIT_FILE("db_init_file"),
     DB_TEST_FILE("db_test_file"),
-    DB_QUERIES_DIR("db_queries_dir");
+    DB_QUERIES_DIR("db_queries_dir"),
+    CT_PACKAGE_TO_SCAN("ct_scan_package");
     @Getter
     private String value;
 }

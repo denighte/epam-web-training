@@ -33,7 +33,7 @@ import javax.sql.PooledConnection;
  * It is used as follows:
  * <pre>
  * import java.sql.*;
- * import by.radchuk.task.dao.framework.FixedConnectionPool;
+ * import by.radchuk.handler.dao.framework.FixedConnectionPool;
  * public class Test {
  *     public static void main(String... args) throws Exception {
  *         FixedConnectionPool cp = FixedConnectionPool.create(

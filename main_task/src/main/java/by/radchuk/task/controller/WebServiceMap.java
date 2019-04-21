@@ -1,19 +1,13 @@
 package by.radchuk.task.controller;
 
-import by.radchuk.task.controller.annotation.HttpMethod;
 import by.radchuk.task.controller.annotation.WebHandler;
-import by.radchuk.task.util.Reflections;
-import lombok.SneakyThrows;
+import by.radchuk.task.util.ClassReflections;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Service handler mapping class.
@@ -22,31 +16,37 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class WebServiceMap {
-    //private final int HTTP_METHODS_NUMBER = HttpMethod.values().length;
-    private static final File[] NO_FILES = {};
-    private Map<String, Class[]> handlerMap;
+    private WebServiceTaskFactory factory = new WebServiceTaskFactory();
+    private static final int METHODS_NUMBER = HttpMethodType.values().length;
+    private Map<String, WebServiceTask[]> handlerMap;
 
     WebServiceMap() {
         handlerMap = new HashMap<>();
-
-
     }
 
     public void scan(String clsPackage) throws ScanException {
         try {
-            List<Class> classes = Reflections.builder().loadClasses(clsPackage)
-                                                       .filter(WebHandler.class).get();
-            List<WebServiceTask> tasks = classes.stream().map(cls -> WebServiceTask.load(cls))
-                                                .collect(Collectors.toList());
+            List<Class> classes = ClassReflections.builder().loadClasses(clsPackage)
+                                                  .filter(WebHandler.class).get();
+            for (var cls : classes) {
+                for (var task : factory.create(cls)) {
+                    addHandler(task);
+                }
+            }
         } catch (IOException exception) {
             throw new ScanException("Failed to scan the package!", exception);
         }
     }
 
-    public Class<HttpHandler> getHandler(String url, String method) {
-        //@SuppressWarnings("unchecked")
-        //Class<HttpHandler> handler = handlerMap.get(url)[method.ordinal()];
-        return null;
+    public WebServiceTask getTask(String url, String method) {
+        WebServiceTask task;
+        try {
+            task = handlerMap.get(url)[HttpMethodType.valueOf(method).ordinal()];
+        } catch (IllegalArgumentException exception) {
+            log.debug("Unsupported method type: {}", method);
+            throw new IllegalArgumentException("Unsupported method type.");
+        }
+        return task;
     }
 
 
@@ -55,26 +55,41 @@ public class WebServiceMap {
 
 
 
-//    private void addHandler(WebHandler annotation, Class cls) {
-//        Class[] urlHandlers = handlerMap.get(annotation.url());
-//        int methodOrdinal = annotation.method().ordinal();
-//        if (urlHandlers == null) {
-//            urlHandlers = new Class[HTTP_METHODS_NUMBER];
-//            urlHandlers[methodOrdinal] = cls;
-//            handlerMap.put(annotation.url(), urlHandlers);
-//        } else if (urlHandlers[methodOrdinal] == null) {
-//            urlHandlers[methodOrdinal] = cls;
-//        } else {
-//            throw new IllegalArgumentException("Duplicate handler with url="
-//                                               + annotation.url()
-//                                               + " and HttpMethod="
-//                                               + annotation.method().name());
-//        }
-//    }
+    private void addHandler(WebServiceTask task) {
+        WebServiceTask[] handlers = handlerMap.get(task.getURI());
+        HttpMethodType httpMethod;
+        try {
+            httpMethod = HttpMethodType.valueOf(task.getMethod());
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("Unsupported method type.");
+        }
+        int methodOrdinal = httpMethod.ordinal();
+        if (handlers == null) {
+            handlers = new WebServiceTask[METHODS_NUMBER];
+            handlers[methodOrdinal] = task;
+            handlerMap.put(task.getURI(), handlers);
+        } else if (handlers[methodOrdinal] == null) {
+            handlers[methodOrdinal] = task;
+        } else {
+            throw new IllegalArgumentException("Duplicate handler with url="
+                                               + task.getURI()
+                                               + " and HttpMethod="
+                                               + httpMethod.name());
+        }
+    }
+
+    private enum HttpMethodType {
+        GET,
+        HEAD,
+        POST,
+        PUT,
+        DELETE,
+    }
+
 
     public static void main(String[] args) throws ScanException {
         WebServiceMap map = new WebServiceMap();
         map.scan("by.radchuk.task.service");
-        //System.out.println(map.getHandler("/test", HttpMethod.GET).getName());
+        System.out.println(map.getTask("/test", "GET").getURI());
     }
 }

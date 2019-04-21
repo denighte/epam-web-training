@@ -11,19 +11,18 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
-public class Reflections {
+public class ClassReflections {
     private static final File[] NO_FILES = {};
     private List<Class> classes;
 
-    private Reflections() {
+    private ClassReflections() {
         classes = new ArrayList<>();
     }
 
-    public static Reflections builder() {
-        return new Reflections();
+    public static ClassReflections builder() {
+        return new ClassReflections();
     }
 
     /**
@@ -34,7 +33,7 @@ public class Reflections {
      * @throws IOException
      */
     @SneakyThrows(UnsupportedEncodingException.class)
-    public Reflections loadClasses(String packageName) throws IOException {
+    public ClassReflections loadClasses(String packageName) throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
         Enumeration<URL> resources = classLoader.getResources(path);
@@ -82,7 +81,7 @@ public class Reflections {
         return classes;
     }
 
-    public <T> Reflections filter(Class<T> annotationClass) {
+    public <T> ClassReflections filter(Class<T> annotationClass) {
         classes = classes.stream().filter(cls -> cls.isAnnotationPresent(annotationClass)).collect(Collectors.toList());
         return this;
     }

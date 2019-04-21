@@ -23,7 +23,7 @@ import java.util.prefs.Preferences;
  * @author Dmitry Radchuk
  */
 @Slf4j
-public final class H2Manger implements ConnectionManager {
+public final class H2Manger implements ConnectionManager, AutoCloseable {
     /**
      * <code>Preferences</code> object for connection manager.
      * Stores the init values of db and connection pool.
@@ -202,5 +202,10 @@ public final class H2Manger implements ConnectionManager {
             log.error("Failed to init Database: SQL exception!", exception);
         }
 
+    }
+
+    @Override
+    public void close() throws Exception {
+        connectionPool.dispose();
     }
 }

@@ -1,6 +1,5 @@
 package by.radchuk.task.controller;
 
-import by.radchuk.task.service.ServiceClass;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.*;
@@ -11,11 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-@WebServlet(urlPatterns = {"/test"}, asyncSupported = true, loadOnStartup = 1)
+@WebServlet(urlPatterns = {"/test"}, loadOnStartup = 1)
 public class FrontControllerServlet extends HttpServlet {
     private WebServiceMap map;
-    private HandlerFactory handlerFactory = new HandlerFactory();
-    private boolean isScanned = false;
 
     @Override
     public void init() throws ServletException {
@@ -31,11 +28,24 @@ public class FrontControllerServlet extends HttpServlet {
                                   HttpServletResponse response)
                                 throws ServletException, IOException {
 
-//        String method = (String)request.getAttribute("method");
-//        System.out.println(request.getRequestURL());
-//        Class<HttpHandler> cls = map.getHandler("/test", method);
-//        HttpHandler handler = handlerFactory.createInstance(cls);
-
+        String method = (String)request.getAttribute("method");
+        WebServiceTask task = map.getTask(request.getRequestURI(), method);
+        String taskContentType = task.getRequestContentType();
+        if (taskContentType != null) {
+            String requestContentType = request.getContentType();
+            //avoiding boundary parameter in multipart/form-data content type.
+            int propertyEnd = requestContentType.indexOf(';');
+            if (propertyEnd != -1) {
+                requestContentType = requestContentType.substring(0, propertyEnd);
+            }
+            if (!requestContentType.equals(taskContentType)) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                        "Unsupported request content type.");
+                return;
+            }
+        }
+        String result = task.execute(request, response);
+        response.getWriter().write(result);
     }
 
     @Override

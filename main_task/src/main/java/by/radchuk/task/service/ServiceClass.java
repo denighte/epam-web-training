@@ -11,10 +11,8 @@ public class ServiceClass {
 
     @Path("/test")
     @HttpMethod("GET")
-    @Consume("multipart/form-data")
-    @Produce("application/json")
     public Response process(@RequestParam("param") String param) {
-        return Response.builder().data("sample").build();
+        return Response.builder().data("WebHandler response: " + param).build();
     }
 }
 

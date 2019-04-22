@@ -1,5 +1,6 @@
 package by.radchuk.task.controller;
 
+import by.radchuk.task.dao.framework.Queries;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.*;
@@ -16,10 +17,12 @@ public class FrontControllerServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        //Queries queries = Queries.getInstance();
+        //queries.getQuery("user:findAll");
         map = new WebServiceMap();
         try {
             map.scan("by.radchuk.task.service");
-        } catch (ScanException exception) {
+        } catch (ControllerException exception) {
             throw new ServletException(exception);
         }
     }
@@ -31,7 +34,7 @@ public class FrontControllerServlet extends HttpServlet {
         String method = (String)request.getAttribute("method");
         WebServiceTask task = map.getTask(request.getRequestURI(), method);
         String taskContentType = task.getRequestContentType();
-        if (taskContentType != null) {
+        if (taskContentType != null && request.getContentType() != null) {
             String requestContentType = request.getContentType();
             //avoiding boundary parameter in multipart/form-data content type.
             int propertyEnd = requestContentType.indexOf(';');
@@ -44,7 +47,12 @@ public class FrontControllerServlet extends HttpServlet {
                 return;
             }
         }
-        String result = task.execute(request, response);
+        String result = "";
+        try {
+            result = task.execute(request, response);
+        } catch (ControllerException exception) {
+            throw new ServletException(exception);
+        }
         response.getWriter().write(result);
     }
 

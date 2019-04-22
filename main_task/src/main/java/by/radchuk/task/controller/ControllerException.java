@@ -1,12 +1,12 @@
 package by.radchuk.task.controller;
 
-public class ScanException extends Exception{
+public class ControllerException extends Exception{
     /**
      * Constructs a new exception with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      */
-    public ScanException() {
+    public ControllerException() {
         super();
     }
 
@@ -18,7 +18,7 @@ public class ScanException extends Exception{
      * @param   message   the detail message. The detail message is saved for
      *          later retrieval by the {@link #getMessage()} method.
      */
-    public ScanException(String message) {
+    public ControllerException(String message) {
         super(message);
     }
 
@@ -35,7 +35,7 @@ public class ScanException extends Exception{
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
      */
-    public ScanException(String message, Throwable cause) {
+    public ControllerException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -52,7 +52,7 @@ public class ScanException extends Exception{
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
      */
-    public ScanException(Throwable cause) {
+    public ControllerException(Throwable cause) {
         super(cause);
     }
 
@@ -69,7 +69,7 @@ public class ScanException extends Exception{
      * @param writableStackTrace whether or not the stack trace should
      *                           be writable
      */
-    protected ScanException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected ControllerException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

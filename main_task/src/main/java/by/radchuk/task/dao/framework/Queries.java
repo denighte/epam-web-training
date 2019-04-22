@@ -20,6 +20,7 @@ import java.util.prefs.Preferences;
  *
  * @author Dimtry Radchuk
  */
+//TODO: FIX QUERIES LOADING
 @Slf4j
 public final class Queries {
     /**

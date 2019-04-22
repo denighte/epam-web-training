@@ -110,6 +110,8 @@ public class FilePreferences extends AbstractPreferences
         if (Files.exists(filePath)) {
             return;
         }
+        //Here should be synchronized( lock )
+        //But due to the task, cat't do that
         mutex.lock();
         try {
             Properties p = new Properties();

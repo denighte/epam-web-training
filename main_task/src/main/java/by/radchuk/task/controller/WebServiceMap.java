@@ -5,7 +5,6 @@ import by.radchuk.task.util.ClassReflections;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -24,7 +23,7 @@ public class WebServiceMap {
         handlerMap = new HashMap<>();
     }
 
-    public void scan(String clsPackage) throws ScanException {
+    public void scan(String clsPackage) throws ControllerException {
         try {
             List<Class> classes = ClassReflections.builder().loadClasses(clsPackage)
                                                   .filter(WebHandler.class).get();
@@ -33,8 +32,8 @@ public class WebServiceMap {
                     addHandler(task);
                 }
             }
-        } catch (IOException exception) {
-            throw new ScanException("Failed to scan the package!", exception);
+        } catch (IOException | ControllerException exception) {
+            throw new ControllerException("Failed to scan the package!", exception);
         }
     }
 
@@ -48,12 +47,6 @@ public class WebServiceMap {
         }
         return task;
     }
-
-
-
-
-
-
 
     private void addHandler(WebServiceTask task) {
         WebServiceTask[] handlers = handlerMap.get(task.getURI());
@@ -87,7 +80,7 @@ public class WebServiceMap {
     }
 
 
-    public static void main(String[] args) throws ScanException {
+    public static void main(String[] args) throws ControllerException {
         WebServiceMap map = new WebServiceMap();
         map.scan("by.radchuk.task.service");
         System.out.println(map.getTask("/test", "GET").getURI());

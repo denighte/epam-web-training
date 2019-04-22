@@ -14,17 +14,20 @@ import java.nio.channels.WritableByteChannel;
 
 @Slf4j
 public class ResourceWriteListener implements WriteListener {
-    private ReadableByteChannel inputChannel;// = Channels.newChannel(resource);
+    private ReadableByteChannel inputChannel;
     private WritableByteChannel outputChannel;
     private ServletOutputStream stream;
     private ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
-    private AsyncContext context;
+    private AsyncContext asyncContext;
+    private long length;
 
-    public ResourceWriteListener(InputStream resource, ServletOutputStream output) {
+    public ResourceWriteListener(AsyncContext context, InputStream resource, ServletOutputStream output) {
         try {
             inputChannel = Channels.newChannel(resource);
             outputChannel = Channels.newChannel(output);
             stream = context.getResponse().getOutputStream();
+            asyncContext = context;
+            length = 0;
         } catch (Throwable exception) {
             onError(exception);
         }
@@ -32,16 +35,19 @@ public class ResourceWriteListener implements WriteListener {
 
     @Override
     public void onWritePossible() throws IOException {
-        while (inputChannel.read(buffer) != -1 && stream.isReady()) {
+        while ((length = inputChannel.read(buffer)) != -1 && stream.isReady()) {
             buffer.flip();
-            outputChannel.write(buffer);
+            length += outputChannel.write(buffer);
             buffer.clear();
+        }
+        if (length == -1) {
+            asyncContext.complete();
         }
     }
 
     @Override
     public void onError(Throwable t) {
-        context.complete();
+        asyncContext.complete();
         log.error("Error during resource serving.", t);
     }
 }

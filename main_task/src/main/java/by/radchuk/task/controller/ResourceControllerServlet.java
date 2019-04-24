@@ -1,6 +1,5 @@
 package by.radchuk.task.controller;
 
-import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.AsyncContext;
@@ -13,14 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
-
 @Slf4j
-@WebServlet(urlPatterns = {"/resources/*"}, asyncSupported = true)
+@WebServlet(urlPatterns = {"/resourcesss/*"}, asyncSupported = true)
 public class ResourceControllerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request,
@@ -35,6 +28,6 @@ public class ResourceControllerServlet extends HttpServlet {
         response.setContentType("image/jpg");
         ServletOutputStream output = response.getOutputStream();
         AsyncContext asyncContext = request.startAsync();
-        output.setWriteListener(new ResourceWriteListener(asyncContext, resource, output));
+        //output.setWriteListener(new ResourceWriteListener(asyncContext, resource, output));
     }
 }

@@ -32,7 +32,7 @@ public class FrontControllerServlet extends HttpServlet {
                                 throws ServletException, IOException {
 
         String method = (String)request.getAttribute("method");
-        WebServiceTask task = map.getTask(request.getRequestURI(), method);
+        WebServiceTask task = map.getTask(request.getPathInfo(), method);
         String taskContentType = task.getRequestContentType();
         if (taskContentType != null && request.getContentType() != null) {
             String requestContentType = request.getContentType();

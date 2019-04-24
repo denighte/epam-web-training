@@ -27,8 +27,11 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * A file servlet.
- * Supports resume of downloads and client-side caching
- * and GZIP of text content.
+ * Supports:
+ * * resume of downloads
+ * * client-side caching
+ * * GZIP of text content.
+ * * Etag processing.
  * @author Dmitry Radchuk
  */
 @Slf4j
@@ -327,8 +330,6 @@ public class FileServlet extends HttpServlet {
 
         // Sending requested file (part(s)/file) to client ---------------------
 
-        OutputStream output = response.getOutputStream();
-
         //If it was doPut, committing response object.
         if (!content) {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -344,12 +345,10 @@ public class FileServlet extends HttpServlet {
         //setting fitting headers.
         if (ranges.get(0) == full) {
             //return full file.
+            Range r = ranges.get(0);
             response.setContentType(contentType);
-            if (acceptsGzip) {
-                //return gzipped text.
-                response.setHeader("Transfer-Encoding", "chunked");
-                response.setHeader("Content-Encoding", "gzip");
-                output = new GZIPOutputStream(output, DEFAULT_BUFFER_SIZE);
+            if (!acceptsGzip) {
+                response.setHeader("Content-Length", String.valueOf(r.length));
             }
         } else if (ranges.size() == 1) {
             //Return single part of file.
@@ -366,36 +365,73 @@ public class FileServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT); // 206.
         }
 
+        OutputStream output = response.getOutputStream();
+
+        //Processing gzip as blocking output.
+        //Because we gzip only text/* files, ad we gzip on-the-fly.
+        //So there is no need for async processing.
+        //(And, also it won't work with on-the-fly encoding)
+        if (ranges.get(0) == full && acceptsGzip) {
+            //return gzip
+            response.setHeader("Content-Encoding", "gzip");
+            //tomcat sets it by default.
+            //response.setHeader("Transfer-Encoding", "chunked");
+            InputStream input = null;
+            try {
+                input = Files.newInputStream(file);
+                output = new GZIPOutputStream(output);
+                blockingCopy(input, output);
+            } finally {
+                output.flush();
+                closeQuietly(input);
+                closeQuietly(output);
+            }
+            return;
+        }
+        
         //starting async processing.
         AsyncContext context = request.startAsync();
-        SeekableByteChannel input = null;
+        SeekableByteChannel channelInput = null;
         try {
             //getting new channel for file read.
-            input = Files.newByteChannel(file);
+            channelInput = Files.newByteChannel(file);
             context.getResponse()
                    .getOutputStream()
                    .setWriteListener(
                            new FileWriteListener(context,
-                                                 input,
+                                                 channelInput,
                                                  output,
                                                  contentType,
                                                  ranges)
                    );
         } catch (Exception exception) {
             context.complete();
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException ioException) {
-                    //ignore
-                    //nothing we can do
-                }
-            }
+            closeQuietly(channelInput);
+            closeQuietly(output);
         }
 
     }
 
     // Helper methods ----------------------------------------------------------
+
+    protected void closeQuietly(AutoCloseable resource) {
+        try {
+            if (resource != null) {
+                resource.close();
+            }
+        } catch (Exception exception) {
+            //ignore.
+            //nothing we can do.
+        }
+    }
+
+    protected void blockingCopy(InputStream input, OutputStream output) throws IOException {
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+        int read;
+        while ((read = input.read(buffer)) > 0) {
+            output.write(buffer, 0, read);
+        }
+    }
 
     // Inner classes -----------------------------------------------------------
 
@@ -719,7 +755,6 @@ public class FileServlet extends HttpServlet {
          */
         @Override
         public void onError(final Throwable t) {
-            System.out.println(t.getMessage());
             complete();
             log.error("Error during resource serving.", t);
         }
@@ -760,12 +795,14 @@ public class FileServlet extends HttpServlet {
         void complete() {
             try {
                 input.close();
+                output.close();
                 servletStream.close();
             } catch (IOException exception) {
                 log.error("Error during closing resource/output stream",
                           exception);
+            } finally {
+                asyncContext.complete();
             }
-            asyncContext.complete();
         }
     }
 

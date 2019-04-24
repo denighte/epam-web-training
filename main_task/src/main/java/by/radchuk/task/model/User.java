@@ -5,11 +5,11 @@ import lombok.*;
 @Data
 @Builder
 public class User {
-    int id;
-    String login;
-    String passwordHash;
-    String name;
-    String surname;
-    String imageLink;
+    private int id;
+    private String login;
+    private String passwordHash;
+    private String name;
+    private String surname;
+    private String imageLink;
 }
 

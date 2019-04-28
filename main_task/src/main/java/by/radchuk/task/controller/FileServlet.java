@@ -159,7 +159,7 @@ public class FileServlet extends HttpServlet {
         // Checking if file is actually supplied to the request URL.
         if (requestedFile == null) {
             // sending 404 (probably ignore?)
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
@@ -170,10 +170,9 @@ public class FileServlet extends HttpServlet {
         // Checking if file actually exists in filesystem.
         if (!Files.exists(file)) {
             // sending 404 error (probably ignore?)
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-
 
         // Preparing some variables.
         String fileName = file.getFileName().toString();

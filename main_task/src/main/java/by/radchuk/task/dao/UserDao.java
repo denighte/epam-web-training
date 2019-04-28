@@ -6,6 +6,7 @@ import by.radchuk.task.model.User;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -37,6 +38,10 @@ public class UserDao implements AutoCloseable {
      * image link column name.
      */
     private static final String IMAGE_LINK = "image_link";
+    /**
+     * level column name.
+     */
+    private static final String LEVEL = "level";
     /**
      * find user by id query.
      */
@@ -77,13 +82,7 @@ public class UserDao implements AutoCloseable {
         try {
             return executor.execQuery(FIND_USER_BY_ID, rs -> {
                 if (rs.next()) {
-                   return User.builder().id(rs.getInt(ID))
-                              .login(rs.getString(LOGIN))
-                              .passwordHash(rs.getString(PASSWORD_HASH))
-                              .name(rs.getString(NAME))
-                              .surname(rs.getString(SURNAME))
-                              .imageLink(rs.getString(IMAGE_LINK))
-                              .build();
+                   return buildUser(rs);
                 }
                 return null;
             }, Integer.toString(id));
@@ -103,13 +102,7 @@ public class UserDao implements AutoCloseable {
         try {
             return executor.execQuery(FIND_USER_BY_LOGIN, rs -> {
                 if (rs.next()) {
-                    return User.builder().id(rs.getInt(ID))
-                            .login(rs.getString(LOGIN))
-                            .passwordHash(rs.getString(PASSWORD_HASH))
-                            .name(rs.getString(NAME))
-                            .surname(rs.getString(SURNAME))
-                            .imageLink(rs.getString(IMAGE_LINK))
-                            .build();
+                    return buildUser(rs);
                 }
                 return null;
             }, login);
@@ -131,6 +124,7 @@ public class UserDao implements AutoCloseable {
                     user.getPasswordHash(),
                     user.getName(),
                     user.getSurname(),
+                    Byte.toString(user.getLevel()),
                     user.getImageLink());
         } catch (SQLException exception) {
             throw new DaoException(exception);
@@ -151,10 +145,28 @@ public class UserDao implements AutoCloseable {
                     user.getName(),
                     user.getSurname(),
                     user.getImageLink(),
+                    Byte.toString(user.getLevel()),
                     Integer.toString(user.getId()));
         } catch (SQLException exception) {
             throw new DaoException(exception);
         }
+    }
+
+    /**
+     * builds user from result set.
+     * @param rs <code>ResultSet</code> object.
+     * @return new <code>User</code> instance.
+     * @throws SQLException in case database operation errors.
+     */
+    private User buildUser(ResultSet rs) throws SQLException {
+        return User.builder().id(rs.getInt(ID))
+                .login(rs.getString(LOGIN))
+                .passwordHash(rs.getString(PASSWORD_HASH))
+                .name(rs.getString(NAME))
+                .surname(rs.getString(SURNAME))
+                .imageLink(rs.getString(IMAGE_LINK))
+                .level(rs.getByte(LEVEL))
+                .build();
     }
 
     /**

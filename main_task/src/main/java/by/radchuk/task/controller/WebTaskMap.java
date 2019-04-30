@@ -14,18 +14,18 @@ import java.util.*;
  *
  */
 @Slf4j
-public class WebServiceMap {
-    private WebServiceTaskFactory factory = new WebServiceTaskFactory();
+public class WebTaskMap {
+    private WebTaskFactory factory = new WebTaskFactory();
     private static final int METHODS_NUMBER = HttpMethodType.values().length;
-    private Map<String, WebServiceTask[]> handlerMap;
+    private Map<String, WebTask[]> handlerMap;
 
-    WebServiceMap() {
+    WebTaskMap() {
         handlerMap = new HashMap<>();
     }
 
     public void scan(String clsPackage) throws ControllerException {
         try {
-            List<Class> classes = ClassReflections.builder().loadClasses(clsPackage)
+            List<Class> classes = ClassReflections.builder().load(clsPackage)
                                                   .filter(WebHandler.class).get();
             for (var cls : classes) {
                 for (var task : factory.create(cls)) {
@@ -37,8 +37,8 @@ public class WebServiceMap {
         }
     }
 
-    public WebServiceTask getTask(String url, String method) {
-        WebServiceTask task;
+    public WebTask getTask(String url, String method) {
+        WebTask task;
         try {
             task = handlerMap.get(url)[HttpMethodType.valueOf(method).ordinal()];
         } catch (IllegalArgumentException exception) {
@@ -48,8 +48,8 @@ public class WebServiceMap {
         return task;
     }
 
-    private void addHandler(WebServiceTask task) {
-        WebServiceTask[] handlers = handlerMap.get(task.getURI());
+    private void addHandler(WebTask task) {
+        WebTask[] handlers = handlerMap.get(task.getURI());
         HttpMethodType httpMethod;
         try {
             httpMethod = HttpMethodType.valueOf(task.getMethod());
@@ -58,7 +58,7 @@ public class WebServiceMap {
         }
         int methodOrdinal = httpMethod.ordinal();
         if (handlers == null) {
-            handlers = new WebServiceTask[METHODS_NUMBER];
+            handlers = new WebTask[METHODS_NUMBER];
             handlers[methodOrdinal] = task;
             handlerMap.put(task.getURI(), handlers);
         } else if (handlers[methodOrdinal] == null) {
@@ -81,7 +81,7 @@ public class WebServiceMap {
 
 
     public static void main(String[] args) throws ControllerException {
-        WebServiceMap map = new WebServiceMap();
+        WebTaskMap map = new WebTaskMap();
         map.scan("by.radchuk.task.service");
         System.out.println(map.getTask("/test", "GET").getURI());
     }

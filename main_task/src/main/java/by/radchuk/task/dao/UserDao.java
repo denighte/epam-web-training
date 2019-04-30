@@ -1,7 +1,6 @@
 package by.radchuk.task.dao;
 
 import by.radchuk.task.dao.framework.Executor;
-import by.radchuk.task.dao.framework.Queries;
 import by.radchuk.task.model.User;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -45,26 +44,30 @@ public class UserDao implements AutoCloseable {
     /**
      * find user by id query.
      */
-    private static final String FIND_USER_BY_ID;
+    private static final String FIND_USER_BY_ID
+            = "SELECT id, login, password_hash, name, surname, image_link"
+            + " FROM users WHERE id = ?";
     /**
      * find user by login query.
      */
-    private static final String FIND_USER_BY_LOGIN;
+    private static final String FIND_USER_BY_LOGIN
+            = "SELECT id, login, password_hash, name, surname, image_link"
+            + " FROM users WHERE login = ?";
     /**
      * insert user query.
      */
-    private static final String INSERT_USER;
+    private static final String INSERT_USER
+            = "INSERT INTO users "
+            + "(login, password_hash, name, surname, image_link)"
+            + " VALUES (?, ?, ?, ?, ?);";
     /**
      * update user query.
      */
-    private static final String UPDATE_USER;
-    static {
-        Queries queries = Queries.getInstance();
-        FIND_USER_BY_ID = queries.getQuery("users:find_by_id");
-        FIND_USER_BY_LOGIN = queries.getQuery("users:find_by_login");
-        INSERT_USER = queries.getQuery("users:insert");
-        UPDATE_USER = queries.getQuery("users:update");
-    }
+    private static final String UPDATE_USER
+            = "UPDATE users "
+            + "SET login = ?, password_hash = ?, name = ?, "
+                + "surname = ?, image_link = ? "
+            + "WHERE id= ?";
 
     /**
      * query executor objects.

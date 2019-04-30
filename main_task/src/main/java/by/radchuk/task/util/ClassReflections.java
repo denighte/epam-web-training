@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class ClassReflections {
      * @throws IOException
      */
     @SneakyThrows(UnsupportedEncodingException.class)
-    public ClassReflections loadClasses(String packageName) throws IOException {
+    public ClassReflections load(String packageName) throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
         Enumeration<URL> resources = classLoader.getResources(path);
@@ -81,7 +82,7 @@ public class ClassReflections {
         return classes;
     }
 
-    public <T> ClassReflections filter(Class<T> annotationClass) {
+    public <T extends Annotation> ClassReflections filter(Class<T> annotationClass) {
         classes = classes.stream().filter(cls -> cls.isAnnotationPresent(annotationClass)).collect(Collectors.toList());
         return this;
     }

@@ -1,5 +1,6 @@
 package by.radchuk.task.context;
 
+import by.radchuk.task.controller.WebTaskMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -33,18 +34,21 @@ public enum AppPreferencesKeys {
      */
     DB_TEST_FILE("db_test_file"),
     /**
-     * Queries files directory.
-     * {@link by.radchuk.task.dao.framework.Queries} class
-     * loads these files in a special map on startup.
-     */
-    DB_QUERIES_DIR("db_queries_dir"),
-    /**
      * Package to scan for service classes.
-     * {@link by.radchuk.task.controller.WebServiceMap} class
+     * {@link WebTaskMap} class
      * loads service classes in a special map on startup.
      * All client requests dispatched to these classes.
      */
-    CT_PACKAGE_TO_SCAN("ct_scan_package");
+    CT_PACKAGE_TO_SCAN("ct_scan_package"),
+    /**
+     * Path to public resources, which can be downloaded/
+     * viewed by users.
+     */
+    PUBlIC_RESOURCES_PATH("public_resources_path"),
+    /**
+     * Path to application private resources.
+     */
+    APPLICATION_RESOURCES_PATH("app_resources_path");
     /**
      * Preferences key name.
      */

@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-@WebServlet(urlPatterns = {"/test"}, loadOnStartup = 1)
+//@WebServlet(urlPatterns = {"/test"}, loadOnStartup = 1)
 public class FrontControllerServlet extends HttpServlet {
-    private WebTaskMap map;
+    private WebTaskContainer map;
 
     @Override
     public void init() throws ServletException {
-        map = new WebTaskMap();
+        map = new WebTaskContainer();
         try {
             map.scan("by.radchuk.task.service");
         } catch (ControllerException exception) {
@@ -33,12 +33,12 @@ public class FrontControllerServlet extends HttpServlet {
         String method = (String) request.getAttribute("method");
         WebTask task = map.getTask(request.getPathInfo(), method);
         ResponseHandler responseHandler = new ResponseHandler(response);
-        if (!validateContentType(task.getRequestContentType(),
+        if (task == null || !validateContentType(task.getRequestContentType(),
                                  request.getContentType())) {
             //not implemented message.
             Response msg = Response.builder()
-                                   .status(501)
-                                   .data("Unsupported request content type.")
+                                   .status(405)
+                                   .data("Not allowed.")
                                    .build();
             responseHandler.handle(msg);
             return;

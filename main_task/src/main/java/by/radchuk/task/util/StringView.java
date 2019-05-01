@@ -1,6 +1,7 @@
 package by.radchuk.task.util;
 
 import lombok.Getter;
+import lombok.var;
 
 public class StringView {
     private char[] value;
@@ -11,9 +12,11 @@ public class StringView {
     private int hash;
 
     public StringView(String str) {
-        value = str.toCharArray();
+        int length = str.length();
+        value = new char[length + 5];
+        str.getChars(0, length, value, 0);
         offset = 0;
-        end = str.length();
+        end = length;
         hash = 0;
     }
 
@@ -30,6 +33,22 @@ public class StringView {
         }
         end += str.length();
         hash = 0;
+    }
+
+    public void add(char c) {
+        value[end] = c;
+        ++end;
+        hash = 0;
+    }
+
+    public void add(final int n) {
+        int number = n, counter = n, length = 0;
+        for (;(counter /= 10) > 0; ++length);
+        for(int i = end + length; i >= end; --i) {
+            value[i] = (char)(number % 10 + '0');
+            number /= 10;
+        }
+        end += length + 1;
     }
 
     public StringView sub(int start, int end) {
@@ -50,8 +69,27 @@ public class StringView {
         return end - offset;
     }
 
+    public int count(char c) {
+        int counter = 0;
+        for (int i = offset; i < end; ++i) {
+            if (value[i] == c) {
+                ++counter;
+            }
+        }
+        return counter;
+    }
+
+    public int lastIndexOf(char c) {
+        for (int i = end - 1; i >= offset; --i) {
+            if (value[i] == c) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public int indexOf(char c) {
-        for (int i = offset; i < end; i++) {
+        for (int i = offset; i < end; ++i) {
             if (value[i] == c) {
                 return i;
             }

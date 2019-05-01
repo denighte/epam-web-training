@@ -2,6 +2,7 @@ package by.radchuk.task.controller;
 
 import by.radchuk.task.controller.annotation.WebHandler;
 import by.radchuk.task.util.ClassReflections;
+import by.radchuk.task.util.StringView;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 
@@ -14,12 +15,12 @@ import java.util.*;
  *
  */
 @Slf4j
-public class WebTaskMap {
+public class WebTaskContainer {
     private WebTaskFactory factory = new WebTaskFactory();
     private static final int METHODS_NUMBER = HttpMethodType.values().length;
-    private Map<String, WebTask[]> handlerMap;
+    private Map<StringView, WebTask[]> handlerMap;
 
-    WebTaskMap() {
+    WebTaskContainer() {
         handlerMap = new HashMap<>();
     }
 
@@ -37,35 +38,56 @@ public class WebTaskMap {
         }
     }
 
-    public WebTask getTask(String url, String method) {
-        WebTask task;
+    public WebTask getTask(String requestUri, String method) {
         try {
-            task = handlerMap.get(url)[HttpMethodType.valueOf(method).ordinal()];
+            StringView uri = new StringView(requestUri);
+            WebTask task = getExactTask(uri, method);
+            if (task != null) {
+                return task;
+            }
+
+            int uriDepth = uri.count('/');
+            for(int i = 0; i < uriDepth; ++i) {
+                uri.setEnd(uri.lastIndexOf('/'));
+                uri.add("/*");
+                task = getExactTask(uri, method);
+                if (task != null) {
+                    return task;
+                }
+                uri.setEnd(uri.lastIndexOf('/'));
+            }
+            return null;
         } catch (IllegalArgumentException exception) {
-            log.debug("Unsupported method type: {}", method);
-            throw new IllegalArgumentException("Unsupported method type.");
+            return null;
         }
-        return task;
     }
 
-    private void addHandler(WebTask task) {
-        WebTask[] handlers = handlerMap.get(task.getURI());
+    private WebTask getExactTask(StringView uri, String method) {
+        WebTask[] urlHandlers = handlerMap.get(uri);
+        if (urlHandlers != null) {
+            return urlHandlers[HttpMethodType.valueOf(method).ordinal()];
+        }
+        return null;
+    }
+
+    private void addHandler(WebTask task) throws ControllerException {
+        WebTask[] handlers = handlerMap.get(task.getPath());
         HttpMethodType httpMethod;
         try {
             httpMethod = HttpMethodType.valueOf(task.getMethod());
         } catch (IllegalArgumentException exception) {
-            throw new IllegalArgumentException("Unsupported method type.");
+            throw new ControllerException("Unsupported method type.");
         }
         int methodOrdinal = httpMethod.ordinal();
         if (handlers == null) {
             handlers = new WebTask[METHODS_NUMBER];
             handlers[methodOrdinal] = task;
-            handlerMap.put(task.getURI(), handlers);
+            handlerMap.put(task.getPath(), handlers);
         } else if (handlers[methodOrdinal] == null) {
             handlers[methodOrdinal] = task;
         } else {
-            throw new IllegalArgumentException("Duplicate handler with url="
-                                               + task.getURI()
+            throw new ControllerException("Duplicate handler with url="
+                                               + task.getPath().toString()
                                                + " and HttpMethod="
                                                + httpMethod.name());
         }
@@ -81,8 +103,8 @@ public class WebTaskMap {
 
 
     public static void main(String[] args) throws ControllerException {
-        WebTaskMap map = new WebTaskMap();
+        WebTaskContainer map = new WebTaskContainer();
         map.scan("by.radchuk.task.service");
-        System.out.println(map.getTask("/test", "GET").getURI());
+        System.out.println(map.getTask("/test/test/test/id", "GET").getPath());
     }
 }

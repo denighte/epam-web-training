@@ -23,9 +23,4 @@ public class RequestContext {
     public void setSessionAttribute(String key, Object value) {
         request.getSession().setAttribute(key, value);
     }
-
-    //TODO: add listener for ServletException?
-    public Part getPart(String name) throws IOException, ServletException {
-        return request.getPart(name);
-    }
 }

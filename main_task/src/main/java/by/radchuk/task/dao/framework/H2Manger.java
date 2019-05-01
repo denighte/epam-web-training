@@ -1,7 +1,6 @@
 package by.radchuk.task.dao.framework;
 
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.jdbcx.JdbcDataSource;
 import org.h2.tools.RunScript;
@@ -23,7 +22,7 @@ import java.util.prefs.Preferences;
  * @author Dmitry Radchuk
  */
 @Slf4j
-public final class H2Manger implements ConnectionManager, AutoCloseable {
+public final class H2Manger implements ConnectionManager{
     /**
      * <code>Preferences</code> object for connection manager.
      * Stores the init values of db and connection pool.
@@ -53,25 +52,17 @@ public final class H2Manger implements ConnectionManager, AutoCloseable {
      */
     private static final String SQL_TEST_RUN_OPTION = "test";
     /**
-     * Database init sql script file key.
-     */
-    private static final String SQL_INIT_SCRIPT = "db_init_file";
-    /**
-     * Database test sql script file key.
-     */
-    private static final String SQL_TEST_SCRIPT = "db_test_file";
-    /**
      * Database init sql script file.
      * This file stores Tables creation queries, and other
      * database initialization queries.
      */
-    private static final String SQL_DEFAULT_INIT_SCRIPT
+    private static final String SQL_INIT_SCRIPT_PATH
             = "/sql/script/script.sql";
     /**
      * Database test sql script file.
      * This file stores test data queries.
      */
-    private static final String SQL_DEFAULT_TEST_DATA_SCRIPT
+    private static final String SQL_TEST_DATA_SCRIPT_PATH
             = "/sql/script/test.sql";
     /**
      * URL to database.
@@ -107,7 +98,7 @@ public final class H2Manger implements ConnectionManager, AutoCloseable {
      * Singleton instance getter.
      * @return <code>H2Manger</code> object instance.
      */
-    static H2Manger getInstance() {
+    public static H2Manger getInstance() {
         return INSTANCE;
     }
 
@@ -175,16 +166,13 @@ public final class H2Manger implements ConnectionManager, AutoCloseable {
     private void setUpDatabase() throws SQLException {
         String runOption = DB_PREFERENCES.get(SQL_RUN_OPTION,
                                              SQL_DEFAULT_RUN_OPTION);
-        String init = DB_PREFERENCES.get(SQL_INIT_SCRIPT,
-                                        SQL_DEFAULT_INIT_SCRIPT);
-        String test = DB_PREFERENCES.get(SQL_TEST_SCRIPT,
-                                        SQL_DEFAULT_TEST_DATA_SCRIPT);
         switch (runOption) {
             case SQL_DEFAULT_RUN_OPTION:
-                runScripts(init);
+                runScripts(SQL_INIT_SCRIPT_PATH);
                 break;
             case SQL_TEST_RUN_OPTION:
-                runScripts(init, test);
+                runScripts(SQL_INIT_SCRIPT_PATH,
+                           SQL_TEST_DATA_SCRIPT_PATH);
                 break;
             default:
                 log.warn("Unknown option.");
@@ -205,7 +193,7 @@ public final class H2Manger implements ConnectionManager, AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         connectionPool.dispose();
     }
 }

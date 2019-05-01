@@ -10,6 +10,11 @@
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
+    <context-param>
+        <param-name>db_pool_size</param-name>
+        <param-value>10</param-value>
+    </context-param>
+
     <request-character-encoding>UTF-8</request-character-encoding>
     <response-character-encoding>UTF-8</response-character-encoding>
 

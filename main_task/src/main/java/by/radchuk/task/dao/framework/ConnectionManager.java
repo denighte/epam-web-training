@@ -9,7 +9,7 @@ import java.sql.SQLException;
  *
  * @author Dmitry Radchuk
  */
-public interface ConnectionManager {
+public interface ConnectionManager extends AutoCloseable {
     /**
      * <p>Attempts to establish a connection with the data source that
      * this {@code ConnectionManager} object represents.

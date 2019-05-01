@@ -1,7 +1,12 @@
 package by.radchuk.task.controller;
 
 import com.google.gson.Gson;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Setter;
 
 import javax.servlet.http.Cookie;
 import java.util.ArrayList;

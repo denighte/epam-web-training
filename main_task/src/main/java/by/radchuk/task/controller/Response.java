@@ -14,19 +14,23 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Response {
-    @Getter(AccessLevel.PACKAGE)
+    @Getter
     private int status = 200;
-    @Getter(AccessLevel.PACKAGE)
+    @Getter
     private String encoding = "UTF-8";
-    @Getter(AccessLevel.PACKAGE)
+    @Getter
     private String data;
-    @Setter(AccessLevel.PACKAGE)
-    @Getter(AccessLevel.PACKAGE)
+    @Setter
+    @Getter
     private String type;
-    @Getter(AccessLevel.PACKAGE)
+    @Getter
     private List<Header> headers = new ArrayList<>();
-    @Getter(AccessLevel.PACKAGE)
+    @Getter
     private List<Cookie> cookies = new ArrayList<>();
+    @Getter
+    private String dispatcherName;
+    @Getter
+    private String dispatchPath;
 
     public static Builder builder() {
         return new Builder();
@@ -43,9 +47,21 @@ public class Response {
     public static class Builder {
         private Response newResponse = new Response();
         private boolean isDataSet = false;
+        private boolean isDispatched = false;
 
         public Builder status(int status) {
             newResponse.status = status;
+            return this;
+        }
+
+        public Builder error(int status, String message) {
+            if(isDataSet) {
+                throw new IllegalStateException("Data has been already set!");
+            }
+            newResponse.type = ContentType.TEXT_PLAIN.getType();
+            newResponse.status = status;
+            newResponse.data = message;
+            isDataSet = true;
             return this;
         }
 
@@ -75,26 +91,45 @@ public class Response {
         }
 
         public Builder data(String data) {
-            if(isDataSet) {
-                throw new IllegalStateException("Data has been already set!");
-            }
+            validate();
             newResponse.data = data;
             isDataSet = true;
             return this;
         }
 
         public Builder entity(Object entity) {
-            if(isDataSet) {
-                throw new IllegalStateException("Data has been already set!");
-            }
+            validate();
             Gson gson = new Gson();
             newResponse.data = gson.toJson(entity);
             isDataSet = true;
             return this;
         }
 
+        public Builder dispatch(String path) {
+            validate();
+            newResponse.dispatchPath = path;
+            isDispatched = true;
+            return this;
+        }
+
+        public Builder namedDispatch(String handlerName) {
+            validate();
+            newResponse.dispatcherName = handlerName;
+            isDispatched = true;
+            return this;
+        }
+
         public Response build() {
             return newResponse;
+        }
+
+        private void validate() {
+            if (isDataSet) {
+                throw new IllegalStateException("Data already has been set!");
+            }
+            if (isDispatched) {
+                throw new IllegalStateException("Response is already dispatched!");
+            }
         }
 
     }

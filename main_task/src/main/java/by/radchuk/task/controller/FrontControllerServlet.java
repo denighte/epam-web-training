@@ -1,44 +1,33 @@
 package by.radchuk.task.controller;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-//@WebServlet(urlPatterns = {"/test"}, loadOnStartup = 1)
 public class FrontControllerServlet extends HttpServlet {
-    private WebTaskContainer map;
+    private WebContainer container;
 
-    @Override
-    public void init() throws ServletException {
-        map = new WebTaskContainer();
-        try {
-            map.scan("by.radchuk.task.service");
-        } catch (ControllerException exception) {
-            throw new ServletException(exception);
-        }
+    public FrontControllerServlet(WebContainer webContainer) {
+        container = webContainer;
     }
 
     protected void processRequest(HttpServletRequest request,
                                   HttpServletResponse response)
                                 throws ServletException, IOException {
         String method = (String) request.getAttribute("method");
-        WebTask task = map.getTask(request.getPathInfo(), method);
-        ResponseHandler responseHandler = new ResponseHandler(response);
+        WebTask task = container.getTask(request.getRequestURI(), method);
+        ResponseHandler responseHandler = new ResponseHandler(request, response);
         if (task == null || !validateContentType(task.getRequestContentType(),
                                  request.getContentType())) {
-            //not implemented message.
             Response msg = Response.builder()
-                                   .status(405)
-                                   .data("Not allowed.")
+                                   .error(415, "Not supported Media type.")
                                    .build();
             responseHandler.handle(msg);
             return;
@@ -67,9 +56,10 @@ public class FrontControllerServlet extends HttpServlet {
 
     @RequiredArgsConstructor
     private static class ResponseHandler {
+        @NonNull private HttpServletRequest servletRequest;
         @NonNull private HttpServletResponse servletResponse;
 
-        public void handle(Response response) throws IOException {
+        public void handle(Response response) throws IOException, ServletException {
             servletResponse.setStatus(response.getStatus());
             for (var header : response.getHeaders()) {
                 servletResponse.addHeader(header.getKey(), header.getValue());
@@ -81,8 +71,23 @@ public class FrontControllerServlet extends HttpServlet {
                 servletResponse.setContentType(response.getType());
             }
             servletResponse.setCharacterEncoding(response.getEncoding());
-            servletResponse.setContentLength(response.getData().length());
-            servletResponse.getWriter().write(response.getData());
+            if (response.getData() != null) {
+                servletResponse.setContentLength(response.getData().length());
+                servletResponse.getWriter().write(response.getData());
+            }
+
+            if (response.getDispatchPath() != null) {
+                servletRequest.getServletContext()
+                              .getRequestDispatcher(response.getDispatchPath())
+                              .forward(servletRequest, servletResponse);
+                return;
+            }
+            if (response.getDispatcherName() != null) {
+                servletRequest.getServletContext()
+                              .getNamedDispatcher(response.getDispatcherName())
+                              .forward(servletRequest, servletResponse);
+                return;
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package by.radchuk.task.controller;
 
 import by.radchuk.task.context.AppContext;
+import by.radchuk.task.controller.impl.WebContainerImpl;
 import by.radchuk.task.dao.framework.ConnectionManager;
 import by.radchuk.task.dao.framework.H2Manger;
 import lombok.extern.slf4j.Slf4j;
@@ -20,20 +21,19 @@ public class ControllerInitializer implements ServletContextListener {
 
     private ConnectionManager manager = H2Manger.getInstance();
     private AppContext appContext = new AppContext();
-    private WebTaskContainer taskContainer = new WebTaskContainer();
+    private WebContainer taskContainer = new WebContainerImpl();
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         try {
             ServletContext context = sce.getServletContext();
             appContext.init(context);
-            var controllerServlet = new FrontControllerServlet();
-            //do init here
-            //scan, injection ect.
-            taskContainer.scan(Preferences.userNodeForPackage(WebTaskContainer.class).get("ct_scan_package", PACKAGE_TO_SCAN));
+            taskContainer.scan(Preferences.userNodeForPackage(WebContainerImpl.class).get("ct_scan_package", PACKAGE_TO_SCAN));
+            var controllerServlet = new FrontControllerServlet(taskContainer);
+
             var controllerServletRegistration = context.addServlet("FrontControllerServlet", controllerServlet);
-            //do config here
             controllerServletRegistration.setMultipartConfig(new MultipartConfigElement(System.getProperty("java.io.tmpdir")));
+            controllerServletRegistration.addMapping(taskContainer.tasks().stream().map(WebTask::getPath).toArray(String[]::new));
         } catch (Exception exception) {
             log.error("Error during context initialization.", exception);
             throw new RuntimeException(exception);

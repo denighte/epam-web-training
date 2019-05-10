@@ -20,27 +20,11 @@ import java.util.*;
  */
 @Slf4j
 public class WebContainerImpl implements WebContainer {
-    private WebTaskFactory factory = new WebTaskFactoryImpl();
     private static final int METHODS_NUMBER = HttpMethodType.values().length;
     private Map<StringView, WebTask[]> handlerMap;
 
     public WebContainerImpl() {
         handlerMap = new HashMap<>();
-    }
-
-    @Override
-    public void scan(String clsPackage) throws ControllerException {
-        try {
-            List<Class> classes = ClassReflections.builder().load(clsPackage)
-                                                  .filter(WebHandler.class).get();
-            for (var cls : classes) {
-                for (var task : factory.create(cls)) {
-                    addHandler(task);
-                }
-            }
-        } catch (IOException | ControllerException exception) {
-            throw new ControllerException("Failed to scan the package!", exception);
-        }
     }
 
     @Override
@@ -89,7 +73,8 @@ public class WebContainerImpl implements WebContainer {
         return null;
     }
 
-    private void addHandler(WebTask task) throws ControllerException {
+    @Override
+    public void addTask(WebTask task) throws ControllerException {
         StringView path = new StringView(task.getPath());
         WebTask[] handlers = handlerMap.get(path);
         HttpMethodType httpMethod;
@@ -121,10 +106,4 @@ public class WebContainerImpl implements WebContainer {
         DELETE,
     }
 
-
-    public static void main(String[] args) throws ControllerException {
-        WebContainerImpl map = new WebContainerImpl();
-        map.scan("by.radchuk.task.service");
-        System.out.println(map.getTask("/test/test/test/id", "GET").getPath());
-    }
 }

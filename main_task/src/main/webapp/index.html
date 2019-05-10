@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Test</title>
+	<!--<meta name="description" content="" />-->
+	<meta name="keywords" content="storage, cloud, file, file upload" />
+	<!--<link rel="shortcut icon" href="favicon.ico">-->
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="ui/css/normalize.min.css">
+	<link rel="stylesheet" type="text/css" href="ui/css/demo.css" />
+	<link rel="stylesheet" type="text/css" href="ui/css/component.css" />
+    <link rel="stylesheet" type="text/css" href="ui/css/login.css" />
+	<script src="ui/js/modernizr-custom.js"></script>
+</head>
+
+<body>
+	<!-- navigation -->
+	<nav class="pages-nav">
+		<div class="pages-nav__item"><a class="link link--page" href="#page-about">Home</a></div>
+		<div class="pages-nav__item"><a class="link link--page" href="#page-login">Sign In</a></div>
+		<div class="pages-nav__item"><a class="link link--page" href="#page-search">Search</a></div>
+		<div class="pages-nav__item"><a class="link link--page" href="#page-storage">Storage</a></div>
+		<div class="pages-nav__item"><a class="link link--page" href="#page-settings">Customization &amp; Settings</a></div>
+		<div class="pages-nav__item"><a class="link link--page" href="#page-admin">Admin</a></div>
+		<div class="pages-nav__item pages-nav__item--social">
+			<a class="link link--social link--faded" href="#"><i class="fa fa-twitter"></i><span class="text-hidden">Twitter</span></a>
+			<a class="link link--social link--faded" href="#"><i class="fa fa-facebook"></i><span class="text-hidden">Facebook</span></a>
+            <a class="link link--social link--faded" href="#"><i class="fa fa-vk"></i><span class="text-hidden">YouTube</span></a>
+		</div>
+	</nav>
+	<!-- /navigation-->
+	<!-- pages stack -->
+	<div class="pages-stack">
+		<!-- /page -->
+		<div class="page" id="page-about">
+			<header class="bp-header cf">
+                <span class="bp-header__present">&lt;portal name&gt; <span class="bp-tooltip bp-icon bp-icon--about" data-content="Insert small description here"></span></span>
+				<h1 class="bp-header__title">About</h1>
+				<!--<p class="bp-header__desc">Based on Ilya Kostin's Dribbble shot <a tabindex="-1" href="https://dribbble.com/shots/2286042-Stacked-navigation">Stacked navigation</a></p>-->
+				<p class="info">
+					"We cannot have peace among men whose hearts find delight in killing any living creature." &mdash; Rachel Carson
+				</p>
+			</header>
+			<!--<img class="poster" src="ui/images/6.jpg" alt="img06" />-->
+		</div>
+
+        <!-- page -->
+		<!-- Sign in/Sign up -->
+        <div class="page" id="page-login">
+            <header class="login-header cf">
+                <span class="bp-header__present">&lt;portal name&gt; <span class="bp-tooltip bp-icon bp-icon--about" data-content="Insert small description here"></span></span>
+                <h1 class="bp-header__title">Sign in/up to your account</h1>
+            </header>
+            <div class="container">
+                <div class="frame">
+                    <div class="nav">
+                        <ul>
+                            <li id="sign-in-tab" class="signin-active"><a class="btn-tab">Sign in</a></li>
+                            <li id="sign-up-tab" class="signup-inactive"><a class="btn-tab">Sign up </a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <form class="form-signin" action="" method="post" name="form">
+                            <label for="signin_username">Username</label>
+                            <input class="form-styling" type="text" name="username" id="signin_username" placeholder="username">
+                            <label for="signin_password">Password</label>
+                            <input class="form-styling" type="password" name="password" id="signin_password" placeholder="password">
+                            <input type="checkbox" id="checkbox">
+                            <label for="checkbox"><span class="ui"></span>Keep me signed in</label>
+                            <div class="btn-animate">
+                                <a class="btn-signin">Sign in</a>
+                            </div>
+                        </form>
+                        <form class="form-signup" action="" method="post" name="form">
+                            <label for="signup_username">Full name</label>
+                            <input class="form-styling" type="text" name="username" id="signup_username" placeholder="username">
+                            <label for="signup_email">Email</label>
+                            <input class="form-styling" type="email" name="email" id="signup_email" placeholder="example@mail.com">
+                            <label for="signup_password">Password</label>
+                            <input class="form-styling" type="password" name="password" id="signup_password" placeholder="password">
+                            <label for="signup_confirm_password">Confirm password</label>
+                            <input class="form-styling" type="password" name="confirm_password" id="signup_confirm_password"placeholder="confirm password">
+                            <a class="btn-signup">Sign Up</a>
+                        </form>
+                        <div class="success">
+                            <svg width="270" height="270" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 60 60" id="login-check" >
+                                <path fill="#ffffff" d="M40.61,23.03L26.67,36.97L13.495,23.788c-1.146-1.147-1.359-2.936-0.504-4.314
+                  c3.894-6.28,11.169-10.243,19.283-9.348c9.258,1.021,16.694,8.542,17.622,17.81c1.232,12.295-8.683,22.607-20.849,22.042
+                  c-9.9-0.46-18.128-8.344-18.972-18.218c-0.292-3.416,0.276-6.673,1.51-9.578"></path>
+                            </svg><div class="successtext">
+                            <p> Thanks for signing up! Check your email for confirmation.</p>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="forgot">
+                        <a href="#">Forgot your password?</a>
+                    </div>
+                    <div>
+                        <div class="cover-photo"></div>
+                        <div class="profile-photo"></div>
+                        <h1 class="welcome">Welcome, Chris</h1>
+                        <a class="btn-goback">Go back</a>
+                    </div>
+                </div>
+            </div>
+            <!--<img class="poster" src="ui/images/1.jpg" alt="img01" />-->
+        </div>
+
+        <!-- /page -->
+		<div class="page" id="page-search">
+			<header class="bp-header cf">
+				<h1 class="bp-header__title">Manuals</h1>
+				<p class="bp-header__desc">Based on Ilya Kostin's Dribbble shot <a tabindex="-1" href="https://dribbble.com/shots/2286042-Stacked-navigation">Stacked navigation</a></p>
+				<p class="info">
+					"When you adopt a vegan diet we make a connection, you don't go back, it is not a diet, it is a lifestyle." &mdash; Freelee Frugivore
+				</p>
+			</header>
+			<img class="poster" src="ui/images/2.jpg" alt="img02" />
+		</div>
+		<div class="page" id="page-storage">
+			<header class="bp-header cf">
+				<h1 class="bp-header__title">Software &amp; Downloads</h1>
+				<p class="bp-header__desc">Based on Ilya Kostin's Dribbble shot <a tabindex="-1" href="https://dribbble.com/shots/2286042-Stacked-navigation">Stacked navigation</a></p>
+				<p class="info">
+					"I decided to pick the diet that I thought would maximize my chances of long-term survival." &mdash; Al Gore
+				</p>
+			</header>
+			<img class="poster" src="ui/images/3.jpg" alt="img03" />
+		</div>
+		<div class="page" id="page-settings">
+			<header class="bp-header cf">
+				<h1 class="bp-header__title">Customization &amp; Settings</h1>
+				<p class="bp-header__desc">Based on Ilya Kostin's Dribbble shot <a tabindex="-1" href="https://dribbble.com/shots/2286042-Stacked-navigation">Stacked navigation</a></p>
+				<p class="info">
+					"You have to make a conscious decision to change for your own well-being, that of your family and your country." &mdash;Bill Clinton
+				</p>
+			</header>
+			<img class="poster" src="ui/images/4.jpg" alt="img04" />
+		</div>
+		<div class="page" id="page-admin">
+            <iframe src = "/test.html" width = "100%" frameborder="0" scrolling="auto" height="100%">
+                Sorry your browser does not support inline frames.
+            </iframe>
+		</div>
+	</div>
+	<!-- /pages-stack -->
+	<button class="menu-button"><span>Menu</span></button>
+    <script src="ui/js/jquery-3.4.0.min.js"></script>
+	<script src="ui/js/classie.js"></script>
+	<script src="ui/js/main.js"></script>
+    <script src="ui/js/login.js"></script>
+</body>
+<script>
+    let arr = document.getElementsByTagName('a');
+    for(let i = 0; i < arr.length; i++) {
+        arr[i].setAttribute('tabindex', '-1');
+    }
+</script>
+</html>

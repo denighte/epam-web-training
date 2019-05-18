@@ -1,4 +1,5 @@
 package by.radchuk.task.controller;
+import by.radchuk.task.controller.security.SecurityFilter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,8 @@ import java.io.IOException;
 public class FrontControllerServlet extends HttpServlet {
     private WebContainer container;
 
+    public static final String SECURITY_FILTER_ATTRIBUTE_NAME = "security_filter";
+
     public FrontControllerServlet(WebContainer webContainer) {
         container = webContainer;
     }
@@ -24,6 +27,7 @@ public class FrontControllerServlet extends HttpServlet {
         String method = (String) request.getAttribute("method");
         WebTask task = container.getTask(request.getRequestURI(), method);
         ResponseHandler responseHandler = new ResponseHandler(request, response);
+
         if (task == null || !validateContentType(task.getRequestContentType(),
                                  request.getContentType())) {
             Response msg = Response.builder()
@@ -32,6 +36,7 @@ public class FrontControllerServlet extends HttpServlet {
             responseHandler.handle(msg);
             return;
         }
+
         Response result = task.execute(request, response);
         responseHandler.handle(result);
     }
@@ -59,7 +64,7 @@ public class FrontControllerServlet extends HttpServlet {
         @NonNull private HttpServletRequest servletRequest;
         @NonNull private HttpServletResponse servletResponse;
 
-        public void handle(Response response) throws IOException, ServletException {
+        void handle(Response response) throws IOException, ServletException {
             servletResponse.setStatus(response.getStatus());
             for (var header : response.getHeaders()) {
                 servletResponse.addHeader(header.getKey(), header.getValue());

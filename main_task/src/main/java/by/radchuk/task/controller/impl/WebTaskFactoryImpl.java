@@ -22,8 +22,12 @@ public class WebTaskFactoryImpl implements WebTaskFactory {
     public Collection<WebTask> create(Class cls) throws ControllerException {
         Object object;
         String classPath = "";
+        byte securityLevel = 0;
         if (cls.isAnnotationPresent(Path.class)) {
             classPath = ((Path) cls.getAnnotation(Path.class)).value();
+        }
+        if (cls.isAnnotationPresent(Secure.class)) {
+            securityLevel = ((Secure) cls.getAnnotation(Secure.class)).value();
         }
         try {
             object = cls.newInstance();
@@ -67,6 +71,12 @@ public class WebTaskFactoryImpl implements WebTaskFactory {
 
             if (method.isAnnotationPresent(Produce.class)) {
                 builder.responseContentType(method.getAnnotation(Produce.class).value().getType());
+            }
+
+            if (method.isAnnotationPresent(Secure.class)) {
+                builder.securityLevel(method.getAnnotation(Secure.class).value());
+            } else {
+                builder.securityLevel(securityLevel);
             }
 
             builder.arguments(method.getParameters());
@@ -136,6 +146,10 @@ public class WebTaskFactoryImpl implements WebTaskFactory {
                 }
             }
             task.setArguments(arguments);
+        }
+
+        void securityLevel(byte level) {
+            task.setSecurityLevel(level);
         }
 
         WebTask build() {

@@ -1,8 +1,10 @@
 package by.radchuk.task.controller;
 
 import by.radchuk.task.context.AppContext;
+import by.radchuk.task.controller.annotation.WebHandler;
 import by.radchuk.task.controller.impl.WebContainerImpl;
-import by.radchuk.task.controller.impl.WebTaskScannerImpl;
+import by.radchuk.task.controller.impl.ScannerImpl;
+import by.radchuk.task.controller.impl.WebTaskFactoryImpl;
 import by.radchuk.task.dao.framework.ConnectionManager;
 import by.radchuk.task.dao.framework.H2Manger;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +27,9 @@ public class ControllerInitializer implements ServletContextListener {
     //@Autowired
     private AppContext appContext = new AppContext();
     //@Autowired
-    private WebTaskScanner taskScanner = new WebTaskScannerImpl();
+    private Scanner classScanner = new Scanner();
+    //@Autowired
+    private WebTaskFactory taskFactory = new WebTaskFactoryImpl();
     //@Autowired
     private WebContainer taskContainer = new WebContainerImpl();
 
@@ -34,9 +38,10 @@ public class ControllerInitializer implements ServletContextListener {
         try {
             ServletContext context = sce.getServletContext();
             appContext.init(context);
-            var tasks = taskScanner.scan(Preferences.userNodeForPackage(WebContainerImpl.class).get("ct_scan_package", PACKAGE_TO_SCAN));
-            for (var task : tasks) {
-                taskContainer.addTask(task);
+            var classes = classScanner.scan(Preferences.userNodeForPackage(WebContainerImpl.class).get("ct_scan_package", PACKAGE_TO_SCAN), WebHandler.class);
+            for (var cls : classes) {
+                for (var task : taskFactory.create(cls))
+                taskContainer.addTask();
             }
             var controllerServlet = new FrontControllerServlet(taskContainer);
 

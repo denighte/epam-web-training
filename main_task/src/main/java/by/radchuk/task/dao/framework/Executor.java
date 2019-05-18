@@ -1,7 +1,6 @@
 package by.radchuk.task.dao.framework;
 import lombok.Cleanup;
 import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import java.sql.*;
@@ -86,6 +85,10 @@ public class Executor implements AutoCloseable {
         connection.setAutoCommit(true);
     }
 
+public void rollbackTransaction() throws SQLException {
+        connection.rollback();
+    }
+
     /**
      * Executes save query and returns id of the saved object
      * @param query sql query.
@@ -95,7 +98,7 @@ public class Executor implements AutoCloseable {
      * <code>PreparedStatement</code> objects could not be used.
      */
     public int execSave(@NonNull final String query,
-                                  final String... params) throws SQLException {
+                                  final Object... params) throws SQLException {
         initStatement(query);
         setStatementParameters(params);
         var affectedRows = statement.executeUpdate();
@@ -118,7 +121,7 @@ public class Executor implements AutoCloseable {
      * <code>PreparedStatement</code> objects could not be used.
      */
     public int execUpdate(@NonNull final String query,
-                           final String... params) throws SQLException {
+                           final Object... params) throws SQLException {
         initStatement(query);
         setStatementParameters(params);
         return statement.executeUpdate();
@@ -136,7 +139,7 @@ public class Executor implements AutoCloseable {
      */
     public <R> R execQuery(@NonNull final String query,
                            final ResultHandler<R> handler,
-                           final String... params)
+                           final Object... params)
                                     throws SQLException {
         initStatement(query);
         setStatementParameters(params);
@@ -166,7 +169,7 @@ public class Executor implements AutoCloseable {
      * @param params parameters for statement.
      * @throws SQLException if <code>Statement</code> object could not be used.
      */
-    private void setStatementParameters(final String... params)
+    private void setStatementParameters(final Object... params)
                                             throws SQLException {
         var paramsNumber = (int) cachedQuery.chars()
                                            .filter(ch -> ch == '?').count();
@@ -174,7 +177,7 @@ public class Executor implements AutoCloseable {
             throw new SQLException("Invalid number of parameters!");
         }
         for (var i = 0; i < params.length; ++i) {
-            statement.setString(i + 1, params[i]);
+            statement.setObject(i + 1, params[i]);
         }
     }
 

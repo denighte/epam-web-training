@@ -6,12 +6,10 @@ import by.radchuk.task.controller.annotation.*;
 
 @WebHandler
 public class ServiceClass {
-    @Context
-    RequestContextImpl context;
 
     @Path("/test")
     @HttpMethod("GET")
-    public Response process1() {
+    public Response process1(@RequestParam("test") String param) {
         return Response.builder().data("WebHandler 1 response").dispatch("/check").build();
     }
 

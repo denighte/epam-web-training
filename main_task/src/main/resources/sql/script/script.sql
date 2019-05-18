@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS users (
 id INT8 NOT NULL AUTO_INCREMENT,
 login NVARCHAR(64) NOT NULL UNIQUE,
 password_hash BINARY(512) NOT NULL,
-image_link NVARCHAR(512),
+image_link NVARCHAR(254),
 storage_space INT8 NOT NULL,
 storage_privacy TINYINT NOT NULL,
  PRIMARY KEY (id));

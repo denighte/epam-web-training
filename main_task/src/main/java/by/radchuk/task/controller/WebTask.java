@@ -9,6 +9,7 @@ public interface WebTask {
     String getPath();
     String getMethod();
     String getRequestContentType();
+    byte getSecurityLevel();
     Response execute(HttpServletRequest request,
                      HttpServletResponse response);
 }

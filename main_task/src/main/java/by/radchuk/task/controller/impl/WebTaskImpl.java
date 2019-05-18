@@ -1,6 +1,7 @@
 package by.radchuk.task.controller.impl;
 
 import by.radchuk.task.controller.Response;
+import by.radchuk.task.controller.WebApplicationException;
 import by.radchuk.task.controller.WebTask;
 import by.radchuk.task.controller.annotation.Context;
 import by.radchuk.task.controller.annotation.PartParam;
@@ -11,17 +12,22 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.WrongMethodTypeException;
 
+import static by.radchuk.task.controller.FrontControllerServlet.SECURITY_FILTER_ATTRIBUTE_NAME;
+
 @Slf4j
 @Setter
 public class WebTaskImpl implements WebTask {
+    private byte securityLevel;
     private String path;
     private String method;
     private String requestContentType;
@@ -40,6 +46,11 @@ public class WebTaskImpl implements WebTask {
     }
 
     @Override
+    public byte getSecurityLevel() {
+        return securityLevel;
+    }
+
+    @Override
     public String getRequestContentType() {
         return requestContentType;
     }
@@ -55,6 +66,8 @@ public class WebTaskImpl implements WebTask {
                 result.setType(responseContentType);
             }
             return result;
+        } catch (WebApplicationException exception) {
+            throw exception;
         } catch (ArgumentsProcessor.ArgumentProcessException exception) {
             log.warn("Can't convert request parameters to required types: {}.", exception.getMessage());
             return createBadRequestResponse();
@@ -96,7 +109,7 @@ public class WebTaskImpl implements WebTask {
                     RequestParam param = (RequestParam)argAnnotation;
                     arguments[i] = processRequestParam(arg.argType, param.value());
                 } else if (annotationClass.equals(Context.class)) {
-                    arguments[i] = new RequestContextImpl(request, response);
+                    arguments[i] = processContext(arg.argType);
                 } else if (annotationClass.equals(PartParam.class)) {
                     PartParam param = (PartParam)argAnnotation;
                     arguments[i] = request.getPart(param.value());
@@ -108,7 +121,7 @@ public class WebTaskImpl implements WebTask {
         private Object processRequestParam(Class argClass, String paramName) throws ArgumentProcessException {
             try {
                 String parameter = request.getParameter(paramName);
-                SupportedType type = SupportedType.fromValue(argClass);
+                SupportedRequestType type = SupportedRequestType.fromValue(argClass);
                 switch (type) {
                     case STRING:
                         return parameter;
@@ -148,13 +161,81 @@ public class WebTaskImpl implements WebTask {
             }
         }
 
+        private Object processContext(Class argClass) throws ArgumentProcessException {
+            try {
+                SupportedContextType type = SupportedContextType.fromValue(argClass);
+                switch (type) {
+                    case REQUEST:
+                        return request;
+                    case RESPONSE:
+                        return response;
+                    case SERVLET_CONTEXT:
+                        return request.getServletContext();
+                    case HTTP_SESSION:
+                        return request.getSession();
+                    default:
+                        throw new IllegalArgumentException();
+                }
+            } catch (IllegalArgumentException exception) {
+                throw new ArgumentProcessException("Unsupported argument type for '@RequestParam' = "
+                        + argClass.getName(), exception);
+            } catch (Exception exception) {
+                throw new ArgumentProcessException("Can't convert request parameter to specified type = "
+                        + argClass.getName(), exception);
+            }
+        }
+
+        @AllArgsConstructor
+        private enum SupportedContextType {
+            REQUEST(HttpServletRequest.class),
+            RESPONSE(HttpServletResponse.class),
+            SERVLET_CONTEXT(ServletContext.class),
+            HTTP_SESSION(HttpSession.class);
+
+            @Getter
+            private Class type;
+
+            public static SupportedContextType fromValue(Class cls) {
+                for(var supportedType : SupportedContextType.values()) {
+                    if(supportedType.type.equals(cls)) {
+                        return supportedType;
+                    }
+                }
+                throw new IllegalArgumentException();
+            }
+        }
+
+        @AllArgsConstructor
+        private enum SupportedRequestType {
+            BYTE(byte.class),
+            SHORT(short.class),
+            CHAR(char.class),
+            INT(int.class),
+            LONG(long.class),
+            FLOAT(float.class),
+            DOUBLE(double.class),
+            STRING(String.class);
+
+            @Getter
+            private Class type;
+
+            public static SupportedRequestType fromValue(Class cls) {
+                for(var supportedType : SupportedRequestType.values()) {
+                    if(supportedType.type.equals(cls)) {
+                        return supportedType;
+                    }
+                }
+                throw new IllegalArgumentException();
+            }
+        }
+
         private void assertNull(String param) throws ArgumentProcessException {
             if (param == null) {
                 throw new ArgumentProcessException("Can't convert request parameter to specified type: request param is null!");
             }
         }
 
-        public class ArgumentProcessException extends Exception {
+        class ArgumentProcessException extends Exception {
             /**
              * Constructs a new exception with the specified detail message.  The
              * cause is not initialized, and may subsequently be initialized by
@@ -163,7 +244,7 @@ public class WebTaskImpl implements WebTask {
              * @param   message   the detail message. The detail message is saved for
              *          later retrieval by the {@link #getMessage()} method.
              */
-            public ArgumentProcessException(final String message) {
+            ArgumentProcessException(final String message) {
                 super(message);
             }
 
@@ -180,33 +261,10 @@ public class WebTaskImpl implements WebTask {
              *         permitted, and indicates that the cause is nonexistent or
              *         unknown.)
              */
-            public ArgumentProcessException(String message, Throwable cause) {
+            ArgumentProcessException(String message, Throwable cause) {
                 super(message, cause);
             }
         }
 
-        @AllArgsConstructor
-        private enum SupportedType {
-            BYTE(byte.class),
-            SHORT(short.class),
-            CHAR(char.class),
-            INT(int.class),
-            LONG(long.class),
-            FLOAT(float.class),
-            DOUBLE(double.class),
-            STRING(String.class);
-
-            @Getter
-            private Class type;
-
-            public static SupportedType fromValue(Class cls) {
-                for(var supportedType : SupportedType.values()) {
-                    if(supportedType.type.equals(cls)) {
-                        return supportedType;
-                    }
-                }
-                throw new IllegalArgumentException();
-            }
-        }
     }
 }

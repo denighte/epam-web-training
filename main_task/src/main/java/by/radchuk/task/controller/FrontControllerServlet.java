@@ -1,5 +1,4 @@
 package by.radchuk.task.controller;
-import by.radchuk.task.controller.security.SecurityFilter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,11 +12,11 @@ import java.io.IOException;
 
 @Slf4j
 public class FrontControllerServlet extends HttpServlet {
-    private WebContainer container;
+    private WebTaskContainer container;
 
     public static final String SECURITY_FILTER_ATTRIBUTE_NAME = "security_filter";
 
-    public FrontControllerServlet(WebContainer webContainer) {
+    public FrontControllerServlet(WebTaskContainer webContainer) {
         container = webContainer;
     }
 
@@ -49,7 +48,7 @@ public class FrontControllerServlet extends HttpServlet {
 
     private boolean validateContentType(String expected, String actual) {
         if (expected != null && actual != null) {
-            //avoiding boundary parameter in multipart/form-data content type.
+            //avoiding 'boundary' parameter in multipart/form-data content type.
             int propertyEnd = actual.indexOf(';');
             if (propertyEnd != -1) {
                 actual = actual.substring(0, propertyEnd);

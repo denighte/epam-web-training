@@ -1,16 +1,12 @@
 package by.radchuk.task.controller.impl;
 
 import by.radchuk.task.controller.ControllerException;
-import by.radchuk.task.controller.WebContainer;
+import by.radchuk.task.controller.WebTaskContainer;
 import by.radchuk.task.controller.WebTask;
-import by.radchuk.task.controller.WebTaskFactory;
-import by.radchuk.task.controller.annotation.WebHandler;
-import by.radchuk.task.util.ClassReflections;
 import by.radchuk.task.util.StringView;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -19,11 +15,11 @@ import java.util.*;
  *
  */
 @Slf4j
-public class WebContainerImpl implements WebContainer {
+public class WebTaskContainerImpl implements WebTaskContainer {
     private static final int METHODS_NUMBER = HttpMethodType.values().length;
     private Map<StringView, WebTask[]> handlerMap;
 
-    public WebContainerImpl() {
+    public WebTaskContainerImpl() {
         handlerMap = new HashMap<>();
     }
 

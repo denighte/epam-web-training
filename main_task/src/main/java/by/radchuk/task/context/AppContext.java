@@ -1,6 +1,6 @@
 package by.radchuk.task.context;
 
-import by.radchuk.task.controller.impl.WebContainerImpl;
+import by.radchuk.task.controller.impl.WebTaskContainerImpl;
 import by.radchuk.task.dao.framework.H2Manger;
 import lombok.AllArgsConstructor;
 import lombok.var;
@@ -55,11 +55,11 @@ public final class AppContext {
         DB_RUN_OPTION("db_run_option", nodeName(H2Manger.class)),
         /**
          * Package to scan for service classes.
-         * {@link WebContainerImpl} class
+         * {@link WebTaskContainerImpl} class
          * loads service classes in a special map on startup.
          * All client requests dispatched to these classes.
          */
-        CT_PACKAGE_TO_SCAN("ct_scan_package", nodeName(WebContainerImpl.class)),
+        CT_PACKAGE_TO_SCAN("ct_scan_package", nodeName(WebTaskContainerImpl.class)),
         /**
          * Path to public resources, which can be downloaded/
          * viewed by users.

@@ -1,13 +1,10 @@
 package by.radchuk.task.util;
 
 import lombok.Getter;
-import lombok.var;
 
 public class StringView {
     private char[] value;
-    @Getter
-    private int offset;
-    @Getter
+    private int start;
     private int end;
     private int hash;
 
@@ -15,19 +12,22 @@ public class StringView {
         int length = str.length();
         value = new char[length + 5];
         str.getChars(0, length, value, 0);
-        offset = 0;
+        start = 0;
         end = length;
         hash = 0;
     }
 
-    protected StringView(char[] source, int start, int end) {
+
+    protected StringView(final char[] source,
+                         final int start,
+                         final int end) {
         this.value = source;
-        this.offset = start;
+        this.start = start;
         this.end = end;
         this.hash = 0;
     }
 
-    public void add(String str) {
+    public void add(final String str) {
         for (int i = 0; i < str.length(); ++i) {
             value[end + i] = str.charAt(i);
         }
@@ -35,7 +35,7 @@ public class StringView {
         hash = 0;
     }
 
-    public void add(char c) {
+    public void add(final char c) {
         value[end] = c;
         ++end;
         hash = 0;
@@ -60,18 +60,26 @@ public class StringView {
         hash = 0;
     }
 
+    public int getEnd() {
+        return end;
+    }
+
     public void setStart(int start) {
-        offset = start;
+        this.start = start;
         hash = 0;
     }
 
+    public int getStart() {
+        return start;
+    }
+
     public int length() {
-        return end - offset;
+        return end - start;
     }
 
     public int count(char c) {
         int counter = 0;
-        for (int i = offset; i < end; ++i) {
+        for (int i = start; i < end; ++i) {
             if (value[i] == c) {
                 ++counter;
             }
@@ -79,8 +87,8 @@ public class StringView {
         return counter;
     }
 
-    public int lastIndexOf(char c) {
-        for (int i = end - 1; i >= offset; --i) {
+    public int lastIndexOf(final char c) {
+        for (int i = end - 1; i >= start; --i) {
             if (value[i] == c) {
                 return i;
             }
@@ -88,8 +96,8 @@ public class StringView {
         return -1;
     }
 
-    public int indexOf(char c) {
-        for (int i = offset; i < end; ++i) {
+    public int indexOf(final char c) {
+        for (int i = start; i < end; ++i) {
             if (value[i] == c) {
                 return i;
             }
@@ -104,7 +112,7 @@ public class StringView {
     @Override
     public int hashCode() {
         if (hash == 0) {
-            for (int i = offset; i < end; ++i) {
+            for (int i = start; i < end; ++i) {
                 hash = 31 * hash + value[i];
             }
             return hash;
@@ -126,8 +134,8 @@ public class StringView {
         if (obj instanceof StringView) {
             StringView another = (StringView) obj;
             if (length() == another.length()) {
-                int start = offset;
-                int anotherStart = another.offset;
+                int start = this.start;
+                int anotherStart = another.start;
                 char[] a1 = this.value;
                 char[] a2 = another.value;
                 for (;start < end;) {
@@ -143,7 +151,7 @@ public class StringView {
 
     @Override
     public String toString() {
-        return new String(value, offset, length());
+        return new String(value, start, length());
     }
 }
 

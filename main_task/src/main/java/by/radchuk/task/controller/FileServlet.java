@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
  * Supports:
  * * resume of downloads
  * * client-side caching
- * * GZIP of text content.
+ * * GZIP of text/ content.
  * * Etag processing.
  * @author Dmitry Radchuk
  */
@@ -71,9 +71,6 @@ public class FileServlet extends HttpServlet {
      *                 interrupts the servlet's normal operation
      */
     public void init() throws ServletException {
-
-        // Get base path (path to get all resources from) as init parameter.
-        this.resourcesPath = getInitParameter("resourcesPath");
         //temp
         this.resourcesPath = getServletContext().getRealPath("");
 
@@ -369,7 +366,7 @@ public class FileServlet extends HttpServlet {
         //Processing gzip as blocking output.
         //Because we gzip only text/* files, ad we gzip on-the-fly.
         //So there is no need for async processing.
-        //(And, also it won't work with on-the-fly encoding)
+        //(And also async won't work with on-the-fly encoding)
         if (ranges.get(0) == full && acceptsGzip) {
             //return gzip
             response.setHeader("Content-Encoding", "gzip");

@@ -17,11 +17,11 @@ import java.sql.*;
  * public class Test {
  *     public static void main(String ... args) throws Exception {
  *         Executor executor = new Executor();
- *         String login = "login";
+ *         String name = "name";
  *         String password = "password";
  *         int id = executor.execSave(
- *             "INSERT INTO users (login, password) VALUES (?, ?)",
- *             login,
+ *             "INSERT INTO users (name, password) VALUES (?, ?)",
+ *             name,
  *             password
  *         );
  *         System.out.println(id);

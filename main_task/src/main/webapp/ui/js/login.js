@@ -20,17 +20,17 @@ $(function () {
         $(".form-signup-left").toggleClass("form-signup-down");
         $(".success").toggleClass("success-left");
         $(".frame").toggleClass("frame-short");
-        $("#login-check").attr("class", "checked");
+        $("#name-check").attr("class", "checked");
     });
 });
 
 $(function () {
-    $("#login-check").click(function () {
+    $("#name-check").click(function () {
         $(".nav").toggleClass("nav-up");
         $(".form-signup-left").toggleClass("form-signup-down");
         $(".success").toggleClass("success-left");
         $(".frame").toggleClass("frame-short");
-        $("#login-check").attr("class", "checked");
+        $("#name-check").attr("class", "checked");
     });
 });
 

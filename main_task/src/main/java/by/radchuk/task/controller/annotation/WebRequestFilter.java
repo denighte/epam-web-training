@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WebRequestFilter {
     String[] url();
-    int priority();
+    int priority() default 0;
 }

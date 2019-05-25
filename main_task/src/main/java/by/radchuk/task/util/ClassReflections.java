@@ -28,9 +28,9 @@ public class ClassReflections {
 
     /**
      * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
-     * NOTE: It seems that class loaders return URLs in UTF-8 encoding.
-     * @param packageName The base package
-     * @return The classes
+     *
+     * @param packageName base package name to scan to
+     * @return this <code>ClassReflection</code> object.
      * @throws IOException
      */
     @SneakyThrows(UnsupportedEncodingException.class)
@@ -54,7 +54,7 @@ public class ClassReflections {
      *
      * @param directory   The base directory
      * @param packageName The package name for classes found inside the base directory
-     * @return The classes
+     * @return The classes as list.
      */
     private List<Class> findClasses(File directory, String packageName) {
         List<Class> classes = new ArrayList<>();

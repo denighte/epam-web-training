@@ -17,7 +17,9 @@ public class JWT {
     private static final byte JWT_PART_SEPARATOR = (byte)46;
     @Getter
     @NonNull private Algorithm algorithm;
+    @Getter
     @NonNull private JsonObject headerJson;
+    @Getter
     @NonNull private JsonObject payloadJson;
 
     public static Encoder encoder() {
@@ -30,12 +32,15 @@ public class JWT {
 
     public static class Encoder {
         private Algorithm algorithm;
-        private Gson gson = new Gson();
+        //thread safe.
+        private static Gson GSON = new Gson();
         private JsonObject headerJson = new JsonObject();
         private JsonObject payloadJson = new JsonObject();;
 
         private Encoder(Algorithm alg) {
             algorithm = alg;
+            headerJson.addProperty("typ", "JWT");
+            headerJson.addProperty("alg", "HMAC256");
         }
 
         public Encoder withHeader(String property, String value) {
@@ -53,7 +58,7 @@ public class JWT {
          * @return <code>Encoder</code> object.
          */
         public Encoder setHeader(Object object) {
-            headerJson = gson.toJsonTree(object).getAsJsonObject();
+            headerJson = GSON.toJsonTree(object).getAsJsonObject();
             return this;
         }
 
@@ -78,7 +83,7 @@ public class JWT {
         }
 
         public Encoder withClaim(String property, Object object) {
-            JsonElement element = gson.toJsonTree(object);
+            JsonElement element = GSON.toJsonTree(object);
             payloadJson.add(property, element);
             return this;
         }
@@ -93,14 +98,14 @@ public class JWT {
          * @return <code>Encoder</code> object.
          */
         public Encoder setPayload(Object object) {
-            payloadJson = gson.toJsonTree(object).getAsJsonObject();
+            payloadJson = GSON.toJsonTree(object).getAsJsonObject();
             return this;
         }
 
         @SneakyThrows({UnsupportedEncodingException.class})
-        private String sign() throws IOException {
-            byte[] header = Base64.getEncoder().encode(gson.toJson(headerJson).getBytes(StandardCharsets.UTF_8));
-            byte[] payload = Base64.getEncoder().encode(gson.toJson(payloadJson).getBytes(StandardCharsets.UTF_8));
+        public String sign() throws IOException {
+            byte[] header = Base64.getEncoder().encode(GSON.toJson(headerJson).getBytes(StandardCharsets.UTF_8));
+            byte[] payload = Base64.getEncoder().encode(GSON.toJson(payloadJson).getBytes(StandardCharsets.UTF_8));
 
             byte[] signatureBytes = algorithm.createSignature(header, payload);
             byte[] signature = Base64.getEncoder().encode((signatureBytes));
@@ -115,6 +120,8 @@ public class JWT {
     }
 
     public static class Decoder {
+        //thread safe
+        private static JsonParser JSON_PARSER = new JsonParser();
         private Algorithm algorithm;
         private byte[] header;
         private byte[] payload;
@@ -150,9 +157,8 @@ public class JWT {
             if (!isValid) {
                 throw new JWTDecodeException("JWT is invalid.");
             }
-            JsonParser jsonParser = new JsonParser();
-            JsonObject headerJson = jsonParser.parse(new String(header, StandardCharsets.UTF_8)).getAsJsonObject();
-            JsonObject payloadJson = jsonParser.parse(new String(payload, StandardCharsets.UTF_8)).getAsJsonObject();
+            JsonObject headerJson = JSON_PARSER.parse(new String(header, StandardCharsets.UTF_8)).getAsJsonObject();
+            JsonObject payloadJson = JSON_PARSER.parse(new String(payload, StandardCharsets.UTF_8)).getAsJsonObject();
             return new JWT(algorithm, headerJson, payloadJson);
         }
 
@@ -205,11 +211,11 @@ public class JWT {
         }
     }
 
-    public static void main(String[] argv) throws Exception {
-        var builder = JWT.encoder();
-        var token = builder.withClaim("num", 111).sign();
-        var jwt = JWT.decoder().decode(token);
-        System.out.println(jwt.payloadJson);
-    }
+//    public static void main(String[] argv) throws Exception {
+//        var builder = JWT.encoder();
+//        var token = builder.withClaim("num", 111).sign();
+//        var jwt = JWT.decoder().decode(token);
+//        System.out.println(jwt.payloadJson);
+//    }
 
 }

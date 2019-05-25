@@ -37,7 +37,7 @@ import javax.sql.PooledConnection;
  * public class Test {
  *     public static void main(String... args) throws Exception {
  *         FixedConnectionPool cp = FixedConnectionPool.create(
- *             "jdbc:h2:~/test", "login", "password");
+ *             "jdbc:h2:~/test", "name", "password");
  *         for (String sql : args) {
  *             Connection conn = cp.getConnection();
  *             conn.createStatement().execute(sql);
@@ -211,7 +211,7 @@ public class FixedConnectionPool implements DataSource,
     @Override
     public void setLoginTimeout(final int seconds) {
         if (seconds < 0) {
-            throw new IllegalArgumentException("invalid login timeout!");
+            throw new IllegalArgumentException("invalid name timeout!");
         }
         if (seconds == 0) {
             this.loginTimeout.set(DEFAULT_TIMEOUT);

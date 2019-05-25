@@ -69,7 +69,7 @@ public final class H2Manger implements ConnectionManager{
      */
     private static final String URL = "db_url";
     /**
-     * Database user login.
+     * Database user name.
      */
     private static final String LOGIN = "db_login";
     /**
@@ -81,7 +81,7 @@ public final class H2Manger implements ConnectionManager{
      */
     private static final String DEFAULT_URL = "jdbc:h2:./h2db";
     /**
-     * Default database user login.
+     * Default database user name.
      */
     private static final String DEFAULT_LOGIN = "tully";
     /**
@@ -157,6 +157,11 @@ public final class H2Manger implements ConnectionManager{
             log.error("Fatal: failed to execute SQL script.", exception);
             throw exception;
         }
+    }
+
+    @Override
+    public void init() throws SQLException {
+        setUpDatabase();
     }
 
     /**

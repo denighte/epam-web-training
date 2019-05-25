@@ -11,11 +11,17 @@ import java.sql.SQLException;
  */
 public interface ConnectionManager extends AutoCloseable {
     /**
+     * <p>Initializes <code>ConnectionManager</code> instance.
+     * @throws SQLException if a database access error occurs
+     */
+    void init() throws SQLException;
+
+    /**
      * <p>Attempts to establish a connection with the data source that
      * this {@code ConnectionManager} object represents.
      *
      * @return  a connection to the data source
-     * @exception SQLException if a database access error occurs
+     * @throws SQLException if a database access error occurs
      */
     Connection getConnection() throws SQLException;
 }

@@ -10,7 +10,6 @@ import java.sql.SQLException;
 /**
  * User dao class.
  */
-@NoArgsConstructor
 public class UserDao implements AutoCloseable {
     /**
      * id column name.
@@ -49,7 +48,15 @@ public class UserDao implements AutoCloseable {
      * query executor object.
      * @see by.radchuk.task.dao.framework.Executor
      */
-    private Executor executor = new Executor();
+    private Executor executor;
+
+    public UserDao() throws DaoException {
+        try {
+            executor = new Executor();
+        } catch (SQLException exception) {
+            throw new DaoException(exception);
+        }
+    }
 
     public void beginTransaction() throws DaoException{
         try {

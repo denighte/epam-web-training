@@ -1,6 +1,6 @@
 package by.radchuk.task.controller;
+import by.radchuk.task.controller.exception.MethodNotSupportedException;
 import by.radchuk.task.controller.exception.NotSupportedException;
-import by.radchuk.task.controller.exception.WebApplicationException;
 import by.radchuk.task.controller.exception.WebClientException;
 import by.radchuk.task.controller.filter.RequestFilter;
 import by.radchuk.task.controller.filter.ResponseFilter;
@@ -41,7 +41,10 @@ public class FrontControllerServlet extends HttpServlet {
 
         try {
             WebTask task = taskContainer.getTask(uri, method);
-            if (task == null || !validateContentType(task.getRequestContentType(), request.getContentType())) {
+            if (task == null) {
+                throw new MethodNotSupportedException();
+            }
+            if (!validateContentType(task.getRequestContentType(), request.getContentType())) {
                 throw new NotSupportedException();
             }
             Collection<RequestFilter> requestFilters = requestFilterContainer.getFilters(uri);

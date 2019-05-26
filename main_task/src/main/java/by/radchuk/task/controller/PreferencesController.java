@@ -2,7 +2,10 @@ package by.radchuk.task.controller;
 
 import by.radchuk.task.controller.task.impl.WebTaskContainerImpl;
 import by.radchuk.task.dao.framework.H2Manger;
+import by.radchuk.task.util.prefs.FilePreferencesFactory;
 import lombok.AllArgsConstructor;
+import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 
 import javax.servlet.ServletContext;
@@ -10,20 +13,30 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.prefs.Preferences;
 
+@Slf4j
 public final class PreferencesController {
-    public void init(ServletContext context) throws IOException {
-        Path prefsPath = Paths.get(context.getContextPath(), "prefs", "app.preferences");
-        if(Files.exists(prefsPath)) {
-            try(var writer = Files.newBufferedWriter(prefsPath,
-                                   StandardOpenOption.CREATE_NEW,
-                                   StandardOpenOption.WRITE);) {
+
+    public static void initPreferences() {
+        System.setProperty("java.util.prefs.PreferencesFactory", FilePreferencesFactory.class.getName());
+        Path prefsPath = Paths.get("prefs", "app.preferences");
+        if(!Files.exists(prefsPath)) {
+            try {
+                Path file = Files.createDirectories(prefsPath.getParent());
+                @Cleanup
+                var writer = Files.newBufferedWriter(prefsPath, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
                 writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                         + "<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">\n"
                         + "<properties>\n"
                         + "</properties>");
+            } catch (IOException exception) {
+                log.error("Can't create preferences file.", exception);
+                //ignore
             }
         }
         System.setProperty("by.radchuk.task.util.prefs.file", prefsPath.toString());
+    }
+
+    public void init(ServletContext context) throws IOException {
         for (var pref : PreferencesKeys.values()) {
             String contextParam = context.getInitParameter(pref.key);
             if (contextParam != null) {

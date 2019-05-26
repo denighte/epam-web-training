@@ -4,6 +4,7 @@ import by.radchuk.task.model.User;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,10 +43,6 @@ public class FilePreferencesFactory implements PreferencesFactory {
     private static Path filePath;
     private Preferences rootPreferences;
 
-    public FilePreferencesFactory() {
-
-    }
-
 
     @Override
     public Preferences systemRoot()
@@ -68,7 +65,7 @@ public class FilePreferencesFactory implements PreferencesFactory {
         if (filePath == null) {
             String prefsPath = System.getProperty(PROPERTY_FILE_PATH);
             if (prefsPath == null || prefsPath.length() == 0) {
-                filePath = Paths.get(System.getProperty("user.home"), "preferences", "preferences.xml");
+                filePath = Paths.get("prefs", "app.preferences");
             } else {
                 filePath = Paths.get(prefsPath);
             }

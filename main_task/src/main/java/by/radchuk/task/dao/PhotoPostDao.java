@@ -49,28 +49,33 @@ public class PhotoPostDao implements AutoCloseable{
     /**
      * Get last 10 posts.
      */
-    private static final String GET_LAST_POSTS
-            = "SELECT * FROM PHOTO_POST LIMIT ? OFFSET ?";
+    private static final String GET_BY_MULTIPLE_CONDITIONS
+            = "SELECT * FROM PHOTO_POST WHERE USER_ID = COALESCE(?, USER_ID)"
+            + " AND CREATION_DATE = COALESCE(?, CREATION_DATE)"
+            + " LIMIT ? OFFSET ? ;";
     /**
      * Get posts by creationDate.
      */
     private static final String GET_POSTS_BY_DATE
             = "SELECT * FROM PHOTO_POST WHERE creationDate = ?;";
     /**
-     * Get posts by author.
+     * Get posts by user id.
      */
     private static final String GET_POSTS_BY_USER_ID
             = "SELECT * FROM PHOTO_POST WHERE user_id = ?;";
     /**
-     * Get posts by hashtags.
-     */
-    private static final String GET_POST_BY_HASHTAG
-            = "SELECT * FROM PHOTO_POST WHERE description LIKE ?";
-    /**
      * query executor object.
      * @see by.radchuk.task.dao.framework.Executor
      */
-    private Executor executor = new Executor();
+    private Executor executor;
+
+    public PhotoPostDao() throws DaoException {
+        try {
+            executor = new Executor();
+        } catch (SQLException exception) {
+            throw new DaoException(exception);
+        }
+    }
 
     public void beginTransaction() throws DaoException{
         try {
@@ -116,15 +121,15 @@ public class PhotoPostDao implements AutoCloseable{
     }
 
     /**
-     * get last n photo posts, n = number.
-     * @param number number of posts to get.
+     * get last n photo posts, n = number matching user_id and date parameters.
+     * @param limit number of posts to get.
      * @return PhotoPost collection.
      * @throws DaoException if dao operation error occurred.
      */
-    public List<PhotoPost> findLast(final int skip, final int number) throws DaoException {
+    public List<PhotoPost> find(final int skip, final int limit, final Integer user_id, final String date) throws DaoException {
         List<PhotoPost> list = new ArrayList<>();
         try {
-            return executor.execQuery(GET_LAST_POSTS, rs -> {
+            return executor.execQuery(GET_BY_MULTIPLE_CONDITIONS, rs -> {
                 while (rs.next()) {
                     PhotoPost post = buildPost(rs);
                     if (post != null) {
@@ -132,7 +137,7 @@ public class PhotoPostDao implements AutoCloseable{
                     }
                 }
                 return list;
-            }, number, skip);
+            }, user_id, date, limit, skip);
         } catch (SQLException exception) {
             throw new DaoException(exception);
         }
@@ -144,7 +149,7 @@ public class PhotoPostDao implements AutoCloseable{
      * @return PhotoPost collection.
      * @throws DaoException if dao operation error occurred.
      */
-    public List<PhotoPost> findByDate(final String date) throws DaoException {
+    public List<PhotoPost> find(final String date) throws DaoException {
         List<PhotoPost> list = new ArrayList<>();
         try {
             return executor.execQuery(GET_POSTS_BY_DATE, rs -> {
@@ -179,29 +184,6 @@ public class PhotoPostDao implements AutoCloseable{
                 }
                 return list;
             }, userId);
-        } catch (SQLException exception) {
-            throw new DaoException(exception);
-        }
-    }
-
-    /**
-     * find photo posts by hashtag.
-     * @param hashtag hashtag (without # !!!).
-     * @return PhotoPost collection.
-     * @throws DaoException if dao operation info occurred.
-     */
-    public List<PhotoPost> findByHashtag(final String hashtag) throws DaoException {
-        List<PhotoPost> list = new ArrayList<>();
-        try {
-            return executor.execQuery(GET_POST_BY_HASHTAG, rs -> {
-                while (rs.next()) {
-                    PhotoPost post = buildPost(rs);
-                    if (post != null) {
-                        list.add(post);
-                    }
-                }
-                return list;
-            }, hashtag);
         } catch (SQLException exception) {
             throw new DaoException(exception);
         }

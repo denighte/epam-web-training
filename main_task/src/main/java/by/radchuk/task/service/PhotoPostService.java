@@ -19,10 +19,10 @@ import java.nio.file.Paths;
 import java.sql.Date;
 
 @Slf4j
+@Secure
 @WebHandler
 @Path("/post")
 public class PhotoPostService {
-    @Secure
     @HttpMethod("POST")
     @Consume(ContentType.MULTIPART_FORM_DATA)
     public Response add(@Context User authorizedUser,
@@ -56,7 +56,6 @@ public class PhotoPostService {
         return Response.builder().data("{\"id\":" + postId + "}").build();
     }
 
-
     @HttpMethod("GET")
     @Consume(ContentType.MULTIPART_FORM_DATA)
     public Response get(@RequestParam("id") int id) {
@@ -69,8 +68,27 @@ public class PhotoPostService {
         }
     }
 
-    public Response delete(@RequestParam("id") int id) {
-
+    @HttpMethod("DELETE")
+    public Response delete(@Context User user,
+                           @Context ServletContext servletContext,
+                           @RequestParam("id") int id) {
+        try (PhotoPostDao postDao = new PhotoPostDao()) {
+            PhotoPost post = postDao.find(id);
+            if (post == null) {
+                return Response.builder().data("There is no photo post with specified id.").build();
+            }
+            if (user.getId() != post.getUserId()) {
+                return Response.builder().data("unauthorized access").build();
+            }
+            postDao.delete(id);
+            Files.delete(Paths.get(servletContext.getRealPath("/")).resolve(Paths.get(post.getSrc())));
+        } catch (DaoException exception) {
+            return Response.builder().data("Failed to delete photo post.").build();
+        } catch (IOException exception) {
+            //add file to special list?
+            //or just ignore?
+        }
+        return Response.builder().data("Successfully deleted.").build();
     }
 
     private boolean validatePost(PhotoPost post) {

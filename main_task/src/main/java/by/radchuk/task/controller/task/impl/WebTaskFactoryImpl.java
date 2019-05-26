@@ -38,13 +38,19 @@ public class WebTaskFactoryImpl implements WebTaskFactory {
         List<WebTask> tasks = new ArrayList<>();
 
         for (Method method : MethodReflections.builder().load(cls)
-                                             .filter(Path.class).setAccessible().get()) {
+                                             .filter(HttpMethod.class).setAccessible().get()) {
             WebTaskBuilder builder = new WebTaskBuilder();
             builder.handler(object, method);
             builder.controllerContext(context);
 
-            String handlerPath = method.getAnnotation(Path.class).value();
+            String handlerPath;
             String resultPath;
+            if (method.isAnnotationPresent(Path.class)) {
+                handlerPath = method.getAnnotation(Path.class).value();
+            } else {
+                handlerPath = "";
+            }
+
 
             if (classPath.equals("") && handlerPath.equals("")) {
                 throw new ControllerException("Invalid annotations: "

@@ -17,6 +17,7 @@ import by.radchuk.task.controller.task.WebTaskFactory;
 import by.radchuk.task.dao.framework.ConnectionManager;
 import by.radchuk.task.dao.framework.H2Manger;
 import by.radchuk.task.util.ClassScanner;
+import by.radchuk.task.util.prefs.FilePreferencesFactory;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 
@@ -31,6 +32,10 @@ import java.util.prefs.Preferences;
 @Slf4j
 @WebListener("Starts up controller servlet.")
 public class FrontControllerStarter implements ServletContextListener {
+    static {
+        PreferencesController.initPreferences();
+    }
+
     private static final String TASK_PACKAGE = "by.radchuk.task.service";
     private static final String FILTER_PACKAGE = "by.radchuk.task.filter";
 
@@ -62,6 +67,10 @@ public class FrontControllerStarter implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         try {
+            //Initializing preferences controller
+            ServletContext servletContext = sce.getServletContext();
+            preferencesController.init(servletContext);
+
             //Initializing controller context
             ControllerContext controllerContext
                     = ControllerContext.builder()
@@ -80,18 +89,15 @@ public class FrontControllerStarter implements ServletContextListener {
             //initializing db;
             connectionManager.init();
 
-            //Initializing preferences controller
-            ServletContext servletContext = sce.getServletContext();
-            preferencesController.init(servletContext);
-
             //Scanning for WebTask classes.
             Collection<Class> taskClasses = classScanner
                         .scan(Preferences.userNodeForPackage(WebTaskContainerImpl.class)
                         .get("ct_task_package", TASK_PACKAGE), WebHandler.class);
             //Adding them to task container.
             for (var cls : taskClasses) {
-                for (var task : taskFactory.create(cls))
-                taskContainer.addTask(task);
+                for (var task : taskFactory.create(cls)) {
+                    taskContainer.addTask(task);
+                }
             }
 
             //Scanning for request filters.

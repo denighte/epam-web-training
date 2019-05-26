@@ -57,14 +57,9 @@ public class Executor implements AutoCloseable {
      * Initializes ConnectionManager (in this case it is a H2Manager).
      * Gets JDBC connection instance.
      */
-    public Executor() {
+    public Executor() throws SQLException{
         manager = H2Manger.getInstance();
-        try {
-            connection = manager.getConnection();
-        } catch (SQLException exception) {
-            log.error("Failed to establish connection!", exception);
-            connection = null;
-        }
+        connection = manager.getConnection();
     }
 
     /**
